@@ -1,0 +1,48 @@
+<template>
+  <div>
+    <Detail  />
+    <Services  />
+    <Supporting  />
+    <Live  />
+    <Pictures  />
+    <Headline  />
+    <Message />
+    <Pictures2 />
+    <Footer />
+  </div>
+</template>
+
+<script>
+  import Footer from './components/footer2'
+  import Detail from './components/detail'
+  import Headline from './components/headline'
+  import Message from './components/message'
+  import Pictures from './components/pictures'
+  import Pictures2 from './components/pictures2'
+  import Services from './components/services'
+  import Supporting from './components/supporting'
+  import Live from './components/live'
+
+  export default {
+    name: "issueWanted",
+    data() {
+      return {}
+    },
+    components: {
+      Footer,
+      Detail,
+      Headline,
+      Message,
+      Pictures,
+      Pictures2,
+      Services,
+      Supporting,
+      Live
+    },
+
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

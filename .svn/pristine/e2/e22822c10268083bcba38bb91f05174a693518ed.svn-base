@@ -1,0 +1,121 @@
+<template>
+  <footer>
+    <div class="left">
+      <div class="iconfont icon-xiepinglun"></div>
+      <input type="text" placeholder="写评论..." v-model="text">
+    </div>
+    <div class="right">
+      <div class="iconfont icon-xinxi" @click="info"></div>
+      <div class="iconfont icon-pingfenkongxing" @click="collect()"
+           :style="'color:'+ (isCollection? '#FF6500' : '#69696b') + ';'"></div>
+      <div class="iconfont icon-fenxiang"></div>
+    </div>
+  </footer>
+</template>
+
+<script>
+  export default {
+    name: "footer",
+    data() {
+      return {
+        isCollection: false,
+        text: ""
+      }
+    },
+    methods: {
+      // 收藏
+      collect() {
+        var infoId = this.$route.params.id
+        this.$http.post('/appServiceInformation/collect', {userId: 1, infoId: infoId}).then(res => {
+          if (res.msg = 'success') {
+            if (res.info == '请求成功') {
+              this.$toast('收藏成功');
+              this.isCollection = true;
+            } else {
+              this.$toast('重复收藏');
+              this.isCollection = true;
+            }
+          } else if (res.msg = 'fail') {
+            this.$toast('系统错误');
+          }
+        })
+      },
+      // 评论
+      info() {
+        let infoId = this.$route.params.id
+        console.log(infoId);
+        let userId = JSON.parse(localStorage.getItem('userInfo')).userId
+        this.$http.post('/appServiceInformation/comment', {
+          commentConnent: this.text,
+          commentId: 1,
+          infoId,
+          userId
+        }).then(res => {
+          console.log(res);
+        })
+      }
+    },
+    created: function () {
+      // this.init()
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../../../style/public.less";
+
+  footer {
+    background-color: #fff;
+    margin-top: 0.1rem;
+    height: 0.56rem;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #dedde2;
+    width: 100%;
+    padding: 0.22rem 0.3rem;
+    display: flex;
+    .left {
+      margin-right: 0.58rem;
+      width: 52%;
+      position: relative;
+      border: 1px solid #908f94;
+      border-radius: 1.4rem;
+      .iconfont {
+        float: left;
+        font-size: 0.28rem;
+        position: absolute;
+        left: 0.31rem;
+        top: 0.1rem;
+      }
+      input {
+        float: left;
+        border: none;
+        position: absolute;
+        left: 0.7rem;
+        top: 0.09rem;
+        font-size: 0.24rem;
+        width: 74%;
+      }
+      input::-webkit-input-placeholder {
+        /* placeholder颜色  */
+        color: #aab2bd;
+        /* placeholder字体大小  */
+        font-size: 0.24rem;
+        /* placeholder位置  */
+        text-align: left;
+      }
+    }
+    .right {
+      flex: 1;
+      display: flex;
+
+      .iconfont {
+        flex: 1;
+        font-size: 0.35rem;
+        color: #908f94;
+        margin-top: 0.1rem;
+      }
+    }
+  }
+</style>

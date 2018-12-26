@@ -1,0 +1,160 @@
+// 头部组件高度
+@hh: 0.98rem;
+
+// 底部组件高度
+@fh: 4rem;
+
+//主色调
+@mr: #fb5900;
+//主色调字体颜色
+.fc() {
+  color: @mr;
+}
+
+//主边框颜色
+@bc: #e6e6e6;
+
+//下边框
+.bt() {
+  border-bottom: 1px solid @bc;
+}
+
+//组件间隔
+.jg() {
+  height: 0.2rem;
+  width: 100%;
+  border-bottom: 0.01rem solid #e7e6ec;
+  border-top: 0.01rem solid #e7e6ec;
+  background-color: #f1f0f6
+}
+
+//灰色字体
+.hc() {
+  color: #908f94;
+}
+
+//红色字体
+.rc() {
+  color: #e81210;
+}
+
+//标题字体
+.tt() {
+  font-size: 0.32rem;
+  color: black;
+  font-weight: 600;
+  float: left;
+}
+
+//圆角button
+.button() {
+  background-color: #ebf8ee;
+  color: #00af2b;
+  font-size: 0.28rem;
+  padding: 0.05rem 0.18rem;
+  border-radius: 0.2rem;
+}
+
+//边框
+.br() {
+  padding: 0.05rem 0.16rem;
+  border: 1px solid #069fef;
+  font-size: 0.21rem;
+  color: #069fef;
+  border-radius: 0.1rem;
+}
+
+//垂直居中
+.jz() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+//两行超出省略
+.over() {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+//左侧星星
+.xx(){
+  font-size: 0.12rem;
+  .rc();
+  float: left;
+}
+
+// 头部引用公共 wml
+.topBar{
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+// 分隔行
+.separate{
+  height: 0.2rem;
+  background-color: #f1f0f6;
+}
+
+// 全局loading 动画
+#loading{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    // background-color: rgba(0,0,0,0.06);
+    .content {
+        width: 100%;
+        height: 100%;
+        padding: 15px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .load-wrapp {
+        width: 100px;
+        height: 100px;
+        margin: 50% auto;
+        padding: .6rem .2rem .2rem;
+        transform: translateY(1.4rem);
+        text-align: center;
+    }
+    .load-wrapp p {padding: 20px 0 0;}
+    .line {
+        display: inline-block;
+        width: .2rem;
+        height: .2rem;
+        border-radius: 50%;
+        background-color: #4b9cdb;
+        &:nth-child(2){
+            margin: 0 .2rem
+        }
+    }
+    
+    .load-3 .line:nth-last-child(1) {animation: loadingC .6s .1s linear infinite;}
+    .load-3 .line:nth-last-child(2) {animation: loadingC .6s .2s linear infinite;}
+    .load-3 .line:nth-last-child(3) {animation: loadingC .6s .3s linear infinite;}
+
+    //@keyframes loadingC {
+    //    0 {transform: translate(0,0);}
+    //    50% {transform: translate(0,15px);}
+    //    100% {transform: translate(0,0);}
+    //}
+}
+
+
+// 排行NO
+.ranking-cover{
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #fff;
+  font-size: .22rem;
+  padding: .06rem .1rem .06rem .06rem
+}

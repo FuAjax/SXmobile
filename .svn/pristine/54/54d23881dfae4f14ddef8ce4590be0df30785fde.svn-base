@@ -1,0 +1,113 @@
+<template>
+  <footer v-if="type == 3">
+    <ul class="content">
+      <router-link v-for="(index,i) in addRessList" :to="{name:index.name}" tag="li" >
+        {{index.text}}
+      </router-link>
+    </ul>
+    <div class="bottom">
+      <div class="bottop">
+        <p>{{regard}}</p>
+        <p>{{connect}}</p>
+        <p>{{feedback}}</p>
+      </div>
+      <div class="botfot">
+        <p>{{time}}</p>
+        <!-- <p>{{call}}</p> -->
+        <p>{{name}}</p>
+        <p>{{num}}</p>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script>
+  export default {
+    name:"Footer",
+    data(){
+      return{
+        addRessList:[
+          {text:"首页",name: "index"},
+          {text:"发布农房",name: "issueFarm"},
+          {text:"发布求租",name: ""},
+          {text:"发布农庄",name: "issueGrange"},
+          {text:"三乡工程",name: "Information"},
+          {text:"农庄首页",name: "grangeindex"},
+          {text:"景点",name: "scenic"},
+          {text:"玩乐",name: "sharePlay"},
+          {text:"住宿",name: "shareInn"},
+          {text:"美食",name: "shareFood"},
+          {text:"农房首页",name: "farmHouse"},
+          {text:"农房出租",name: "rentList"},
+          {text:"地图找房",name: ""},
+          {text:"查成交",name: "dealList"},
+          {text:"美丽乡村",name: "villageList"},
+        ],
+        regard:"关于我们",
+        connect:"联系我们",
+        feedback:"意见反馈",
+        time:"Copyright©2018",
+        call:"{客服电话}",
+        name:"三乡工程网",
+        num:"鄂ICP备18022483号-1",
+        type: 0
+      }
+    },
+    created(){
+      this.type = this.$proType
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+  @import "../../style/public.less";
+
+  footer {
+    // height: @fh;
+    // line-height: .6rem;
+    // height: .6rem;
+    width: 100%;
+    background-color: #333238;
+    padding-bottom: .2rem;
+    ul{
+      display: flex;
+      flex-wrap:wrap;
+      li{
+        width: 20%;
+        height: 0.85rem;
+        border: 0.01rem solid @bc ;
+        line-height: 0.85rem;
+        text-align: center;
+        font-size: 0.22rem;
+        color: #fbfbfd;box-sizing: border-box;
+      }
+    }
+    .bottom{
+      color:#c9c8ce;
+      .bottop{
+        height: 0.25rem;
+        padding-left:1.7rem;
+        font-size:0.25rem;
+        margin-top:0.21rem;
+        p{
+          float: left;
+          margin-right: 0.48rem;
+        }
+      }
+      .botfot{
+        width: 100%;
+        overflow: hidden;
+        text-align: center;
+        padding-left:0.62rem;
+        font-size:0.25rem;
+        margin-top:0.27rem;
+        box-sizing: border-box;
+        p{
+          float: left;
+          margin-right: 0.22rem;
+        }
+      }
+    }
+  }
+</style>

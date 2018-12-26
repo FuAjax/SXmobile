@@ -1,0 +1,178 @@
+/*
+    Created by name: "FuDi", Date:2018/12/4 ,Time:15:54
+*/
+
+let m = {
+  // 参数
+  condition() {
+    this.$http.post('appServiceFarmhouse/getMapParam').then(res => {
+      this.areaHasVillage = res.data.areaHasVillage
+      // this.farmhouseRentPrice = res.data.farmhouseRentPrice
+      // this.farmhouseRentalArea = res.data.farmhouseRentalArea
+      // this.farmhouseRentalLife = res.data.farmhouseRentalLife
+
+    })
+
+  },
+  // 数据
+  init() {
+    const params = {
+      // 区域街道村庄id
+      areaId: '',
+      // 城市rest
+      cityRestful: 'wuhan',
+      // 输入框
+      condition: '',
+      // 等级
+      grade: '',
+      //页码
+      page: '',
+      //rest
+      restful: '',
+    }
+
+    this.$http.post('appServiceFarmhouse/mapcondition', params).then(res => {
+      this.farmhouseCount = res.data.farmhouseCount
+      console.log(this.farmhouseCount);
+      this.setmap()
+    })
+
+  },
+
+  setmap(fact) {
+    this.map = new BMap.Map("allmap");    // 创建Map实例
+    this.map.centerAndZoom("武汉", 10);
+    this.map.enableScrollWheelZoom(true);
+
+    function ComplexCustomOverlay(point, text, id, index) {
+      this._point = point;
+      this._text = text;
+      this._id = id;
+      this._index = index;
+    }
+
+    ComplexCustomOverlay.prototype = new BMap.Overlay();
+    ComplexCustomOverlay.prototype.initialize = function (map) {
+
+      this._map = map;
+
+      //自定义控件容器
+
+      let div = this._div = document.createElement("div");
+      div.id = "overlay" + this._index;
+      div.style.position = "absolute";
+      div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+      div.style.padding = "2px";
+      div.style.MozUserSelect = "none";
+      div.style.fontSize = "12px";
+      let that = this;
+      //小尖角
+      let arrow = this._arrow = document.createElement("div");
+      arrow.className = "map-arrow";
+      arrow.style.position = "absolute";
+      arrow.style.width = "0px";
+      arrow.style.height = "0px";
+      arrow.style.top = "42px";
+      arrow.style.left = "18px";
+      arrow.style.border = "10px transparent solid";
+      arrow.style.borderTopColor = "#ff9900"
+      div.appendChild(arrow);
+
+      //a标签名称
+      let a = this._a = document.createElement("a");
+      a.className = "map-content";
+      a.style.backgroundColor = "#ff9900";
+      a.style.borderRadius = "5px";
+      a.style.padding = "5px";
+      a.style.color = "white";
+      a.style.textDecoration = "none";
+      a.style.height = "30px";
+      a.style.whiteSpace = 'nowrap';
+      a.style.display = "inline-block";
+      div.appendChild(a);
+      a.appendChild(document.createTextNode(this._text));
+      map.getPanes().labelPane.appendChild(div);
+      return div;
+
+    }
+    ComplexCustomOverlay.prototype.draw = function () {
+
+      var map = this._map;
+
+      var pixel = map.pointToOverlayPixel(this._point);
+
+      this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+
+      this._div.style.top = pixel.y - 30 + "px";
+
+    }
+    if (fact == undefined) {
+      this.farmhouseCount.forEach((item, index) => {
+        let point = new BMap.Point(item.longitude, item.latitude); //添加坐标
+        // let point = new BMap.Point(116.4035,39.915); //添加坐标
+        let myCompOverlay = new ComplexCustomOverlay(point, item.fname + item.number + '套', index);
+        this.map.addOverlay(myCompOverlay);
+      })
+    } else {
+      fact.forEach((item, index) => {
+        let point = new BMap.Point(item.longitude, item.latitude); //添加坐标
+        let myCompOverlay = new ComplexCustomOverlay(point, item.fname || item.fname, item.number, index);
+        this.map.addOverlay(myCompOverlay);
+      })
+    }
+    var area = document.getElementById('overlayundefined')
+    console.log(area);
+    area.onclick(function () {
+      console.log(123);
+    })
+  },
+
+  // 区点击
+  areaClick() {
+    v
+  },
+
+
+  village() {
+    this.area2 = false;
+    this.area3 = false;
+    this.area4 = false;
+    this.area1 = !this.area1;
+  },
+  price() {
+    this.area3 = false;
+    this.area4 = false;
+    this.area1 = false;
+    this.area2 = !this.area2;
+  },
+  area() {
+    this.area4 = false;
+    this.area1 = false;
+    this.area2 = false;
+    this.area3 = !this.area3;
+  },
+  year() {
+    this.area1 = false;
+    this.area2 = false;
+    this.area3 = false;
+    this.area4 = !this.area4;
+  },
+
+  // 区域
+  check(index) {
+    this.mainActiveIndex = index
+  },
+  onNavClick(index) {
+    this.mainActiveIndex1 = index;
+  },
+  onItemClick(data) {
+    this.activeId = data.id;
+  },
+
+  showList() {
+    this.show = true
+  },
+
+
+}
+export default m

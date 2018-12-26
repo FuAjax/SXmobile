@@ -1,0 +1,103 @@
+<template>
+    <div id="navbar">
+        <div class="topBar" v-show="active==0">
+            <Header :title='icon[active].name' :isback='isback'/>
+        </div>
+        <div class="topBar" v-show="active==1">
+            <Header2 :title='icon[active].name' :isback='isback'/>
+        </div>
+        <div class="container-navbar">
+            <index v-show="active==0" :isapp='isapp'/>
+            <grangeindex v-show="active==1" :isapp='isapp'/>
+            <farmHouse v-show="active==2" :isapp='isapp'/>
+            <Information v-show="active==3" :isapp='isapp'/>
+            <personalCenter v-show="active==4" :isapp='isapp'/>
+        </div>
+        <div style="width:100%; height: 1rem;"></div>
+        <van-tabbar v-model="active" style="z-index: 99;">
+            <van-tabbar-item info="" v-for="(item , index) in icon">
+                <span>{{item.name}}</span>
+                <img slot="icon" :src="active == index  ? item.active : item.normal" />
+            </van-tabbar-item>
+        </van-tabbar>
+    </div>
+</template>
+<script>
+    import Header from "./../common/App/aheader"
+    import Header2 from "./../common/App/aheader2"
+    import index from "./../index"
+    import personalCenter from "./../personalCenter/personalCenter"
+    import grangeindex from "./../grange/grangeindex"
+    import farmHouse from "./../farmHouse/rentList/rentList"
+    import Information from "./../Information/text/textList/textList"
+
+    import sy01 from '../../assets/navbar/sy_01.png';
+    import sy02 from '../../assets/navbar/sy_02.png';
+    import nz01 from '../../assets/navbar/nz_01.png';
+    import nz02 from '../../assets/navbar/nz_02.png';
+    import nf01 from '../../assets/navbar/nf_01.png';
+    import nf02 from '../../assets/navbar/nf_02.png';
+    import zc01 from '../../assets/navbar/zc_01.png';
+    import zc02 from '../../assets/navbar/zc_02.png';
+    import wd01 from '../../assets/navbar/wd_01.png';
+    import wd02 from '../../assets/navbar/wd_02.png';
+    export default {
+        components: { Header, Header2, index, personalCenter, grangeindex, farmHouse },
+        data() {
+            return {
+                isapp: true,
+                title: ['首页', '共享农庄', '闲置农房', '政策文件', '我的'],
+                isback: false,
+                active: 0,
+                icon: [{
+                    name: '首页',
+                    normal: sy01,
+                    active: sy02
+                },{
+                    name: '共享农庄',
+                    normal: nz01,
+                    active: nz02
+                },{
+                    name: '闲置农房',
+                    normal: nf01,
+                    active: nf02
+                },{
+                    name: '政策文件',
+                    normal: zc01,
+                    active: zc02
+                },{
+                    name: '我的',
+                    normal: wd01,
+                    active: wd02
+                }]
+            }
+        }
+    }
+</script>
+<style lang="less" scoped>
+#navbar{
+    .container-navbar{  // navbar容器
+        width: 100%;
+    }
+    .van-tabbar-item{
+        font-size: .22rem;
+        text-align: center;
+        color: #99999A;
+        .van-tabbar-item__icon img{
+            width: .4rem;
+            height: .4rem
+        }
+    }
+    header{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 999;
+        background: rgba(255,255,255,.6);
+    }
+    .van-tabbar-item.van-tabbar-item--active{
+        color: #FA5800
+    }
+}
+</style>

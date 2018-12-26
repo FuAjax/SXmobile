@@ -1,0 +1,53 @@
+<template>
+  <div>
+    <Header/>
+    <Banner :banner="banner"/>
+    <Project :newsList="info"/>
+    <Control :hotColumn="hotColumn" :hotTag="hotTag" :consultType="consultType"/>
+    <Footer/>
+  </div>
+</template>
+
+<script>
+  import Header from "../../common/Header2"
+  import Banner from "./components/Banner"
+  import Footer from "../../common/Footer"
+  import Project from "./components/project"
+  import Control from "../common/control"
+
+  import methods from './m/methods'
+
+  export default {
+    name: "index",
+    data() {
+      return {
+        // banne图
+        banner:[],
+        // 列表信息
+        info:[],
+        // 类别1
+        hotTag:[],
+        // 类别2
+        hotColumn:[],
+        // 资讯
+        consultType:[]
+      }
+    },
+    components: {
+      Header,
+      Banner,
+      Footer,
+      Project,
+      Control,
+
+    },
+    methods: methods,
+    created: function () {
+      this.init();
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

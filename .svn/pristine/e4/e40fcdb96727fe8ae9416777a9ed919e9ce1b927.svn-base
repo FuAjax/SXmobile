@@ -1,0 +1,220 @@
+<template>
+  <header id="header">
+    <div style="position: relative; z-index:100; width: 100%; height:100%;background: #fff;padding: 0 0.30rem;box-sizing: border-box">
+      <van-icon v-if="isback" name="arrow-left"
+                slot="left"
+                color="#000"
+                size="0.3rem"
+                style="float: left;line-height: .94rem;"
+      />
+      <div class="img">
+        <img :src="logoImg" alt="">
+      </div>
+      <div class="position" style="line-height: .92rem;">
+        <div class="iconfont icon-dizhi dizhi"></div>
+        <div class="po">{{position}}</div>
+        <div class="iconfont icon-xia"></div>　
+        <div class="po" style="margin-left: .15rem; font-size: .3rem"> {{title}}</div>
+      </div>
+      <div class="right">
+        <van-icon name="contact"
+                  slot="right"
+                  color="#000"
+                  size="0.35rem"
+                  style="margin-right: .25rem;line-height: .92rem;"
+        />
+        <van-icon name="wap-nav"
+                  slot="right"
+                  color="#000"
+                  size="0.35rem"
+                  style="line-height: .92rem;" @click="list"
+        />
+      </div>
+    </div>
+    <van-popup
+      v-model="show"
+      position="top">
+      <van-collapse v-model="activeNames">
+        <van-collapse-item v-for="(index,item) in List"
+                          :title="index.title"
+                          :name="index.name">
+          <div class="link">
+            <ul v-for="(img,i) in index.imgList">
+              <li>
+                <img :src="img.url" alt="">
+                <p>{{img.link}}</p>
+              </li>
+            </ul>
+          </div>
+          <span>{{index.message}}</span>
+        </van-collapse-item>
+      </van-collapse>
+    </van-popup>
+  </header>
+</template>
+
+<script>
+  import index from '../../assets/images/logo2.png'
+  // import methods from './m/methods'
+  import url from '../../assets/images/7.png'
+  import url2 from '../../assets/images/6.png'
+  import url3 from '../../assets/images/5.png'
+  import url4 from '../../assets/images/9.png'
+  import url5 from '../../assets/images/2 (10).png'
+  import url6 from '../../assets/images/2 (1).png'
+  import url7 from '../../assets/images/4.png'
+  import url8 from '../../assets/images/8.png'
+  import url9 from '../../assets/images/10.png'
+  import url10 from '../../assets/images/6.png'
+
+  export default {
+    name: "header",
+    props: {  
+      title: '',      // 标题
+      isback: false,      // 是否有返回功能
+    },
+    data() {
+      return {
+        index_url: index,
+        logoImg: '',
+        position: "武汉",
+        logoImg: require("../../assets/images/logo1.png"),
+        show: false,
+        activeNames: ['1'],
+        List: [
+          {
+            name: "1",
+            title: "首页",
+          },
+          {
+            name: "2",
+            title: "共享农庄",
+            message: "发布农庄",
+            imgList: [
+              {
+                url: url6,
+                link: "农庄",
+              },
+              {
+                url: url7,
+                link: "景点",
+              },
+              {
+                url: url8,
+                link: "游玩",
+              },
+              {
+                url: url9,
+                link: "住宿",
+              },
+              {
+                url: url10,
+                link: "美食",
+              },
+            ]
+          },
+          {
+            name: "3",
+            title: "共享农庄",
+            message: "发布农庄",
+            imgList: [
+              {
+                url: url,
+                link: "租农房",
+              },
+              {
+                url: url2,
+                link: "地图找房",
+              },
+              {
+                url: url3,
+                link: "查公交",
+              },
+              {
+                url: url4,
+                link: "农房求租",
+              },
+              {
+                url: url5,
+                link: "美丽乡村",
+              },
+            ]
+          },
+          {
+            name: "4",
+            title: "三乡工程",
+          },
+          {
+            name: "5",
+            title: "个人中心",
+          },
+        ]
+      }
+    },
+    methods: {
+      list(){
+        this.show = !this.show
+      }
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../style/public.less";
+
+  @ft1: 0.23rem;
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: .92rem;
+    line-height: .92rem;
+    box-sizing: border-box;
+    background: #fff;
+    z-index: 999;
+    .img {
+      width: 1.84rem;
+      height: .92rem;
+      float: left;
+      margin-right: 0.28rem;
+      margin-left: 0.1rem;
+      img {
+        margin-top: .33rem;
+        width: 100%;
+        height: .3rem;
+      }
+    }
+    .position {
+      font-size: 0.22rem;
+      float: left;
+      .dizhi {
+        margin-right: 0.11rem;
+        float: left;
+      }
+      .po {
+        float: left;
+        margin-right: 0.11rem
+      }
+      .iconfont {
+        float: left;
+      }
+    }
+    .right {
+      float: right;
+      
+    }
+  }
+</style>
+<style>
+#header{
+  z-index: 999999;
+}
+#header .van-popup--top{
+  top: .92rem;
+  z-index: 90!important;
+}
+#header .van-modal{
+  z-index: 10!important;
+}
+</style>

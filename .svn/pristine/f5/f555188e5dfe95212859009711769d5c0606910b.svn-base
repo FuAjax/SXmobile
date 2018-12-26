@@ -1,0 +1,144 @@
+<template>
+  <header>
+    <div class="header">
+      <div :style="'padding-left: .3rem;box-sizing: border-sizing;position: relative;z-index: 999;' + ( color ? 'background: '+color+'; color: #fff' : 'background: #fff; color: #000' ) +''">
+          <van-icon name="arrow-left"
+            slot="left"
+            :color='color?"#fff":"#000"'
+            style="line-height: .92rem; padding: 0 .2rem 0 0; margin: 0;float:left;"
+            size="0.3rem"
+            v-show="isback"
+          />
+          <div class="po" style="float:left;line-height: .92rem;" @click="city">武汉 </div>
+          <div class="iconfont icon-xia" style="float:left;line-height: .96rem;"></div>　
+          <div class="field clear" @click="tosearch">
+			      <div class="inputt">
+			        <i class="iconfont icon-sousuo"></i>
+			        <input type="text" placeholder="请输入区域/农庄/景区">
+			      </div>
+			      <router-link tag="div" to="" class="issue">发布信息 <i class="iconfont icon-xia"></i>　</router-link>
+			    </div>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script>
+  export default {
+    name: "aHeader",
+    props:{
+      title: '', color: null, isback: false
+    },
+    data() {
+      return {
+      }
+    },
+    methods: {
+      mine(){
+        if(localStorage.getItem('userInfo')){
+          // setTimeout(()=>{
+            this.$router.push({name: 'personalCenter'})
+          // },1200)
+        } else {
+          // setTimeout(()=>{
+            this.$router.push({ name: 'login'})
+          // },1200)
+        }
+      },
+      onClickLeft() {
+        this.$router.back(-1)
+      },
+      onClickRight() {
+        // Toast('按钮');
+      },
+      tosearch(){
+        this.$router.push('/search')
+      },
+      showList(){
+        this.show = !this.show
+      },
+      city(){
+        this.$router.push({ name: 'cityQuery'})
+      }
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../style/public.less";
+
+  .van-icon {
+    &:nth-child(1) {
+      margin-right: 0.3rem;
+
+    }
+  }
+  .van-nav-bar {
+    font-weight: 600;
+    font-size: 0.32rem;
+  }
+.field {
+  position: absolute;
+  top: 0.2rem;
+  width: 5.5rem;
+  right: .3rem;
+  & > div {
+    float: left;
+    margin-left: 0.1rem;
+  }
+  .inputt {
+    margin-left: 0;
+    width: 3.8rem;
+    height: 0.53rem;
+    border-radius: 0.54rem;
+    background: #FAF9FF;
+    padding-top: .1rem;
+    text-align: center;
+    box-sizing: border-box;
+    i {
+      font-size: 0.3rem;
+      vertical-align: middle;
+    }
+    input {
+      outline: none;
+      background: #FAF9FF;
+      vertical-align: middle;
+      height: 56%;
+      width: 3.2rem;
+      border: none;
+      font-size: 0.2rem;
+    }
+  }
+  .issue {
+    height: 0.53rem;
+    width: 1.53rem;
+    background-color: #ff6400;
+    border-radius: 0.53rem;
+    font-size: 0.2rem;
+    text-align: center;
+    line-height: 0.53rem;
+    color: #d5eed1;
+    float: right;
+  }
+}
+</style>
+
+<style>
+.header{
+  z-index: 999999;
+  height: .92rem;
+}
+header .van-popup--top{
+  top: .92rem;
+  z-index: 90!important;
+}
+header .van-modal{
+  z-index: 10!important;
+}
+header .van-nav-bar{
+  background: transparent;
+}
+header .van-nav-bar__title{
+  text-align: center
+}
+</style>

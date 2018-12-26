@@ -1,0 +1,87 @@
+<template>
+  <div>
+    <div class="topBar" v-if="(!isapp)">
+      <Header :title='title' :isback='isback'/>
+    </div>
+    <Title :detail="detail"/>
+    <Time :detail="detail"/>
+    <Information :detail="detail"/>
+    <Recommend :detail="detail"/>
+    <RimeFarm :list="rentalHouse"/>
+    <RimGrange :foodList="getFoodList" :playList="getPlayList" :stayList="getStayList"/>
+    <Link/>
+    <Bootom/>
+    <Footer :detail="detail"/>
+  </div>
+</template>
+
+<script>
+  import Header from '../../../common/Header';
+  import Footer from "./components/Footer"
+  import Title from "./components/Title"
+  import Time from "./components/Time"
+  import Information from "./components/Information"
+  import Recommend from "./components/Recommend"
+  import RimeFarm from "./components/RimFarm"
+  import RimGrange from "./components/RimGrange"
+  import Link from "../../../common/Link"
+  import Bootom from "../../../common/Bootom"
+
+  export default {
+    name: "wantedDetail",
+    data() {
+      return {
+        // 详情
+        detail: '',
+        // 周边美食
+        getFoodList: '',
+        // 周边游玩
+        getPlayList: '',
+        // 周边住宿
+        getStayList: '',
+        // 本村信息
+        rentalHouse:[],
+        isback:true,
+        title: '求租详情',
+        // color: '#FF6400',
+
+      }
+    },
+    components: {
+      Header,
+      Footer,
+      Title,
+      Time,
+      Information,
+      Recommend,
+      RimeFarm,
+      RimGrange,
+      Link,
+      Bootom
+    },
+    methods: {
+      init() {
+        var id = this.$route.params.id
+        this.$http.post('appServiceFarmhouse/getRentingHouseDetail', {
+          farmhouseRentingNumber: id,
+          userId: 1
+        }).then(res => {
+          this.detail = res.data.detail
+          this.getFoodList = res.data.getFoodList
+          this.getPlayList = res.data.getPlayList
+          this.getStayList = res.data.getStayList
+          this.rentalHouse=res.data.rentalHouse
+
+          console.log(res);
+        })
+      }
+    },
+    created: function () {
+      this.init()
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

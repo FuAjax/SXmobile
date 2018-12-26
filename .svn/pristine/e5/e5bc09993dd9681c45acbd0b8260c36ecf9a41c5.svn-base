@@ -1,0 +1,49 @@
+<template>
+  <div>
+    <Header  :isback='isback'/>
+    <Search/>
+    <Specil :rows="rows"/>
+    <Footer/>
+  </div>
+</template>
+
+<script>
+  import Header from '../../common/Header';
+  import Search from "../common/search"
+  import Specil from "./components/specil"
+  import Footer from "../../common/Footer"
+
+  export default {
+    name: "dealList",
+    data() {
+      return {
+          rows:[],
+        isback:true,
+
+      }
+    },
+    components: {
+      Header,
+      Search,
+      Specil,
+      Footer,
+    },
+    methods: {
+      init() {
+        this.$http.post('appServiceFarmhouse/getRentTurnoverData').then(res=>{
+          console.log(res);
+          this.rows=res.data.rows
+        })
+      }
+    },
+    created: function () {
+      this.init()
+    }
+
+
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

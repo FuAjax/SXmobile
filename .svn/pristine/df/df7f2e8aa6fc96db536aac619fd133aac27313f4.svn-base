@@ -1,0 +1,217 @@
+<template>
+  <div>
+    <div class="wantedClass">
+      <!--:to="{name:'wantedDetail',params:{id:'index.villageNumber'}}"-->
+      <div class="list" v-for="(index,i) in List" @click="goDetail(index)">
+        <div class="top">
+          <div class="left">{{person}}</div>
+          <div class="right">{{index.farmhouseTitle}}</div>
+        </div>
+        <div class="size">{{index.rentingYears}}年/{{index.bedroom}}室{{index.drawingroom}}厅/{{index.floorSpace}}平</div>
+        <div class="position">
+          <div class="left">
+            <div class="iconfont icon-dizhi"></div>
+            <div>{{index.fareaName}}{{index.fstreetName}}</div>
+          </div>
+          <div class="right">
+            <p>{{index.rentingPrice}}/万元</p>
+            <p>/年</p>
+          </div>
+        </div>
+        <div class="btnbox" v-for="(item,i) in index.characteristics">{{item}}</div>
+      </div>
+    </div>
+    <div class="blank"></div>
+  </div>
+
+</template>
+
+<script>
+  import RouterLink from "vant/es/mixins/router-link";
+  export default {
+    name: "List",
+    components: {RouterLink},
+    props: {
+      List: {
+        type: Array,
+        required: true
+      }
+    },
+    data() {
+      return {
+        person: '个人求租',
+        List: [
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+          {
+            name: "黄陂区 木兰山 180平3室sssssssssssssssssssssssssssssssss 20年农房一套",
+            size: "5年/6室1厅/180平",
+            positon: "黄陂区-木兰乡",
+            price: "1-1.2",
+            btnList: [
+              {title: "独立院落"},
+              {title: "拎包入住"},
+              {title: "近高速"},
+            ]
+          },
+        ]
+      }
+    },
+    methods:{
+      goDetail(index){
+        var num=index.farmhouseRentingNumber
+        // console.log(index.farmhouseRentingNumber);
+        this.$router.push({name:'wantedDetail',params:{id:num}})
+      }
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../../../style/public.less";
+
+  .wantedClass {
+    padding: 0 0.3rem;
+  }
+
+  .list {
+    padding: 0.45rem 0.3rem 0rem 0.3rem;
+    min-height: 2.48rem;
+    overflow: auto;
+    .bt();
+    &:last-child {
+      border: none;
+    }
+    .top {
+      height: 0.47rem;
+      font-size: 0.28rem;
+      .left {
+        float: left;
+        font-weight: 600;
+        color: #00b632;
+        font-size: 0.29rem;
+      }
+      .right {
+        color: #010005;
+        margin-left: 1.48rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        font-weight: 600;
+
+      }
+    }
+    .size {
+      font-size: 0.23rem;
+      .hc();
+      margin: 0.21rem 0;
+    }
+    .position {
+      height: 0.23rem;
+      margin-bottom: 0.23rem;
+      font-size: 0.22rem;
+      .hc();
+      .left {
+        float: left;
+        .iconfont {
+          float: left;
+          font-size: 0.22rem;
+          .hc();
+          margin-right: 0.08rem;
+          margin-top: 0.04rem;
+
+        }
+        div {
+          float: left;
+
+        }
+      }
+      .right {
+        float: right;
+        p {
+          float: left;
+          &:nth-child(1) {
+            font-size: 0.28rem;
+            .rc();
+            font-weight: 600;
+            margin-top: -0.05rem;
+          }
+        }
+      }
+    }
+    .btnbox {
+      .br();
+      float: left;
+      margin-right: 0.08rem;
+      margin-bottom: 0.2rem;
+    }
+  }
+
+  .blank {
+    .jg();
+  }
+</style>

@@ -1,0 +1,407 @@
+<template>
+    <div id="myAppointment" class="myAppointment">
+    <div class="head">
+      <van-nav-bar title='我的预约'
+                   @click-right="onClickRight"
+                   @click-left="back"
+                   right-text="筛选" left-arrow>
+      </van-nav-bar>
+    </div>
+    
+    <div style="padding-top: .91rem;">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        @load="init"
+        >
+        <ul class="list" v-if="list.length > 0">
+          <li v-for="(item, index) in list">
+            <p class="top">
+              {{item.bespeakTime1}}{{item.bespeakTime2}}{{item.bespeakTime3}}
+              <span>
+                {{item.statusName}}
+              </span>
+            </p>
+            <p class="people">
+              <img :src=item.accountHeadurl alt="">
+              &nbsp;
+              {{item.accountRealname}}
+              &nbsp;
+              <span>经纪人</span>
+              &nbsp;
+                <i class="iconfont icon-dianhua1"></i>
+              &nbsp;
+              {{item.accountPhone}}
+            </p>
+            <div class="center">
+              <router-link :to="{name: 'rentDetail', params: {id: item.farmhouseRentalsNumber}}">
+              <van-row gutter="10">
+                <van-col span="8" class="left">
+                  <img :src=item.logoUrl alt="">
+                  <p class="van-ellipsis">编号{{item.farmhouseRentalsNumber}}</p>
+                </van-col>
+                <van-col span="16" class="right">
+                  <p class="van-ellipsis">
+                    {{item.farmhouseTitle}}
+                  </p>
+                  <p class="van-ellipsis">
+                    {{item.detail}}
+                  </p>
+                  <p class="van-ellipsis">
+                    <i class="iconfont icon-dizhi"></i>
+                    {{item.address}}
+                  </p>
+                  <p v-if="item.rentingPrice == '面谈'">
+                    <span>
+                      面谈
+                    </span>
+                  </p>
+                  <p v-else>
+                    <span>
+                      ￥{{item.rentingPrice}}万元
+                    </span>
+                    /年
+                  </p>
+                </van-col>
+              </van-row>
+              </router-link>
+            </div>
+            <p class="bottom">
+              看房要求 ： {{item.bespeakRequire}}
+              <span v-show="item.status == 0" @click="cancelReservation(item.id, index)">取消预约</span>
+            </p>
+            <div class="separate"></div>
+          </li>
+        </ul>
+        <template v-if="list.length == 0 && finished">
+          <noList :detail='details'/>
+        </template>
+      </van-list>
+    </div>
+
+      <!--右侧弹出层-->
+      <van-popup v-model="show"
+                 class="layer"
+                 :close-on-click-overlay=false
+                 position="right">
+        <div class="container">
+          <van-nav-bar
+            title="筛选"
+            left-arrow
+            @click-left="onClickLeft"
+          />
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">标题搜索</van-col>
+              <van-col span="16" class="right">
+                <input type="text" v-model="value" placeholder="请输入标题搜索">
+              </van-col>
+            </van-row>
+          </div>
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">预约状态</van-col>
+              <van-col span="16" class="right">
+                <select v-model="statusType">
+                  <template v-for="(item, index) in status">
+                    <option :value="item.id">{{item.name}}</option>
+                  </template>
+                </select>
+              </van-col>
+            </van-row>
+          </div>
+
+          <div class="bottom">
+            <button @click="init(value, 1)">搜索</button>
+            <button style="background-color: #C4C4C6; margin-top: .2rem" @click="init(null,true)">清空筛选条件</button>
+          </div>
+        </div>
+      </van-popup>
+    </div>
+</template>
+
+<script>
+    import { Dialog } from 'vant';
+    import noList from "../../common/noList";
+    export default {
+        name: "myAppointment",
+        components:{
+          noList
+        },
+        data() {
+            return {
+              show:false,
+              details: '预约',
+              loading: false,
+              finished: false,
+
+              rows: 20,
+              page: 1,
+
+              value: '',
+
+              list: [],
+
+              title: '我的预约',
+
+              status: [
+                { id:	null, name: '全部' },
+                { id:	1, name: '已取消' },
+                { id:	2, name: '待分配' },
+                { id:	3, name: '安排中' },
+                { id:	4, name: '已带看' },
+              ],
+              statusType: null
+            }
+        },
+        methods: {
+          onClickRight(){
+            this.show=true;
+          },
+          onClickLeft(){
+            this.show=false;
+          },
+          back(){
+            this.$router.back(-1)
+          },
+          init(info, clear){
+            setTimeout(() => {
+              var parmas = {page:this.page,rows:this.rows}
+              if(info && info !== ''){
+                this.page = 1
+                parmas.page = 1
+                parmas.farmInfo = info
+                this.show=false
+                this.title = '我的预约-查询结果'
+              }
+              if(clear){
+                this.page = 1
+                parmas.page = 1
+                this.show=false
+                if(clear == 1){
+
+                } else {
+                  this.title = '我的预约'
+                  this.statusType = null
+                }
+              }
+              if(this.statusType){
+                parmas.status	= this.statusType - 2
+              }
+              if(info === null){
+                this.page = 1
+                parmas.page = 1
+                this.show=false
+                this.title = '我的预约'
+              }
+              this.$http.post('appServiceUser/mybespeak',parmas).then(res=>{
+                if(res.msg == 'success'){
+                  this.loading = false;
+                  if(this.page == 1){
+                    this.list = res.data.rows
+                  } else {
+                    this.list = this.list.concat(res.data.rows)
+                  }
+                  this.total = res.data.total
+                  this.page = this.page + 1
+                  // 数据全部加载完成
+                  if (this.list.length >= this.total || this.total == 0) {
+                    this.finished = true;
+                  }
+                } else {
+				          this.finished = true;
+                }
+			        }).catch(error=>{
+				          this.finished = true;
+              })
+            }, 500);
+          },
+          cancelReservation(id, index){
+            Dialog.confirm({
+              title: '取消操作',
+              message: '是否确认取消选中的预约'
+            }).then(() => {
+              this.$http.post('appServiceUser/cancelReservation',{ id }).then(res=>{
+                if(res.msg == 'success'){
+                  this.list[index].status = -1
+                  this.list[index].statusName = '已取消'
+                }
+              })
+            }).catch(() => {
+              // on cancel
+            });
+          }
+        },
+        computed: {},
+        created: function () {
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  	.head{
+  		position: fixed;
+  		left: 0;
+  		top: 0;
+  		width: 100%;
+  		z-index: 999;
+    }
+  .myAppointment{
+    .list{
+      li{
+        padding: 0.2rem 0;
+        .top{
+          margin:0 0.2rem;
+          border-bottom: 0.01rem solid #e6e6e6;
+          padding: 0.2rem 0;
+          span{
+            float: right;
+            color: red;
+          }
+        }
+        .center{
+          margin:0 0.2rem;
+          border-bottom: 0.01rem solid #e6e6e6;
+          padding: 0.2rem 0;
+          .left{
+            height: 1.6rem;
+            position: relative;
+            p{
+              position: absolute;
+              width: 95%;
+              height: 0.3rem;
+              background-color: rgba(0, 0, 0, 0.5);
+              bottom: 0;
+              color: white;
+              line-height: 0.3rem;
+              text-indent: 0.2rem;
+            }
+          }
+          .right{
+            p:first-child{
+              color: black;
+              font-size: 0.24rem;
+            }
+            p{
+              color: grey;
+              margin-bottom: 0.15rem;
+            }
+            p:nth-child(4){
+              span{
+                font-size: 0.24rem;
+                color: red;
+              }
+            }
+          }
+        }
+        .people{
+          margin:0 0.2rem;
+          border-bottom: 0.01rem solid #e6e6e6;
+          padding: 0.2rem 0;
+          img{
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            vertical-align: middle;
+          }
+          span{
+            width: 1.2rem;
+            height: 0.4rem;
+            background-color:#fff1e8;
+            display: inline-block;
+            border-radius: 0.4rem;
+            text-align: center;
+            line-height: 0.4rem;
+            vertical-align: middle;
+            color: #ff6c1a;
+          }
+          i{
+            color: #01b436;
+          }
+        }
+        .bottom{
+          margin:0 0.2rem;
+          padding: 0.2rem 0;
+          position: relative;
+          span{
+            position: absolute;
+            display: inline-block;
+            width: 1.25rem;
+            height: 0.5rem;
+            right: 0;
+            border: 0.01rem solid grey;
+            text-align: center;
+            line-height: 0.5rem;
+            border-radius: 0.5rem;
+            top: 50%;
+            margin-top: -0.25rem;
+          }
+        }
+        .separate{
+          height: 0.28rem;
+          background-color: #f1f0f6;
+        }
+      }
+    }
+
+
+
+
+    .layer{
+      .container{
+        .common{
+          margin: 0.2rem;
+          .left{
+            color: grey;
+            font-size: 0.28rem;
+            margin-top: 0.12rem;
+          }
+          .right{
+            input{
+              border: 0.01rem solid #e5e5e5;
+              background-color: #f1f0f6;
+              font-size: 0.28rem;
+              width: 100%;
+              vertical-align: middle;
+              height: 0.7rem;
+              padding-left: 0.3rem;
+              box-sizing: border-box;
+            }
+            select{
+              border: 0.01rem solid #e5e5e5;
+              background-color: #f1f0f6;
+              font-size: 0.28rem;
+              width: 100%;
+              vertical-align: middle;
+              height: 0.7rem;
+              padding-left: 0.3rem;
+              box-sizing: border-box;
+            }
+          }
+        }
+        .bottom{
+          padding: 0.15rem;
+          button{
+            width: 100%;
+            height: 0.8rem;
+            line-height: 0.8rem;
+            background-color: #ff6500;
+            text-align: center;
+            border-radius: 3px;
+            color: white;
+            font-size: 0.28rem;
+          }
+        }
+      }
+    }
+  }
+</style>
+
+<style>
+  #myAppointment .van-hairline--bottom.van-nav-bar .van-ellipsis.van-nav-bar__title{
+      text-align: center
+  }
+</style>

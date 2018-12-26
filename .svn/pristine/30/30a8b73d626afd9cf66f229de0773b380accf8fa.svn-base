@@ -1,0 +1,53 @@
+<template>
+  <div>
+    <div class="topBar" v-if="(!isapp)">
+      <Header :title='title' :isback='isback'/>
+    </div>
+    <!--<Search/>-->
+    <Specil :rows="rows"/>
+    <Footer/>
+  </div>
+</template>
+
+<script>
+  import Header from '../../common/Header';
+  import Search from "../common/search"
+  import Specil from "./components/specil"
+  import Footer from "../../common/Footer"
+
+  export default {
+    name: "dealList",
+    data() {
+      return {
+          rows:[],
+        title: '成交列表',
+        isback: true,
+        // color: '#FF6400',
+
+      }
+    },
+    components: {
+      Header,
+      Search,
+      Specil,
+      Footer,
+    },
+    methods: {
+      init() {
+        this.$http.post('appServiceFarmhouse/getRentTurnoverData').then(res=>{
+          // console.log(res);
+          this.rows=res.data.rows
+        })
+      }
+    },
+    created: function () {
+      this.init()
+    }
+
+
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

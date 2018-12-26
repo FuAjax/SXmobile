@@ -1,0 +1,186 @@
+<template>
+  <div class="grangeDetailcomment">
+    <div class="topBar">
+      <Header :title='title' :isback='isback'/>
+    </div>
+    <div class="top clear">
+      <p v-for="(item,index) in active"
+         :keys="index" :class="{orange:num==index}"
+         @click="tab(index)"
+      >{{item}}</p>
+    </div>
+    <!--总体评分-->
+    <div class="rates">
+      <span>*</span>总体评分<van-rate v-model="value" />
+    </div>
+    <!--评价-->
+   <div class="comment">
+     <van-cell-group>
+       <van-field
+         v-model="message"
+         label="评价"
+         type="textarea"
+         placeholder="请输入您的评价内容"
+         :autosize="autosize"
+         required
+       />
+     </van-cell-group>
+   </div>
+    <!--上传图片-->
+    <div class="upload">
+      <p>上传图片</p>
+      <input type="file" @change="uploadimg" style="display: none">
+      <div class="buttonimg">
+        <span>
+          <input type="file">
+        </span>
+      </div>
+
+    </div>
+   <div class="bottom">发&nbsp;布</div>
+  </div>
+</template>
+
+<script>
+  import Header from "com/common/Header2"
+    export default {
+        name: "grangeDetailcomment",
+        components:{Header},
+        data() {
+            return {
+              active:['住宿','美食','游玩'],
+              num:0,
+              value:3,
+              message:'',
+              autosize:{
+                maxHeight: 300,
+                minHeight: 200,
+              },
+              title:'写点评',
+              isback:true,
+            }
+        },
+        methods: {
+          addimg(){
+            alert("aa")
+            this.uploadimg()
+          },
+
+          uploadimg(){//图片上传
+
+          },
+
+
+          tab(index){
+            this.num=index;
+          },
+          onRead(file){
+            alert("aaa")
+            console.log(file)
+
+          },
+        },
+        computed: {},
+        created: function () {
+        console.log(this.$route.params.id)
+        },
+        mounted: function () {
+
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .grangeDetailcomment{
+    .top{
+      margin: 0 0.2rem;
+      padding: 0.4rem 0;
+      border-bottom: 0.01rem solid #e6e6e6;
+      line-height: 1.1rem;
+      p{
+        width: 30%;
+        height: 0.57rem;
+        float: left;
+        background-color:#e7e6ec;
+        border-radius: 0.57rem;
+        text-align: center;
+        line-height: 0.57rem;
+        margin-right: 0.22rem;
+      }
+    }
+    .rates{
+      margin: 0 0.32rem;
+      padding: 0.4rem 0;
+      border-bottom: 0.01rem solid #e6e6e6;
+      font-size: 0.24rem;
+      span{
+        color: red;
+        font-size: 0.24rem;
+      }
+      div{
+        display: inline-block;
+      }
+    }
+    .comment{
+      margin: 0 0.2rem;
+      border-bottom: 0.01rem solid #e6e6e6;
+    }
+    .upload{
+      margin: 0 0.2rem;
+      padding: 0.2rem 0;
+      p{
+        font-size: 0.24rem;
+      }
+      .buttonimg{
+        margin-top: 0.3rem;
+        span{
+          display: inline-block;
+          width: 1.58rem;
+          height: 1.58rem;
+          background: url("../../../assets/button.png") center center no-repeat;
+          background-size: cover;
+          border: 0.01rem solid #e5e5e5;
+          position: relative;
+          input{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            outline: transparent;
+            opacity: 0;
+          }
+        }
+        /*img{*/
+          /*width: 1.58rem;*/
+          /*height: 1.58rem;*/
+          /*border: 0.01rem solid #e5e5e5;*/
+        /*}*/
+      }
+    }
+    .bottom{
+      height: 1rem;
+      width: 100%;
+      text-align: center;
+      line-height: 1rem;
+      background-color: #ff6500;
+      color: white;
+      font-size: 0.24rem;
+      margin-top: 3rem;
+    }
+  }
+</style>
+<style  scoped>
+  .grangeDetailcomment .comment .van-cell__title span{
+      font-size: 0.24rem;
+  }
+  .grangeDetailcomment .comment .van-field .van-cell__title{
+    max-width:1rem;
+  }
+  .grangeDetailcomment textarea{
+    font-size: 0.24rem;
+  }
+</style>

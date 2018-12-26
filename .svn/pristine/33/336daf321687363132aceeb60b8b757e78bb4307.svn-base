@@ -1,0 +1,31 @@
+<template>
+<div id="noList">
+    <img src="../../assets/imgs/notFind_03.png" alt="">
+    <p></p>
+</div>
+</template>
+<script>
+    export default {
+        name: "noList",
+        props:['littleimg'],
+        data() {
+            return {
+
+            }
+        },
+        methods: {},
+        computed: {},
+        created: function () {
+          console.log(1111,this.littleimg)
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+<style lang="less" scoped>
+#noList{
+    width: 100%;
+    text-align: center
+}
+</style>

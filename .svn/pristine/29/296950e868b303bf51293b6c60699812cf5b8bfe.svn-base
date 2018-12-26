@@ -1,0 +1,57 @@
+<template>
+  <div>
+    <div class="topBar" v-if="(!isapp)">
+      <Header :title='title' :isback='isback'/>
+    </div>
+    <!--<Banner/>-->
+    <Project :newsList="info"/>
+    <Link/>
+    <Footer/>
+  </div>
+</template>
+
+<script>
+  import Header from "../../../common/Header"
+  import Banner from "../../index/components/Banner"
+  import Footer from "../../../common/Footer"
+  import Link from "../../../common/Link"
+  import Project from "./components/project"
+  import methods from "./m/methods"
+
+  export default {
+    name: "textList",
+    props:{
+      isapp:true
+    },
+    data() {
+      return {
+       // 头部
+        Header:"",
+        // 列表信息
+        info:[],
+        isback:true,
+        title: '',
+        isapp:true
+        // color: '#FF6400',
+      }
+    },
+    components: {
+      Header,
+      Footer,
+      Banner,
+      Link,
+      Project,
+    },
+    created: function () {
+      this.init();
+      // console.log(this.$router);
+    },
+
+
+    methods: methods
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

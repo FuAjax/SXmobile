@@ -1,0 +1,44 @@
+<template>
+    <div onload="run()" v-html="apply">
+    {{apply}}
+    </div>
+</template>
+
+<script>
+    export default {
+        name:"applyText",
+         data(){
+            return {
+                apply:''
+            }
+        },
+    mounted(){
+      console.log(122222222222222)
+          if (this.$route.query.type = 2){
+            let form = this.$route.query.htmls
+            this.apply = form;
+            this.$nextTick(()=> {
+              document.forms[0].submit()
+            })
+          } else {
+
+          }
+    },
+      created(){
+          console.log(1223344)
+      },
+      methods:{
+        run(){
+          console.log(11111111111111)
+          let form = this.$route.query.htmls
+          this.apply = form;
+          this.$nextTick(()=> {
+            document.getElementById("sp").click();
+          })
+        }
+    }
+}
+</script>
+
+<style scoped>
+</style>

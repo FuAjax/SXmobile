@@ -1,0 +1,488 @@
+<template>
+    <div class="personalCenter">
+      <div class="top" v-if="!isapp">
+        <van-nav-bar
+          @click-left="onClickLeft"
+          @click-right="onClickRight"
+          left-arrow>
+          <van-icon name="chat" slot="right" />
+        </van-nav-bar>
+      </div>
+      <div v-show='isLogin'>
+        <div class="theme">
+          <van-row gutter="15">
+            <van-col span="6" style="text-align: right">
+              <div class="portrait" :style="'background: url(' + userInfo.headUrl + ')'">
+              </div>
+            </van-col>
+            <van-col span="18">
+            <div class="right">
+              <p>{{userInfo.nickName}}</p>
+              <p>欢迎来到三乡工程网</p>
+            </div>
+            </van-col>
+          </van-row>
+        </div>
+        <!-- <div class="four clear">
+          <div @click="manage(1)">
+            <i class="iconfont icon-fangzi1" style="color: #f3af32"></i>
+            <p>农庄管理</p>
+          </div>
+          <div @click="manage(2)">
+            <i class="iconfont icon-ziyuan-gra" style="color:#f95f29 "></i>
+            <p>我的交易</p>
+          </div>
+          <div @click="manage(3)">
+            <i class="iconfont icon-dianping" style="color: #21bb49"></i>
+            <p>点评管理</p>
+          </div>
+          <div @click="manage(4)">
+            <i class="iconfont icon-shoucang1" style="color: #58b8f4"></i>
+            <p>我的收藏</p>
+          </div>
+        </div> -->
+        <div class="two">
+          <div class="farmhouse">
+            <span></span>
+            农房统计
+          </div>
+          <div class=" center clear">
+            <div>
+              <span>{{count.count1}}</span>
+              <p>已发布</p>
+            </div>
+            <div>
+            <span>{{count.count2}}</span>
+              <p>待交易</p>
+            </div>
+            <div>
+            <span>{{count.count3}}</span>
+              <p>预约看房</p>
+            </div>
+            <div>
+            <span>{{count.count4}}</span>
+              <p>收藏农房</p>
+            </div>
+          </div>
+          <div class="farmhouse">
+            <span></span>
+            在线预订
+          </div>
+          <div class=" center clear">
+            <div>
+              <span>{{count.count5}}</span>
+              <p>待确认</p>
+            </div>
+            <div>
+              <span>{{count.count6}}</span>
+              <p>待支付</p>
+            </div>
+            <div>
+              <span>{{count.count7}}</span>
+              <p>待使用</p>
+            </div>
+            <div>
+              <span>{{count.count8}}</span>
+              <p>收藏农庄</p>
+            </div>
+          </div>
+        </div>
+        <!--单元格-->
+        <div class="bottom">
+          <van-cell-group>
+            <van-cell is-link @click="manage(4)">
+              <template slot="title">
+                <i class="iconfont icon-shoucang1"></i>
+                <span class="van-cell-text">我的收藏</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="tabnav(1)">
+              <template slot="title">
+                <i class="iconfont icon-icon--copy"></i>
+                <span class="van-cell-text">我的订单</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="manage(1)">
+              <template slot="title">
+                <i class="iconfont icon-fangzi1"></i>
+                <span class="van-cell-text">农庄管理</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="tabnav(2)">
+              <template slot="title">
+                <i class="iconfont icon-fangzi"></i>
+                <span class="van-cell-text">农房管理</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="tabnav(3)">
+              <template slot="title">
+                <i class="iconfont icon-time"></i>
+                <span class="van-cell-text">我的预约</span>
+              </template>
+            </van-cell>
+            <!-- <van-cell is-link>
+              <template slot="title">
+                <i class="iconfont icon-zu"></i>
+                <span class="van-cell-text">我的求租</span>
+              </template>
+            </van-cell>
+            <van-cell is-link>
+              <template slot="title">
+                <i class="iconfont icon-zhanghushezhi"></i>
+                <span class="van-cell-text">账户设置</span>
+              </template>
+            </van-cell> -->
+          </van-cell-group>
+        </div>
+      </div>
+      <div v-show='!isLogin'>
+        <div class="theme">
+          <van-row gutter="15">
+            <van-col span="6" style="text-align: right">
+              <div class="portrait" :style="'background: url()'">
+              </div>
+            </van-col>
+            <van-col span="18">
+            <div class="right" @click="login">
+              <p>未登录</p>
+              <p>点击登录</p>
+            </div>
+            </van-col>
+          </van-row>
+        </div>
+        <!-- <div class="four clear">
+          <div @click="manage(1)">
+            <i class="iconfont icon-fangzi1" style="color: #f3af32"></i>
+            <p>农庄管理</p>
+          </div>
+          <div @click="manage(2)">
+            <i class="iconfont icon-ziyuan-gra" style="color:#f95f29 "></i>
+            <p>我的交易</p>
+          </div>
+          <div @click="manage(3)">
+            <i class="iconfont icon-dianping" style="color: #21bb49"></i>
+            <p>点评管理</p>
+          </div>
+          <div @click="manage(4)">
+            <i class="iconfont icon-shoucang1" style="color: #58b8f4"></i>
+            <p>我的收藏</p>
+          </div>
+        </div> -->
+        <div class="two">
+          <div class="farmhouse">
+            <span></span>
+            农房统计
+          </div>
+          <div class=" center clear">
+            <div>
+              <span>--</span>
+              <p>已发布</p>
+            </div>
+            <div>
+            <span>--</span>
+              <p>待交易</p>
+            </div>
+            <div>
+            <span>--</span>
+              <p>预约看房</p>
+            </div>
+            <div>
+            <span>--</span>
+              <p>收藏农房</p>
+            </div>
+          </div>
+          <div class="farmhouse">
+            <span></span>
+            在线预订
+          </div>
+          <div class=" center clear">
+            <div>
+              <span>--</span>
+              <p>待确认</p>
+            </div>
+            <div>
+              <span>--</span>
+              <p>待支付</p>
+            </div>
+            <div>
+              <span>--</span>
+              <p>待使用</p>
+            </div>
+            <div>
+              <span>--</span>
+              <p>收藏农庄</p>
+            </div>
+          </div>
+        </div>
+        <!--单元格-->
+        <div class="bottom">
+          <van-cell-group>
+            <van-cell is-link @click="manage(4)">
+              <template slot="title">
+                <i class="iconfont icon-shoucang1"></i>
+                <span class="van-cell-text">我的收藏</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="tabnav(1)">
+              <template slot="title">
+                <i class="iconfont icon-icon--copy"></i>
+                <span class="van-cell-text">我的订单</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="manage(1)">
+              <template slot="title">
+                <i class="iconfont icon-fangzi1"></i>
+                <span class="van-cell-text">农庄管理</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="tabnav(2)">
+              <template slot="title">
+                <i class="iconfont icon-fangzi"></i>
+                <span class="van-cell-text">农房管理</span>
+              </template>
+            </van-cell>
+            <van-cell is-link @click="tabnav(3)">
+              <template slot="title">
+                <i class="iconfont icon-time"></i>
+                <span class="van-cell-text">我的预约</span>
+              </template>
+            </van-cell>
+            <!-- <van-cell is-link>
+              <template slot="title">
+                <i class="iconfont icon-zu"></i>
+                <span class="van-cell-text">我的求租</span>
+              </template>
+            </van-cell>
+            <van-cell is-link>
+              <template slot="title">
+                <i class="iconfont icon-zhanghushezhi"></i>
+                <span class="van-cell-text">账户设置</span>
+              </template>
+            </van-cell> -->
+          </van-cell-group>
+        </div>
+
+      </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "personalCenter",
+        props:{
+          isapp: false
+        },
+        data() {
+            return {
+            	userInfo: {},
+            	count: {}
+            }
+        },
+        methods: {
+          init(){
+          	this.$http.post('appServiceUser/baseInfo').then(res=>{
+             	this.userInfo = res.data
+             	this.detail()
+            })
+          },
+          detail(){
+            this.$http.post('appServiceUser/userCount').then(res=>{
+                this.count = res.data
+            })
+          },
+          onClickLeft(){
+        	  this.$router.back(-1)
+          },
+          onClickRight(){
+
+          },
+          manage(o){		// 管理bar
+            if(localStorage.getItem('userInfo')){
+              if(o == 1){		// 农庄管理
+                this.$router.push({name: 'grangeManage'})
+              }
+              if(o == 2){		// 交易管理
+                this.$router.push({name: 'myTrade'})
+              }
+              if(o == 3){		// 点评管理
+                this.$router.push({name: 'commentManage'})
+              }
+              if(o == 4){		// 我的收藏
+                this.$router.push({name: 'myCollect'})
+              }
+            } else {
+              this.$toast('请先登录');
+            }
+          },
+          tabnav(o){		// 副操作bar
+            if(localStorage.getItem('userInfo')){
+              if(o == 1){		// 我的订单
+                this.$router.push({name: 'myOrdersAll'})
+              }
+              if(o == 2){		// 农房管理
+                this.$router.push({name: 'farmhouseManage'})
+              }
+              if(o == 3){		// 我的预约
+                this.$router.push({name: 'myAppointment'})
+              }
+              if(o == 4){		// 我的求租
+                // this.$router.push({name: ''})
+              }
+              if(o == 5){		// 账户设置
+              }
+            } else {
+              this.$toast('请先登录');
+            }
+          },
+          login(){
+            this.$router.push('/login')
+          }
+        },
+        computed: {},
+        created: function () {
+          if(localStorage.getItem('userInfo')){
+            this.init()
+            this.isLogin = true
+          } else {
+            this.isLogin = false
+          }
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+<style scoped lang="less" type="text/less">
+  .personalCenter{
+  	// padding-bottom: 2rem;
+    .top{
+    	position: fixed;
+    	top: 0;
+    	left: 0;
+    	width: 100%;
+    	height: .9rem;
+      .van-nav-bar{
+        background-color: transparent
+      }
+    }
+    .theme{
+      padding: 1.3rem 0.2rem .5rem;
+      background-color:  #ff6b3b;
+      .portrait{
+        display: inline-block;
+        width: 1.36rem;
+        height: 1.36rem;
+	    border-radius: 50%;
+	    border: solid #F9A177 .08rem;
+	    box-sizing: border-box;
+	    background-size: cover;
+	    background-position: center center;
+      }
+      .right{
+        margin-top: 0.22rem;  
+        p:first-child{
+          font-size: 0.34rem;
+          color: white;
+          margin-bottom: 0.1rem;
+        }
+        p:nth-child(2){
+          font-size: 0.28rem;
+          color: white;
+        }
+      }
+    }
+    .four{
+      padding: 0.3rem 0.2rem;
+      div{
+        width: 25%;
+        box-sizing: border-box;
+        float: left;
+        text-align: center;
+        position: relative;
+      border-right: 0.01rem #e6e6e6 solid;
+        i{
+          font-size: 0.5rem;
+        }
+        p{
+          margin-top: 0.14rem;
+          color: grey;
+          text-align: center;
+          font-size: .22rem;
+        }
+        span{
+          position: absolute;
+          top: -0.15rem;
+          right: 0.3rem;
+          width: 0.3rem;
+          display: inline-block;
+          height: 0.3rem;
+          border-radius: 50%;
+          border: 0.03rem solid red;
+          color: red;
+        }
+        &:last-child{
+          border: none;
+        }
+      }
+    }
+    .two{
+      background-color: #f6f5fb;
+      padding: 0.001rem  0.3rem 0.2rem;
+      .farmhouse{
+        margin-top: 0.2rem;
+        font-size: 0.28rem;
+        font-weight: bold;
+        line-height: 2;
+        span{
+          display: inline-block;
+          width: 0.05rem;
+          height: 0.3rem;
+          background-color: #ff6500;
+          vertical-align: middle;
+        }
+      }
+      .center{
+      	border-radius: .1rem;
+      	box-shadow: 0 0 .06rem #CECBCE;
+        background-color: white;
+        padding: 0.3rem 0;
+        margin-top: 0.2rem;
+        div:last-child{
+          border: none;
+        }
+        div{
+          width: 25%;
+          float: left;
+          text-align: center;
+          position: relative;
+          border-right: 0.01rem #e6e6e6 solid;
+          box-sizing: border-box;
+          p{
+            margin-top: 0.06rem;
+            color: grey;
+          text-align: center; 
+          font-size: .22rem;
+          }
+          span{
+          	font-size: .32rem;
+          }
+        }
+      }
+    }
+    .bottom{
+        font-size: 0.3rem;
+      i{
+        font-size: 0.34rem;
+        padding-right: .14rem;
+      }
+    }
+  }
+</style>
+<style type="text/css">
+	.personalCenter .van-hairline--bottom::after{
+		border: 0;
+	}
+	.personalCenter .van-cell.van-cell--clickable.van-hairline{
+		padding: .3rem;
+	}
+</style>

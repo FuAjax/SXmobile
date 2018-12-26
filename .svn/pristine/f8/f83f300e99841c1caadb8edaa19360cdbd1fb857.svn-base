@@ -1,0 +1,310 @@
+<template>
+    <div class="grangeManage">
+      <van-nav-bar title='我的农庄'
+                   @click-right="onClickRight"
+                   right-text="筛选" left-arrow>
+      </van-nav-bar>
+      <!--列表-->
+     <ul class="list">
+      <li>
+        <p class="top">
+          2017-11-13  11：45
+          <span>
+              待审核
+            </span>
+        </p>
+        <div class="center">
+          <van-row gutter="20">
+            <!--图-->
+            <van-col span="8">
+              <router-link to="" tag="div" class="left">
+                <img src="../../../../static/images/slide_01.jpg" alt="">
+              </router-link>
+            </van-col>
+            <!--右边文字-->
+            <van-col span="16">
+              <div class="right">
+                <!--风景区-->
+                <router-link to="" tag="div" class="mulan">
+                  <span class="lake">木兰天池</span>
+                </router-link>
+                <!--评分-->
+                <div class="grade">
+                   农家乐
+                  <p class="much">
+                    <span>￥3555555</span>起
+                  </p>
+                </div>
+                <!--定位-->
+                <div class="position">
+                  <i class="iconfont icon-dizhi"></i>黄陂-木兰乡  距离我30.9KM
+                </div>
+                <!--数据-->
+                <div class="data">
+                  <span>漂流</span>
+                  <span>烧烤</span>
+                  <span>棋牌</span>
+                  <span>野菜</span>
+                </div>
+              </div>
+            </van-col>
+          </van-row>
+        </div>
+        <div class="bottom">
+          <stars :rate="4.7"></stars>
+          <span class="four">4.0分</span> |
+          30条评论
+         <p class="right">
+            <span>
+            删除
+          </span>
+           <span class="fix">
+            修改信息
+          </span>
+         </p>
+        </div>
+        <div class="separate"></div>
+      </li>
+     </ul>
+      <!--右侧弹出层-->
+      <van-popup v-model="show"
+                 class="layer"
+                 :close-on-click-overlay=false
+                 position="right">
+        <div class="container">
+          <van-nav-bar
+            title="筛选"
+            left-arrow
+            @click-left="onClickLeft"
+          />
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">标题搜索</van-col>
+              <van-col span="16" class="right">
+                <input type="text" v-model="value" placeholder="请输入标题搜索">
+              </van-col>
+            </van-row>
+          </div>
+          <!--两个下拉-->
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">
+                更新时间
+              </van-col>
+              <van-col span="8" class="center">
+                <select name="" ></select>
+              </van-col>
+              <van-col span="8" class="center">
+                <select name=""></select>
+              </van-col>
+            </van-row>
+          </div>
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">状态</van-col>
+              <van-col span="16" class="right">
+                <select name="" ></select>
+              </van-col>
+            </van-row>
+          </div>
+
+          <div class="bottom">
+            <button>搜索</button>
+          </div>
+        </div>
+      </van-popup>
+
+    </div>
+</template>
+
+<script>
+  import stars from 'com/common/rates'
+    export default {
+        components:{stars},
+        name: "grangeManage",
+        data() {
+            return {
+              show:false,
+              imgSrc:'../../../../static/images/slide_01.jpg',
+            }
+        },
+        methods: {
+          onClickRight(){
+            this.show=true;
+          },
+          onClickLeft(){
+            this.show=false;
+          },
+        },
+        computed: {},
+        created: function () {
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .grangeManage{
+    .list{
+      li{
+        padding: 0.2rem 0;
+        .top{
+          margin:0 0.2rem;
+          border-bottom: 0.01rem solid #e6e6e6;
+          padding: 0.2rem 0;
+          span{
+            float: right;
+            color: red;
+          }
+        }
+        .center{
+          margin:0 0.2rem;
+          border-bottom: 0.01rem solid #e6e6e6;
+          padding: 0.2rem 0;
+          .left{
+            width: 2.15rem;
+            height: 1.58rem;
+          }
+          .right{
+            div{
+              margin-bottom: 0.1rem;
+            }
+            .mulan{
+              font-size: 0.24rem;
+              .lake{
+
+              }
+              .five{
+                display: inline-block;
+                width: 1.71rem;
+                height: 0.3rem;
+                font-size: 0.18rem;
+                text-align: center;
+                line-height: 0.3rem;
+                vertical-align: middle;
+                border-radius: 0.3rem;
+                color: #00a62e;
+                margin-left: 0.1rem;
+                background-color: #ebf8ee;
+              }
+            }
+            .grade{
+              .much{
+                float: right;
+                display: inline-block;
+                font-size: 0.2rem;
+                vertical-align: middle;
+                margin-left: 0.8rem;
+                span{
+                  color: #e90009;
+                }
+              }
+            }
+            .position{
+              i{
+                font-size: 0.3rem;
+                color: #c7c6cb;
+                vertical-align: middle;
+                margin-right: 0.05rem;
+              }
+              font-size: 0.2rem;
+            }
+            .data{
+              span{
+                font-size: 0.18rem;
+                padding: 0 0.1rem;
+                border-radius: 0.05rem;
+              }
+              span:first-child{
+                border: 0.01rem #099b4c solid;
+                color:#099b4c;
+              }
+              span:nth-child(2){
+                border: 0.01rem #00a0e9 solid;
+                color:#00a0e9;
+              }
+              span:nth-child(3){
+                border: 0.01rem #eb3d00 solid;
+                color:#eb3d00;
+              }
+              span:nth-child(4){
+                border: 0.01rem #e3007b solid;
+                color:#e3007b;
+              }
+            }
+          }
+        }
+        .bottom{
+          margin:0 0.2rem;
+          padding: 0.2rem 0;
+          color: grey;
+          .four{
+            color: #ff6500;
+          }
+          .right{
+            float: right;
+            span{
+              width: 1.2rem;
+              height: 0.4rem;
+              border: 0.01rem solid #e6e6e6;
+              display: inline-block;
+              border-radius: 0.4rem;
+              text-align: center;
+              line-height: 0.4rem;
+              vertical-align: middle;
+            }
+            .fix{
+              background-color: #00a0e9;
+              color: white;
+            }
+          }
+        }
+        .separate{
+          height: 0.28rem;
+          background-color: #f1f0f6;
+        }
+      }
+    }
+    .layer{
+      .container{
+        .common{
+          margin: 0.2rem;
+          .left{
+            color: grey;
+          }
+          .right{
+            input{
+              border: 0.01rem solid #e6e6e6;
+              background-color: #f1f0f6;
+              font-size: 0.2rem;
+            }
+            select{
+              width: 73%;
+              height: 0.3rem;
+            }
+          }
+          .center{
+            select{
+              width: 100%;
+              height: 0.3rem;
+            }
+          }
+        }
+        .bottom{
+          padding: 0.15rem;
+          button{
+            width: 100%;
+            height: 0.8rem;
+            line-height: 0.8rem;
+            background-color: #ff6500;
+            text-align: center;
+            border-radius: 3px;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,2302 @@
+<template>
+  <div class="issueGrange">
+    <div class="topBar">
+      <Header :title='title' />
+    </div>
+    <div style="width:100%; height:0.9rem;"></div>
+    <!--基本信息-->
+    <div class="topWrap">
+    <div>
+       <van-field
+        v-model="grangename"
+        required
+        clearable
+        label="农庄名称"
+        placeholder="请填写"
+        />
+    </div>
+    <div style="border: none"  @click="showpop(1)">
+      <van-field
+        v-model="location"
+        required
+        disabled
+        label="所在地区"
+        placeholder="请选择"
+      />
+    </div>
+    <div class="three">
+       <van-cell-group>
+         <van-field
+           v-model="detailLocation"
+           clearable
+           required
+           center
+           label="详细地址"
+           placeholder="请精确到门牌号"
+         >
+           <van-button slot="button">号</van-button>
+         </van-field>
+       </van-cell-group>
+     </div>
+    <div @click="showpop(9)">
+        <van-field
+          v-model="position"
+          required
+          label="位置标注"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+    <div @click="showpop(2)">
+      <van-field
+        v-model="sceincAround"
+        label="周边景区"
+        icon="arrow"
+        disabled
+        placeholder="请选择"
+      />
+    </div>
+      <div>
+        <van-field
+          v-model="telephone"
+          required
+          label="服务电话"
+          placeholder="请填写"
+        />
+      </div>
+      <div @click="showpop(3)">
+        <van-field
+          v-model="openTime"
+          label="营业时间"
+          icon="arrow"
+          disabled
+          required
+          placeholder="请选择"
+        />
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="percost"
+            clearable
+            required
+            center
+            type="number"
+            label="人均消费"
+            placeholder="请填写"
+          >
+            <van-button slot="button">元</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="businessArea"
+            clearable
+            required
+            type="number"
+            center
+            label="经营面积"
+            placeholder="请填写"
+          >
+            <van-button slot="button">平方米</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="DecorateTime"
+            clearable
+            required
+            center
+            label="装修时间"
+            type="number"
+            placeholder="请填写"
+          >
+            <van-button slot="button">年</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="startTime"
+            clearable
+            required
+            center
+            label="开业时间"
+            type="number"
+            placeholder="请填写"
+          >
+            <van-button slot="button">年</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div @click="showpop(5)">
+        <van-field
+          v-model="DecorateType"
+          label="装修级别"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="staffMount"
+          label="员工数量"
+          type="number"
+          clearable
+          placeholder="请输入"
+        />
+      </div>
+     <div @click="showpop(4)">
+       <van-field
+         v-model="type"
+         label="经营类型"
+         icon="arrow"
+         disabled
+         required
+         placeholder="请选择"
+       />
+     </div>
+      <div class="service">
+        <van-field
+          v-model="suitable"
+          label="适合游玩人群"
+          disabled
+          required
+          placeholder=""
+        />
+        <div class="product">
+          <span v-for="(item,index) in suitableArr" :class="{orange:suitableNum.includes(index)}" @click="selectSuitable(index)">{{item.name}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--服务项目-->
+    <div class="serviceItem">
+      <div class="service">
+        <van-field
+          v-model="serviceProject"
+          label="服务项目"
+          disabled
+          required
+        />
+        <div class="product">
+          <span v-for="(item,index) in serviceArr" :class="{orange:serviceInclude.includes(index)}" @click="getproduct(index)">{{item.name}}</span>
+        </div>
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="serviceProjectImg"
+          label="服务项目封面图片"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist" :style="{background:'url('+item+') center center no-repeat',backgroundSize:'cover'}">
+            <!--<img :src="item" alt="">-->
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<1">
+          <input type="file" @change="uploadimg($event,1)">
+        </span>
+        </div>
+        <p>上传一张特色游玩项目封面图</p>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--配套服务-->
+    <div class="support">
+     <div class="service">
+       <van-field
+         v-model="supportservice"
+         label="配套服务"
+         disabled
+         required
+       />
+       <div class="product">
+         <span v-for="(item,index) in supportArr" :class="{orange:supportArray.includes(index)}" @click="supportser(index)">{{item.name}}</span>
+       </div>
+     </div>
+    </div>
+    <div class="separate"></div>
+   <!--服务产品-->
+    <div class="serviceProduct">
+      <div class="service">
+        <van-field
+          v-model="product"
+          label="服务产品 多选"
+          disabled
+          required
+          placeholder="请选择"
+        />
+        <div class="product">
+          <span v-for="(item,index) in productArr" :class="{orange:includeArr.includes(index)}" @click="selectProduct(index)">{{item}}</span>
+        </div>
+      </div>
+    </div>
+    <!--住宿信息-->
+    <div class="stayInfor" v-show="includeArr.includes(0)">
+      <div class="top">
+        住宿信息
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="roomNum"
+            clearable
+            center
+            type="number"
+            label="客房数量"
+            placeholder="请填写"
+          >
+            <van-button slot="button">间</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div>
+        <van-field
+          v-model="roomGet"
+          label="住宿容纳"
+          type="number"
+          clearable
+          placeholder="请选择"
+        />
+      </div>
+      <div @click="showpop(6)">
+        <van-field
+          v-model="roomInnTime"
+          label="入住时间"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div @click="showpop(7)">
+        <van-field
+          v-model="roomOutTime"
+          label="离店时间"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="roomImg"
+          label="住宿封面图"
+          icon="arrow"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in Innimglist" :style="{background:'url('+item+') center center no-repeat',backgroundSize:'cover'}">
+            <!--<img :src="item" alt="">-->
+            <i class='iconfont icon-menu_reject2Submitor' @click="delInnIMg(index)"></i>
+          </div>
+          <span v-show="Innimglist.length<1">
+          <input type="file" @change="uploadimg($event,2)">
+        </span>
+        </div>
+        <p>上传一张住宿产品的封面图</p>
+      </div>
+    </div>
+    <div class="separate" v-show="includeArr.includes(0)"></div>
+    <!--美食-->
+    <div class="foodInfo" v-show="includeArr.includes(1)"> <!--v-show="includeArr.includes(1)"-->
+
+      <div class="top">
+        美食信息
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="foodRoomNum"
+            clearable
+            center
+            type="number"
+            label="包间数量"
+            placeholder="请填写"
+          >
+            <van-button slot="button">间</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="foodsNum"
+            clearable
+            center
+            type="number"
+            label="散桌数量"
+            placeholder="请填写"
+          >
+            <van-button slot="button">桌</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div  @click="showpop(8)">
+        <van-field
+          v-model="getCustorm"
+          label="用餐接待"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="specialFood"
+          label="特色菜"
+          placeholder="请输入"
+          :disabled="specialFoodArray.length>9"
+          @blur="add"
+        />
+        <div class="buttonimg">
+          <a v-for="(item,index) in specialFoodArray">
+            {{item}}
+            <i class="iconfont icon-menu_reject2Submitor" @click="delfood(index)"></i>
+          </a>
+        </div>
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="foodfirstImg"
+          label="美食封面图片"
+          icon="arrow"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in Foodimglist" :style="{background:'url('+item+') center center no-repeat',backgroundSize:'cover'}">
+            <!--<img :src="item" alt="">-->
+            <i class='iconfont icon-menu_reject2Submitor' @click="delFoodIMg(index)"></i>
+          </div>
+          <span v-show="Foodimglist.length<1">
+          <input type="file" @change="uploadimg($event,3)">
+        </span>
+        </div>
+        <p> 上传一张美食产封面图</p>
+      </div>
+    </div>
+    <div class="separate" v-show="includeArr.includes(1)"></div>
+    <!--图片信息-->
+    <div class="imgInfor">
+      <div class="projectimg">
+        <van-field
+          v-model="outImg"
+          label="农庄图片"
+          disabled
+          required
+        />
+        <!--:style="{background:'url('+color+') center center no-repeat',backgroundSize:'cover'}"-->
+        <div class="buttonimg">
+          <div v-for="(color,index) in Grangeimglist"
+                v-dragging="{item:color,list:Grangeimglist,group:'color'}">
+            <img :src="color" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delGrangeIMg(index)"></i>
+          </div>
+          <span v-show="Grangeimglist.length<=2">
+          <input type="file" @change="uploadimg($event,4)">
+        </span>
+        </div>
+        <p>上传农庄图片，最少1张，第1张为封面，拖动调整图片顺序</p>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--交通-->
+    <div class="traffic">
+      <div>
+        <van-field
+          v-model="grangeMessage"
+          label="农庄简介"
+          type="textarea"
+          placeholder="请填写"
+          rows="1"
+          :autosize="autosize"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="busroute"
+          label="公交线路"
+          type="textarea"
+          placeholder="示例:旅游一号线直达，每天3班"
+          rows="1"
+          :autosize="autosize"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="driveRoute"
+          label="自驾线路"
+          type="textarea"
+          placeholder="示例:距汉口站开车仅40分钟路程"
+          rows="1"
+          :autosize="autosize"
+        />
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--商户信息-->
+    <div class="merchantInfo">
+      <div class="top">
+        商户信息
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="businessName"
+            clearable
+            center
+            required
+            label="经营者姓名"
+            placeholder="请填写"
+          >
+            <van-button slot="button" @click="tab" :style="{background:colorNum==1?'#ff6500':'#e7e6ec',color:colorNum==1?'white':'black'}">先生</van-button>
+            <van-button slot="button" type="primary" @click="tabdiv" :style="{background:colorNum==0?'#ff6500':'#e7e6ec',color:colorNum==0?'white':'black'}">女士</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div>
+        <van-field
+          v-model="businessTelephone"
+          label="经营者手机"
+          type="number"
+          placeholder="请填写"
+          required
+          clearable
+          :error-message="teleMessage"
+          @blur="blurr"
+        />
+      </div>
+      <div class="three" v-show="mobileValid" style="border-bottom: 0.01rem solid #e6e6e6">
+        <van-field v-model="code"  type='number' label="验证码" placeholder="请填写"  required clearable>
+          <span slot="button" v-show="sendAuthCode" class="code" @click="sendCode">
+              获取验证码
+          </span>
+          <span slot="button" v-show="!sendAuthCode" class="recode">{{auth_time}}秒后再发送</span>
+        </van-field>
+      </div>
+      <div>
+        <van-field
+          v-model="businessMail"
+          label="经营者邮箱"
+          placeholder="请填写"
+          clearable
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="bodyId"
+          label="身份证号码"
+          type="number"
+          placeholder="请填写"
+          clearable
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="businessBrand"
+          label="营业执照"
+          placeholder="请填写"
+          clearable
+        />
+      </div>
+      <div v-show="includeArr.includes(1)">
+        <van-field
+          v-model="foodBrand"
+          label="食品经营许可证"
+          placeholder="请填写"
+          clearable
+        />
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--营业执照证件-->
+    <div class="bussiness">
+      <div class="projectimg">
+        <van-field
+          v-model="businessBrandImg"
+          label="营业执照"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(color,index) in tradeLisence"
+               :style="{background:'url('+color+') center center no-repeat',backgroundSize:'cover'}"
+          >
+            <!--<img :src="color" alt="">-->
+            <i class='iconfont icon-menu_reject2Submitor' @click="delLisenceIMg(index)"></i>
+          </div>
+          <span v-show="tradeLisence.length<=2">
+          <input type="file" @change="uploadimg($event,5)">
+        </span>
+        </div>
+        <p>请上传营业执照，仅用于审核。</p>
+      </div>
+      <div class="projectimgg" v-show="includeArr.includes(1)">
+        <van-field
+          v-model="foodImg"
+          label="食品经营许可证"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(color,index) in FoodtradeLisence"
+               :style="{background:'url('+color+') center center no-repeat',backgroundSize:'cover'}"
+          >
+            <!--<img :src="color" alt="">-->
+            <i class='iconfont icon-menu_reject2Submitor' @click="delFoodLisenceIMg(index)"></i>
+          </div>
+          <span v-show="FoodtradeLisence.length<=2">
+          <input type="file" @change="uploadimg($event,6)">
+        </span>
+        </div>
+        <p>请上传食品经营许可证，仅用于审核。</p>
+      </div>
+      <div class="projectimgg">
+        <van-field
+          v-model="handlerImg"
+          label="法人代表手持身份证照（正面及反面各1张）"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(color,index) in lowimglist"
+               :style="{background:'url('+color+') center center no-repeat',backgroundSize:'cover'}"
+          >
+            <!--<img :src="color" alt="">-->
+            <i class='iconfont icon-menu_reject2Submitor' @click="delLowIMg(index)"></i>
+          </div>
+          <span v-show="lowimglist.length<=1">
+          <input type="file" @change="uploadimg($event,7)">
+        </span>
+        </div>
+        <p>需清晰展示人物五官和身份证文字信息，上传正面手持及反面手持。仅用于审核。</p>
+      </div>
+    </div>
+    <div class="bottom" @click="submit">
+      立即发布
+    </div>
+
+    <van-popup v-model="popupShow" position="bottom" :close-on-click-overlay="false">
+      <div class="cell-title">
+        <p class="confirm-icon" @click="confirmPop">确定</p>
+        <van-icon slot="right-icon" name="close" class="custom-icon close-icon" @click="closePop"/>
+      </div>
+      <!--所在地区-->
+      <div class="position-columns" v-show="popType == 1">
+        <van-picker :columns="columns" @change="onChange"/>
+        <van-picker :columns="columns1" @change="onChange1"/>
+        <van-picker :columns="columns2" @change="onChange2"/>
+      </div>
+      <!--景点-->
+      <div class="position-columns spot-columns" v-show="popType == 2">
+        <van-picker :columns="spotColumns" @change="spotonChange"/>
+        <van-picker :columns="spotColumns1" @change="spotonChange1"/>
+      </div>
+      <!--营业时间-->
+      <div v-show="popType == 3" class="position-columns timepicker" >
+        <van-datetime-picker
+          v-model="currentDate"
+          type="time"
+          :min-hour="minHour"
+          :max-hour="maxHour"
+          @change="getStarTime"
+        />
+        <van-datetime-picker
+          v-model="currentDate"
+          type="time"
+          :min-hour="minHour"
+          :max-hour="maxHour"
+          @change="getEndTime"
+        />
+      </div>
+      <!--经营类型-->
+      <div v-show="popType == 4">
+        <van-picker :columns="manageColumns" @change="management"/>
+      </div>
+      <!--装修级别-->
+      <div v-show="popType == 5">
+        <van-picker :columns="decorationColumns" @change="decoration"/>
+      </div>
+      <!--入住时间-->
+      <div v-show="popType==6" class="timepicker">
+        <van-datetime-picker
+          v-model="currentDate"
+          type="time"
+          :min-hour="minHour"
+          :max-hour="maxHour"
+          @change="checkInnTime"
+        />
+      </div>
+      <!--离店时间-->
+      <div v-show="popType==7" class="timepicker">
+        <van-datetime-picker
+          v-model="currentDate"
+          type="time"
+          :min-hour="minHour"
+          :max-hour="maxHour"
+          @change="checkOutTime"
+        />
+      </div>
+      <!--用餐接待-->
+      <div v-show="popType==8">
+        <van-picker :columns="EatingColumns" @change="Eating"/>
+      </div>
+      <!--地图-->
+      <div v-show="popType==9">
+        <div class="map">
+          <div>
+            地理位置：<input type="text" id="suggestId" name="address_detail" placeholder="地址" v-model="address_detail"/>
+          </div>
+
+          <div id="l-map"></div>
+          <div class="location">
+            <p>当前经度: <span>{{locationSpot.lng}}</span></p>
+            <p>当前纬度: <span>{{locationSpot.lat}}</span></p>
+          </div>
+        </div>
+      </div>
+    </van-popup>
+  </div>
+</template>
+
+<script>
+  import Header from "../../common/header2"
+  import getToken from 'com/common/token'
+  import {isvalidPhone,returnFloat} from '@/utils/validate'
+  export default {
+    name: "issueGrange",
+    components:{Header},
+    data() {
+      return {
+        colorNum: 2,
+        popupShow:false,
+        imglist: [],//服务项目封面图片数组
+        Innimglist:[],//住宿图片
+        Foodimglist:[],//美食封面
+        Grangeimglist:[],//农庄图片
+        tradeLisence:[],//营业执照图片
+        FoodtradeLisence:[],//食品经营许可
+        lowimglist:[],//法人
+        teleNum:"",//经营者手机号
+
+        suitable:'',//适合游玩人群
+        suitableArr:[],//适合游玩人群数组
+        suitableNum:[],//集合
+        title: '发布农庄',
+        grangename: '',//农庄名称
+        location: '',//所在地区
+        detailLocation: '',//详细地址
+        position: '',//位置标注
+        sceincAround: '',//周边景区
+        telephone: '',//前台电话
+        openTime: '',//营业时间
+        percost: '',//人军消费
+        businessArea: '',//经营面积
+        DecorateTime: "",//装修时间
+        startTime: '',//开业时间
+        type: '',//经营类型
+        product: '',//服务产品
+        productArr:["住宿","美食","门票"],
+        includeArr:[],
+
+        DecorateType: '',//装修级别
+        deco:[],
+        decorationColumns:[],
+        decoget:"",
+
+
+
+        staffMount: '',//员工数量
+        serviceProject: '',//服务项目
+        serviceArr:[],
+        serviceInclude:[],
+
+        serviceProjectImg: '',//服务项目封面图片
+
+
+        supportservice: '',//配套服务
+
+        supportArr:[],//配套服务数组
+        supportArray:[],
+        roomNum: '',//客房数量
+        roomGet: '',//住宿容纳
+        roomInnTime: '',//入住时间
+        roomInn:'',
+
+
+        roomOutTime: '',//离店时间
+        roomOut:'',
+        roomImg: '',//住宿封面图
+
+        foodRoomNum: null,//包间
+        foodsNum: '',//散桌数量
+        getCustorm: '',//用餐接待
+        Eatingnum:'',
+        EatingColumns:[],
+        Eatingarr:[],
+
+        specialFood: '',//特色菜
+        specialFoodArray:[],
+        foodfirstImg: '',//美食封面图
+
+        outImg: '',//外部图片
+        innerImg: '',//内部图片
+        surroundImg: '',//周边环境
+
+        grangeMessage: '',//农庄简介
+        autosize: {maxHeight: 200, minHeight: 200},
+        busroute: '',//公交线路
+        driveRoute: '',//自驾线路
+
+        businessName: '',//经营者姓名
+        businessTelephone: '',//经营者手机
+        mobileValid:null,//验证码显示
+        code: '',//验证码
+        teleMessage:'',//手机号错误提示
+        check:false,
+        sendAuthCode: true,
+        auth_time: 60,
+        businessMail: '',//经营者邮箱
+        bodyId: '',//身份证
+        businessBrand: '',//营业执照
+        foodBrand:'',//食品许可证
+
+        businessBrandImg: '',//执照图片
+        handlerImg: '',//手持照片
+
+        foodImg: '',//食品经营
+
+        specialId: null,
+        //所在地区
+        region: [],
+        popType: 9,
+        columns: [],
+        columns1: [],
+        columns2: [],
+        columnsIndex: null,
+        columnsIndex1: null,
+        columnsIndex2: null,
+        columnsName: [],//名称
+        columnsIds: [],//id集合
+
+        // 附近景点
+        spot: [],
+        spotColumns: [],
+        spotColumns1: [],
+        spotColumns2: [],
+        spotColumnsIndex: null,
+        spotColumnsIndex1: null,
+        spotColumnsIndex2: null,
+        spotColumnsName: [],       // 附近景点 name 集合
+        spotColumnsIds: [],       // 附近景点 id 集合
+
+
+        //营业时间
+        currentDate:'00:00',
+        minHour: 0,
+        maxHour: 24,
+        timebegin:"",
+        timeover:'',
+
+        //经营类型
+        manage:[],
+        manageColumns:[],
+        managetype:'',
+
+        //地图
+        address_detail:null,
+        map:{},
+        locationSpot: {
+          lng: '114.312',
+          lat: '30.598'
+        },
+        ac:{},
+      }
+    },
+    computed:{
+
+    },
+    methods:{
+      setmap(){
+        const _this=this;
+        this.map = new BMap.Map('l-map');
+        this.map.centerAndZoom("武汉",12);
+        this.map.enableScrollWheelZoom(false);
+        this.map.disableDragging();
+        this.ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+          {
+            "input": "suggestId",
+            "location": this.map,
+          });
+        console.log(this.ac)
+        return
+        let myValue;
+        this.ac.addEventListener('onhighlight',function(e){
+          alert("aaa")
+          console.log(e.item.value)
+        })
+        // this.map.addEventListener('click', function (e) {
+        //   _this.locationSpot.lng = parseFloat(e.point.lng).toFixed(3)
+        //   _this.locationSpot.lat = parseFloat(e.point.lat).toFixed(3)
+        // })
+
+      },
+
+
+
+
+      // 根据经纬度绘制地图中的坐标点
+      drawLocation () {
+        if(this.locationSpot.lng !== "" && this.locationSpot.lat !== ""){
+          this.map.clearOverlays();
+          const new_point = new BMap.Point(this.locationSpot.lng, this.locationSpot.lat)
+          const marker = new BMap.Marker(new_point)
+          this.map.addOverlay(marker)
+          this.map.panTo(new_point)
+        }
+      },
+      onChange(picker, value, index){
+        this.columnsIndex=index+1;
+        this.columnsIndex1 = null
+        this.columnsIndex2 = null
+        this.columns1=[];
+        this.columns2=[];
+        this.region[index].children.forEach((item,index)=>{
+          this.columns1.push(item.label);
+        });
+        if(this.columns1.length>0){
+          this.columnsIndex1=1;
+        }
+      },
+      onChange1(picker, value, index){
+        this.columnsIndex1 = index + 1;
+        this.columnsIndex2 = null;
+        this.columns2=[];
+        this.region[this.columnsIndex-1].children[index].children.forEach((item,index)=>{
+          this.columns2.push(item.label);
+        })
+        if(this.columns2.length>0){
+          this.columnsIndex2=1;
+        }
+      },
+      onChange2(picker, value, index){
+      this.columnsIndex2=index+1;
+      },
+
+
+      //景点
+      spotonChange(picker, value, index){
+        this.spotColumnsIndex=index+1;
+        this.spotColumnsIndex1=null;
+        this.spotColumns1=[];
+        this.spot[index].children.forEach((item,index)=>{
+          this.spotColumns1.push(item.label);
+        });
+        if(this.spotColumns1>0){
+          this.spotColumnsIndex1=1;
+        }
+      },
+      spotonChange1(picker, value, index){
+        this.spotColumnsIndex1=index+1;
+      },
+
+      //时间
+      getStarTime(picker){
+        this.timebegin=picker.getValues().join(":");
+        console.log(this.timebegin)
+      },
+      getEndTime(picker){
+        this.timeover=picker.getValues().join(":");
+        console.log(this.timeover)
+      },
+      //经营类型
+      management(picker, value, index){
+        this.managetype=value;
+      },
+
+      //服务产品
+      selectProduct(index){
+        if(this.includeArr.includes(index)){
+          this.includeArr=this.includeArr.filter(ele=>{
+            return ele !=index;
+          })
+        }else{
+          this.includeArr.push(index);
+        }
+      },
+
+      selectSuitable(index){//适合游玩人群
+        if(this.suitableNum.includes(index)){
+          this.suitableNum=this.suitableNum.filter(item=>{
+            return item !=index;
+          })
+        }else{
+          this.suitableNum.push(index)
+        }
+      },
+      //装修级别
+      decoration(picker, value, index){
+        this.decoget=value;
+      },
+      //服务项目
+      getproduct(index){
+        if(this.serviceInclude.includes(index)){
+          this.serviceInclude=this.serviceInclude.filter(elen=>{
+            return elen !=index;
+          })
+        }else{
+          this.serviceInclude.push(index)
+        }
+      },
+      //配套服务
+      supportser(index){
+        if(this.supportArray.includes(index)){
+          this.supportArray=this.supportArray.filter(elenment=>{
+            return elenment !=index;
+          })
+        }else{
+          this.supportArray.push(index)
+        }
+      },
+      //入住时间
+      checkInnTime(picker){
+        this.roomInn=picker.getValues().join("-");
+      },
+      //离店时间
+      checkOutTime(picker){
+        this.roomOut=picker.getValues().join("-");
+      },
+      //用餐人数
+      Eating(picker, value, index){
+        this.Eatingnum=value;
+      },
+      //特色菜
+      add(){
+        if(this.specialFood=='' && this.specialFoodArray.length<10){
+          this.$toast("请输入菜系名称")
+        }else{
+          this.specialFoodArray.push(this.specialFood);
+          this.specialFood='';
+          if(this.specialFoodArray.length>10){
+            this.$toast("最多10条特色菜");
+          }
+        }
+
+      },
+      delfood(index){
+        this.specialFoodArray.splice(index,1);
+      },
+
+      init(){
+        const params={
+          cityId:1,
+          userId:this.specialId,
+        };
+        this.$http.post('/appServiceInformation/publishGrangeParameter',params).then(res=>{
+          if(res.msg=='success'){
+            //所在地区
+            this.region=res.data.area;
+            this.region.forEach((item,index)=>{
+              this.columns.push(item.label)
+            })
+            //周边景点
+            this.spot=res.data.landspace;
+            this.spot.forEach((item,index)=>{
+              this.spotColumns.push(item.label);
+            })
+            //经营类型
+            this.manage=res.data.managementClass;
+            this.manage.forEach((item,index)=>{
+              this.manageColumns.push(item.name);
+            })
+            //装修级别
+            this.deco=res.data.decorationSituation;
+            this.deco.forEach(item=>{
+              this.decorationColumns.push(item.name)
+            })
+            //服务项目
+            this.serviceArr=res.data.play;
+            //配套服务
+            this.supportArr=res.data.buildingMatching;
+            //用餐接待
+            this.Eatingarr=res.data.grangeEatingNumber;
+            this.Eatingarr.forEach(item=>{
+              this.EatingColumns.push(item.name)
+            })
+            //适合游玩人群
+            this.suitableArr=res.data.throng;
+          }else{
+            this.$toast(res.info)
+          }
+        }).catch(error=>{
+          this.$toast(error);
+        })
+      },
+      tab(){
+        this.colorNum=1;
+      },
+      tabdiv(){
+        this.colorNum=0;
+      },
+      showpop(type){//所在地区
+      this.popupShow=true;
+      this.popType=type;
+      if(type==9){
+        setTimeout(()=>{
+          this.setmap();
+        },1500)
+
+      }
+      },
+      //弹窗确定
+      confirmPop(){
+        if(this.popType==1){ //所在地区
+          if(this.columnsIndex1){ //街道
+            let columnsName=['武汉'],columnsIds=['1'];
+            columnsName.push(this.region[this.columnsIndex-0-1].label);
+            columnsName.push(this.region[this.columnsIndex-0-1].children[this.columnsIndex1-0-1].label);
+            columnsIds.push(this.region[this.columnsIndex-0-1].value);
+            columnsIds.push(this.region[this.columnsIndex-0-1].children[this.columnsIndex1-0-1].value);
+            if(this.columnsIndex2){ //村
+              columnsName.push(this.region[this.columnsIndex-0-1].children[this.columnsIndex1-0-1].children[this.columnsIndex2-0-1].label);
+              columnsIds.push(this.region[this.columnsIndex-0-1].children[this.columnsIndex1-0-1].children[this.columnsIndex2-0-1].value);
+            }
+            this.columnsName=columnsName;
+            this.columnsIds=columnsIds.join(',');
+            this.location=this.columnsName.join(',');
+            this.popupShow=false;
+          }else{
+            this.$toast("所在地区请精确到街道")
+          }
+        }
+        if(this.popType == 2) {         // 景点
+          if(this.spotColumnsIndex1){
+            var spotColumnsIds = [], spotColumnsName = []
+            spotColumnsName.push(this.spot[this.spotColumnsIndex - 0 - 1].label)
+            spotColumnsName.push(this.spot[this.spotColumnsIndex - 0 - 1].children[this.spotColumnsIndex1 - 0 - 1].label)
+            spotColumnsIds.push(this.spot[this.spotColumnsIndex - 0 - 1].value)
+            spotColumnsIds.push(this.spot[this.spotColumnsIndex - 0 - 1].children[this.spotColumnsIndex1 - 0 - 1].value)
+            this.spotColumnsName = spotColumnsName[1]
+            this.spotColumnsIds = spotColumnsIds[1];
+            this.sceincAround=this.spotColumnsName;
+            this.popupShow=false;
+          } else {
+            this.$toast('周边景点请精确到景点');
+          }
+        }
+        if(this.popType==3){
+          this.openTime=this.timebegin+"-"+this.timeover;
+          this.popupShow=false;
+        }
+        if(this.popType==4){
+          this.type=this.managetype;
+          this.popupShow=false;
+        }
+        if(this.popType==5){
+          this.DecorateType=this.decoget;
+          this.popupShow=false;
+        }
+        if(this.popType==6){
+          this.roomInnTime=this.roomInn;
+          this.popupShow=false;
+        }
+        if(this.popType==7){
+          this.roomOutTime=this.roomOut;
+          this.popupShow=false;
+        }
+        if(this.popType==8){
+          this.getCustorm=this.Eatingnum;
+          this.popupShow=false;
+        }
+        if(this.popType==9){
+         this.position=this.locationSpot.lng+" , "+this.locationSpot.lat;
+         this.popupShow=false;
+        }
+      },
+      closePop(){//弹窗关闭
+      this.popupShow=false;
+      },
+      uploadimg(e,num){ //图片上传
+        console.log(e,num);
+        let file=e.target.files[0];
+        let imgSize=file.size/1024/1024;//mb
+        let fileType=file.name.substring(file.name.lastIndexOf('.')+1, file.name.length).toLocaleLowerCase();
+        let timestamp = (new Date()).getTime();
+        let Atanisi = Math.floor(Math.random() * 999999);
+        let newName=timestamp+Atanisi+"."+fileType;
+        if(fileType != 'jpg' && fileType != 'bmp' && fileType != 'png' && fileType != "jpeg"){
+          this.$toast('上传图片格式不正确')
+          return false
+        }
+        if(imgSize>10){
+          this.$toast('上传的图片不得大于2MB')
+          return false
+        }
+        let Token=getToken.genUpToken(2,newName);
+        console.log(Token);
+        let params = new FormData(); //创建form对象
+        params.append('key',newName);
+        params.append('token',Token);
+        params.append('file',file);
+        let config = {
+          "Content-Type": "multipart/form-data"
+        }
+        let url=getToken.niuUrl[1];
+        this.$http.postImg('https://upload.qiniu.com/',params,null,null,config).then(res=>{
+          if(num==1){//服务项目封面图
+            this.imglist.push(url+res.key)
+          }
+          if(num==2){
+            this.Innimglist.push(url+res.key)
+          }
+          if(num==3){
+            this.Foodimglist.push(url+res.key)
+          }
+          if(num==4){
+            this.Grangeimglist.push(url+res.key)
+          }
+          if(num==5){
+            this.tradeLisence.push(url+res.key)
+          }
+          if(num==6){
+            this.FoodtradeLisence.push(url+res.key)
+          }
+          if(num==7){
+            this.lowimglist.push(url+res.key)
+          }
+        })
+      },
+      delIMg(index){//服务项目封面图
+        this.imglist.splice(index,1);
+      },
+      delInnIMg(index){
+        this.Innimglist.splice(index,1)
+      },
+      delFoodIMg(index){
+        this.Foodimglist.splice(index,1)
+      },
+      delGrangeIMg(index){
+        this.Grangeimglist.splice(index,1)
+      },
+      delLisenceIMg(index){//营业执照
+        this.tradeLisence.splice(index,1)
+      },
+      delFoodLisenceIMg(index){
+        this.FoodtradeLisence.splice(index,1)
+      },
+      delLowIMg(index){
+        this.lowimglist.splice(index,1);
+      },
+      blurr(){
+        if(this.businessTelephone !=this.teleNum){
+          this.mobileValid=true;
+        }else{
+          this.mobileValid=false;
+        }
+        this.check = isvalidPhone(this.businessTelephone);
+        if(!this.check){
+          this.teleMessage=`手机号格式不正确`;
+        }else{
+          this.teleMessage='';
+        }
+        if(this.businessTelephone==''){
+          this.teleMessage='';
+        }
+
+      },
+      sendCode(){  //发送验证码
+        if(!this.check){
+          return
+        }
+        this.sendAuthCode=false;
+        this.auth_time=120;
+        let auth_timetimer =  setInterval(()=>{
+          this.auth_time--;
+          if(this.auth_time<=0){
+            this.sendAuthCode = true;
+            clearInterval(auth_timetimer);
+          }
+        }, 1000);
+
+        this.$http.post('appServiceSso/sendCode',{mobile:this.businessTelephone}).then(
+          res=>{
+            if(res.msg=='success'){
+              this.$toast('验证码发送成功')
+            }else{
+              this.$toast(res.info)
+            }
+          }
+        ).catch(error=>{
+          this.$toast('网络错误');
+        })
+      },
+
+
+
+      submit(){//提交
+        let params={};
+        const food={};
+        const  inn={};
+        if(this.specialId){
+          params.userId=this.specialId
+        }else {
+          params.userId=null
+        }
+        if(this.grangename !==''){
+          params.grangeName=this.grangename;
+        }else{
+          this.$toast("请输入农庄名称")
+          return false
+        }
+
+        if(this.location !==''){
+          params.areaName=this.location;
+          params.areaId=this.columnsIds;
+        }else{
+          this.$toast("请选择所在地区")
+          return false
+        }
+        if(this.detailLocation !==''){
+          params.addressDetail=this.detailLocation;
+        }else{
+          this.$toast("请输入详细地址")
+          return false
+        }
+        if(this.position !==''){
+          params.longitude=this.locationSpot.lng;
+          params.latitude=this.locationSpot.lat;
+        }else{
+          this.$toast("请选择位置标注")
+          return false
+        }
+        if(this.sceincAround !==''){
+          params.landspaceId=this.spotColumnsIds;
+          params.landspaceName=this.sceincAround;
+        }
+        if(this.telephone !==""){
+          params.contactPhone=this.telephone;
+        }else{
+          this.$toast("请输入服务电话")
+          return false
+        }
+        if(this.openTime !==""){
+          params.businessHours=this.openTime;
+        }else{
+          this.$toast("请选择营业时间")
+          return false
+        }
+        if(this.percost !==""){
+          params.personConsumption=returnFloat(this.percost);
+        }else{
+          this.$toast("请输入人均消费")
+          return false
+        }
+        if(this.businessArea !==''){
+          params.operatingArea=parseInt(this.businessArea);
+        }else{
+          this.$toast("请输入经营面积")
+          return false
+        }
+        if(this.DecorateTime !==''){
+          params.decorationTime=this.DecorateTime;
+        }else{
+          this.$toast("请输入装修时间")
+          return false
+        }
+        if(this.startTime !==''){
+          params.openingTime=this.startTime;
+        }else{
+          this.$toast("请输入开业时间")
+          return false
+        }
+        if(this.DecorateType !==""){
+          params.decorationGrade=this.DecorateType;
+        }
+        if(this.staffMount !==""){
+          params.employeesNumber=this.staffMount;
+        }
+        if(this.type !==""){
+          params.managementClass=this.type;
+        }else{
+          this.$toast("请选择经营类型")
+          return false
+        }
+        if(this.suitableNum.length>0){
+          let suitID=[],suitName=[],suitRes=[];
+          this.suitableNum.forEach(item=>{
+            suitID.push(this.suitableArr[item].id)
+            suitName.push(this.suitableArr[item].name)
+            suitRes.push(this.suitableArr[item].restful)
+          })
+          params.suitablesId=suitID.join(',');
+          params.suitablesName=suitName.join(',');
+          params.suitablesRestful=suitRes.join(',')
+        }else{
+          this.$toast("请选择适合游玩人群")
+          return false
+        };
+
+        if(this.serviceInclude.length>0){
+          let serviceID=[],serviceName=[],serviceRes=[];
+          this.serviceInclude.forEach(item=>{
+            serviceID.push(this.serviceArr[item].id)
+            serviceName.push(this.serviceArr[item].name)
+            serviceRes.push(this.serviceArr[item].restful)
+          })
+          params.playsId=serviceID.join(',');
+          params.playsName=serviceName.join(',');
+          params.playsRestful=serviceRes.join(',')
+        }else{
+          this.$toast("请选择服务项目")
+          return false
+        }
+        if(this.imglist.length>0){
+          params.playLogoUrl=this.imglist[0];
+        }else{
+          this.$toast("请上传一张服务项目封面图")
+          return false
+        }
+        if(this.supportArray.length>0){
+          let supportID=[],supportName=[],supportRes=[];
+          this.supportArray.forEach(item=>{
+            supportID.push(this.supportArr[item].id)
+            supportName.push(this.supportArr[item].name)
+            supportRes.push(this.supportArr[item].restful)
+          })
+          params.matingsId=supportID.join(',');
+          params.matingsName=supportName.join(',');
+          params.matingsRestful=supportRes.join(',')
+        }else{
+          this.$toast("请选择配套服务")
+          return false
+        }
+
+
+        if(this.Grangeimglist.length>0){
+          params.grangeLogoUrl=this.Grangeimglist[0];
+          params.grangeOtherUrl=this.Grangeimglist.slice(1).join(',');
+        }else{
+          this.$toast("请至少上传一张农庄封面图")
+          return false
+        }
+        if(this.grangeMessage !==""){
+          params.grangeSynopsis=this.grangeMessage;
+        }
+        if(this.busroute !==""){
+          params.busRoutes=this.busroute;
+        }
+        if(this.driveRoute !==""){
+          params.drivingRoute=this.driveRoute;
+        }
+        if(this.businessName !==""){
+          params.operatorName=this.businessName;
+          params.operatorSex=this.colorNum;
+        }else{
+          this.$toast("请输入经营者姓名")
+          return false
+        }
+        //手机信息
+        if(this.specialId){//登录
+          if(this.teleNum){//有手机号
+            if(this.businessTelephone !==this.teleNum){
+              if(this.businessTelephone !==""){
+                params.operatorMobile=this.businessTelephone;
+                if(this.code !==""){
+                  params.verificationCode=this.code;
+                }else{
+                  this.$toast("请输入验证码")
+                  return false
+                }
+              }else{
+                this.$toast("请输入手机号码")
+                return false
+              }
+            }
+          }else{//没有手机号
+            if(this.businessTelephone !==""){
+              params.operatorMobile=this.businessTelephone;
+              if(this.code !==""){
+                params.verificationCode=this.code;
+              }else{
+                this.$toast("请输入验证码")
+                return false
+              }
+            }else{
+              this.$toast("请输入手机号码")
+              return false
+            }
+          }
+
+
+
+
+
+
+
+
+        }else{//没有登录
+          if(this.businessTelephone !==""){
+            params.operatorMobile=this.businessTelephone;
+            if(this.code !==""){
+              params.verificationCode=this.code;
+            }else{
+              this.$toast("请输入验证码")
+              return false
+            }
+          }else{
+            this.$toast("请输入手机号码")
+            return false
+          }
+        }
+
+
+
+        if(this.businessMail !==""){
+          params.operatorMailbox=this.businessMail;
+        }
+        if(this.bodyId !==""){
+          params.idCard=this.bodyId;
+        }
+        if(this.businessBrand !==""){
+          params.businessLicence=this.businessBrand;
+        }
+        if(this.tradeLisence.length>0){
+          params.businessLicenceUrl=this.tradeLisence.join(',');
+        }else{
+          this.$toast("请上传营业执照图片")
+          return false
+        }
+        if(this.lowimglist.length>0){
+          params.idCardUrl=this.lowimglist.join(',')
+        }else{
+          this.$toast("请上传身份证图片")
+          return false
+        }
+
+
+        //住宿产品
+        if(this.roomNum !==""){
+          inn.roomNumber=parseInt(this.roomNum);
+        }
+        if(this.roomGet !==""){
+          inn.galleryful=parseInt(this.roomGet);
+        }
+        if(this.roomInnTime !==''){
+          inn.checkinTime=this.roomInnTime;
+        }
+        if(this.roomOutTime !==""){
+          inn.checkoutTime=this.roomOutTime;
+        }
+        if(this.Innimglist.length>0){
+          inn.havestayLogoUrl=this.Innimglist[0];
+        }else{
+          this.$toast("请上传一张住宿封面图")
+          return false
+        }
+
+        //美食产品
+        if(this.foodRoomNum !==""){
+          food.compartmentNumber=parseInt(this.foodRoomNum);
+        }
+        if(this.foodsNum !==""){
+          food.scatteredtableNumber=parseInt(this.foodsNum);
+        }
+        if(this.getCustorm !==""){
+          food.receptionNumber=this.getCustorm;
+        }
+        if(this.specialFoodArray.length>0){
+          food.specialCuisine=this.specialFoodArray.join(',')
+        }
+        if(this.Foodimglist.length>0){
+          food.havedelicacyLogoUrl=this.Foodimglist[0];
+        }else{
+          this.$toast("请上传一张美食封面图")
+          return false
+        }
+        if(this.foodBrand !==""){
+          food.foodBusinessLicense=this.foodBrand;
+        }
+        if(this.FoodtradeLisence.length>0){
+          food.foodBusinessLicenseUrl=this.FoodtradeLisence.join(',')
+        }else{
+          this.$toast("请上传食品经营许可证")
+          return false
+        }
+
+        if(this.includeArr.length>0){
+          if(this.includeArr.includes(0)){//是否有住宿
+            params.isHavestay=1;
+            params=Object.assign(params,inn)
+          }else{
+            params.isHavestay=0;
+          }
+          if(this.includeArr.includes(1)){//是否有美食
+            params.isHavedelicacy=1;
+            params=Object.assign(params,food)
+          }else{
+            params.isHavedelicacy=0;
+          }
+        }else{
+          this.$toast("请选择服务产品")
+          return false
+        }
+       this.$http.post('/appServiceInformation/publishGrange',params).then(res=>{
+         if(res.msg=='success'){
+           this.$toast("发布成功")
+         }else{
+           this.$toast(res.info)
+         }
+       })
+      },
+
+
+
+
+
+
+
+
+      // keyCode(){
+      //   var that=this;
+      //   document.onkeydown=function(e){
+      //     let key =window.event.keyCode;
+      //     if(key==13){
+      //       if(that.specialFood=='' && that.specialFoodArray.length<10){
+      //         that.$toast("请输入菜系名称")
+      //       }else{
+      //         that.specialFoodArray.push(that.specialFood);
+      //         that.specialFood='';
+      //         if(that.specialFoodArray.length>10){
+      //           that.$toast("最多10条特色菜");
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
+    },
+    created:function(){
+      if(localStorage.getItem('userInfo')){
+        this.specialId=JSON.parse(localStorage.getItem('userInfo')).userId;
+         this.teleNum=JSON.parse(localStorage.getItem('userInfo')).nickName;
+        if(this.teleNum){
+          this.businessTelephone=this.teleNum;
+        }else{
+          this.mobileValid=true;
+        }
+      }else{
+        this.specialId=null;
+        this.mobileValid=true;
+      }
+      this.init()
+      // this.keyCode();
+    },
+    mounted:function(){
+    this.$dragging.$on('dragged',({value})=>{
+
+      this.$nextTick(function(){
+
+      })
+    });
+
+
+    },
+    watch:{
+      locationSpot:{
+        handler(newname,oldname){
+           this.drawLocation();
+        },
+        deep:true,
+      }
+    },
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../style/public.less";
+  .issueGrange{
+    //基本信息
+    .topWrap{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    .separate {
+      height: 0.2rem;
+      background-color: #f1f0f6;
+    }
+    .serviceProduct{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+
+    //服务项目
+    .serviceItem{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            padding: 0 0.3rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-field .van-cell__title{
+        max-width: 3rem;
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //配套服务
+    .support{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            height: 0.6rem;
+            padding: 0 0.3rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //住宿信息
+    .stayInfor{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .top{
+        height: 1rem;
+        font-size: 0.3rem;
+        font-weight: bold;
+        line-height: 1rem;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //美食
+    .foodInfo{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .top{
+        height: 1rem;
+        font-size: 0.3rem;
+        font-weight: bold;
+        line-height: 1rem;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+          a{
+            display: inline-block;
+           padding: 0 0.3rem;
+            height: 0.5rem;
+            background-color: #ff6500;
+            color: white;
+            text-align: center;
+            line-height: 0.5rem;
+            position: relative;
+            margin-right: 0.3rem;
+            margin-top: 0.3rem;
+            i{
+              position: absolute;
+              right: -0.2rem;
+              top: -0.3rem;
+              color: black;
+              font-size: 0.4rem;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //图片信息
+    .imgInfor{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //交通
+    .traffic{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+    }
+    //商户信息
+    .merchantInfo{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+        .code{
+          display: inline-block;
+          width: 1.5rem;
+          background: #ff6500;
+          border-radius: 0.3rem;
+          text-align: center;
+          font-size: 0.2rem;
+          color: white;
+        }
+        .recode{
+          display: inline-block;
+          width: 1.5rem;
+          background: rgba(192,192,192,.5);
+          border-radius: 0.3rem;
+          text-align: center;
+          font-size: 0.2rem;
+          color: white;
+        }
+      }
+      .top{
+        font-size: 0.35rem;
+        font-weight: bold;
+        height: 1rem;
+        line-height: 1rem;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button{
+        height: 0.6rem;
+        line-height: 0.6rem;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+        border-top-left-radius: 40%;
+        border-bottom-left-radius: 40%;
+        background-color: #e7e6ec;
+        color: black;
+
+      }
+      .three /deep/ .van-button--primary{
+        background-color: #e7e6ec;
+        border: none;
+        color: black;
+        border-top-right-radius: 40%;
+        border-bottom-right-radius: 40%;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+    }
+    //营业执照
+    .bussiness{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+      .projectimgg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimgg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+      .projectimgg /deep/  .van-cell__value{
+        display: none;
+      }
+      .projectimgg /deep/ .van-field .van-cell__title{
+        max-width:100%;
+      }
+
+    }
+    .bottom{
+      height: 1rem;
+      background: #fd6400;
+      font-size: 0.32rem;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1rem;
+    }
+
+
+    .position-columns{
+      font-size: 0;
+      width: 100%;
+      .van-picker{
+        font-size: .28rem;
+        display: inline-block;
+        width: 33.3333%
+      }
+    }
+    .spot-columns.position-columns{
+      .van-picker{
+        font-size: .28rem;
+        display: inline-block;
+        width: 50%
+      }
+    }
+    .timepicker /deep/ .van-picker__toolbar{
+      display: none;
+    }
+    .cell-title{
+      padding: .3rem;
+    }
+    .confirm-icon{
+      color: #3979F5;
+      font-size: .3rem;
+      float: right;
+    }
+    .close-icon{
+      display: inline-block;
+      font-size: .4rem;
+      color: #bababc
+    }
+
+    .map{
+      &>div:nth-child(1){
+        height: 1rem;
+        line-height: 1rem;
+        input{
+          border: 0.03rem solid #e5e5e5;
+          height: 0.6rem;
+          padding-left: 0.2rem;
+          width: 4rem;
+        }
+      }
+      #l-map{
+        width: 100%;
+        height: 8rem;
+      }
+      .location{
+        p{
+          display: inline-block;
+          font-size: 0.32rem;
+          margin-right: 0.2rem;
+        }
+        margin-bottom: 0.4rem;
+      }
+    }
+  }
+</style>

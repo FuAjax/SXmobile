@@ -1,0 +1,43 @@
+<template>
+    <div class="wrapper" ref="wrapper">
+      <slot></slot>
+    </div>
+</template>
+
+<script>
+import BScroll from 'better-scroll'
+export default {
+  name: 'scroll',
+  // 父子组件
+  props: {
+    probeType: {
+      type: Number,
+      default: 1
+    },
+    data: {
+      type: Array,
+      default: null
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this._initScroll()
+    }, 20) 
+  },
+  methods: {
+     // 初始化
+    _initScroll() {
+      if (!this.$refs.wrapper) {
+        return
+      }
+      let wrapper = document.querySelector('.wrapper')
+      let scroll = new BScroll(wrapper,{
+          scrollX: true,
+          click: true
+      })
+    }
+  },
+  watch: {
+  }
+}
+</script>

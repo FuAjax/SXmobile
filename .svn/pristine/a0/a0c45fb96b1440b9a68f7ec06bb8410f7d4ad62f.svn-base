@@ -1,0 +1,26 @@
+<template>
+  <div>
+    <Header />
+    <Map />
+  </div>
+</template>
+
+<script>
+  import Header from './components/Header2'
+  import Map from './components/map'
+
+  export default {
+    name: "listMap",
+    data() {
+      return {}
+    },
+    components: {
+      Header,
+      Map
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

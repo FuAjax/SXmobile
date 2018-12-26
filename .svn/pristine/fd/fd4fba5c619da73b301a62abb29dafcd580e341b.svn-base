@@ -1,0 +1,35 @@
+<template>
+  <div>
+    <Detail    />
+    <Supporting />
+    <Headline />
+    <Person />
+    <Footer />
+  </div>
+</template>
+
+<script>
+  import Footer from './components/footer2'
+  import Detail from './components/detail'
+  import Headline from './components/headline'
+  import Person from './components/person'
+  import Supporting from './components/supporting'
+
+  export default {
+    name: "issueGrange",
+    data() {
+      return {}
+    },
+    components: {
+      Footer,
+      Detail,
+      Headline,
+      Person,
+      Supporting,
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

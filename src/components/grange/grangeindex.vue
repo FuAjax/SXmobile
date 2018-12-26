@@ -1,0 +1,902 @@
+<template>
+  <div class="wrap">
+    <div class="container">
+      <div class="topBar"  v-show="!isapp">
+        <Header :title="title" :isback="isback"></Header>
+      </div>
+      <div :style="'height:'+ ( !isapp ?'0.92rem' : '0rem' ) + ';'"></div>
+      <!--轮播图组件-->
+      <Sweep :img="bannerlist" :areapp="isapp"></Sweep>
+      <!--五个模块-->
+      <Five :littleimg="imglist"></Five>
+      <!--中间分割块-->
+      <div class="separate"></div>
+      <!--精彩推荐-->
+      <div class="wonder">
+        <div class="top">
+          <span class="orang">精彩</span>推荐
+          <div>
+            <span @click="tabone">
+              <i class="iconfont icon-xiangzuo"></i>
+            </span>
+            <span @click="tabtwo">
+              <i class="iconfont icon-tiaozhuanqianwangyoujiantouxiangyouxiayibuxianxing"></i>
+            </span>
+          </div>
+        </div>
+        <ul v-show="tabnum==0">
+          <router-link
+            :to="{name:'textDetail',params:{id:item.id}}"
+            tag="li"
+            v-for="item in wonder_list"
+          >
+            <van-row gutter="20">
+              <van-col span="17">
+                <div class="left">
+                  <div class="text">{{item.informationTitle}}</div>
+                  <p>{{item.createTime}}</p>
+                </div>
+              </van-col>
+              <van-col span="7">
+                <div class="right">
+                  <img :src="item.informationLogourl" alt>
+                </div>
+              </van-col>
+            </van-row>
+          </router-link>
+        </ul>
+        <ul v-show="tabnum==1">
+          <router-link
+            :to="{name:'textDetail',params:{id:item.id}}"
+            tag="li"
+            v-for="item in right_list"
+          >
+            <van-row gutter="20">
+              <van-col span="17">
+                <div class="left">
+                  <div class="text">{{item.informationTitle}}</div>
+                  <p>{{item.createTime}}</p>
+                </div>
+              </van-col>
+              <van-col span="7">
+                <div class="right">
+                  <img :src="item.informationLogourl" alt>
+                </div>
+              </van-col>
+            </van-row>
+          </router-link>
+        </ul>
+      </div>
+      <div class="separate"></div>
+      <!--景点排行-->
+      <div v-if="scenic_list.length>0">
+        <div class="scenic">
+          <div class="scenic_top clear">
+            <a href>
+              <span class="orang">景点</span>排行榜
+            </a>
+          </div>
+          <div class="scenic_bottom" style="overflow: hidden;">
+            <scroll ref="scroll" class="recommend-content" :data="scenic_list">
+              <div :style="'width:' + scenic_list.length * 3.2 + 'rem'">
+                <router-link v-for="(item,index) in scenic_list" :to="{name:'scenic'}">
+                  <div
+                    style="width: 3rem; display: inline-block; padding-right: .2rem; position: relative;"
+                  >
+                    <div
+                      v-show="index < 3"
+                      class="ranking-cover"
+                      :style="'background:' + (index == 0 ? '#FD6C00' : index == 1 ? '#8AB9D4' : index == 2 ? '#E38900' : '') + ''"
+                    >
+                      <i>NO.{{index+1}}</i>
+                    </div>
+                    <div
+                      v-if="item.fileUrl"
+                      :style="'background:url(' + item.fileUrl + ');width: 100%;height: 2rem;background-size:cover;background-position: center center'"
+                    ></div>
+                    <div style="font-size: 0.26rem;" class="van-ellipsis">{{item.lanspacePlaceName}}</div>
+                  </div>
+                </router-link>
+              </div>
+            </scroll>
+          </div>
+        </div>
+      </div>
+      <!--玩乐排行-->
+      <div v-if="play_list.length>0">
+        <div class="scenic">
+          <div class="scenic_top clear">
+            <a href>
+              <span class="orang">游玩</span>排行榜
+            </a>
+          </div>
+          <div class="scenic_bottom" style="overflow: hidden;">
+            <scroll ref="scroll" class="recommend-content" :data="play_list">
+              <div :style="'width:' + play_list.length * 3.2 + 'rem'">
+                <router-link v-for="(item,index) in play_list" :to="{name:'sharePlay'}">
+                  <div
+                    style="width: 3rem; display: inline-block; padding-right: .2rem; position: relative;"
+                  >
+                    <div
+                      v-show="index < 3"
+                      class="ranking-cover"
+                      :style="'background:' + (index == 0 ? '#FD6C00' : index == 1 ? '#8AB9D4' : index == 2 ? '#E38900' : '') + ''"
+                    >
+                      <i>NO.{{index+1}}</i>
+                    </div>
+                    <div
+                      v-if="item.fileUrl"
+                      :style="'background:url(' + item.fileUrl + ');width: 100%;height: 2rem;background-size:cover;background-position: center center'"
+                    ></div>
+                    <div style="font-size: 0.26rem;" class="van-ellipsis">{{item.grangeName}}</div>
+                  </div>
+                </router-link>
+              </div>
+            </scroll>
+          </div>
+        </div>
+      </div>
+      <!--美食排行-->
+      <div v-if="food_list.length>0">
+        <div class="scenic">
+          <div class="scenic_top clear">
+            <a href>
+              <span class="orang">美食</span>排行榜
+            </a>
+          </div>
+          <div class="scenic_bottom" style="overflow: hidden;">
+            <scroll ref="scroll" class="recommend-content" :data="food_list">
+              <div :style="'width:' + food_list.length * 3.2 + 'rem'">
+                <router-link v-for="(item,index) in food_list" :to="{name:'shareFood'}">
+                  <div
+                    style="width: 3rem; display: inline-block; padding-right: .2rem; position: relative;"
+                  >
+                    <div
+                      v-show="index < 3"
+                      class="ranking-cover"
+                      :style="'background:' + (index == 0 ? '#FD6C00' : index == 1 ? '#8AB9D4' : index == 2 ? '#E38900' : '') + ''"
+                    >
+                      <i>NO.{{index+1}}</i>
+                    </div>
+                    <div
+                      v-if="item.fileUrl"
+                      :style="'background:url(' + item.fileUrl + ');width: 100%;height: 2rem;background-size:cover;background-position: center center'"
+                    ></div>
+                    <div style="font-size: 0.26rem;" class="van-ellipsis">{{item.grangeName}}</div>
+                  </div>
+                </router-link>
+              </div>
+            </scroll>
+          </div>
+        </div>
+      </div>
+      <div class="separate"></div>
+      <!--景区tab选项卡-->
+      <div class="tab">
+
+        <van-tabs>
+
+          <van-tab title="景点">
+            <!--景点-->
+            <div class="scenic_wrap">
+              <router-link
+                v-for="(item,index) in landscape"
+                :to="{name:'scenicDetail',params:{id:item.lanspacePlaceNumber}}"
+              >
+                <van-row gutter="20">
+                  <!--图-->
+                  <van-col span="8">
+                    <div class="left">
+                      <img :src="item.fileUrl" v-lazy="item.fileUrl">
+                    </div>
+                  </van-col>
+                  <!--右边文字-->
+                  <van-col span="16">
+                    <div class="right">
+                      <!--风景区-->
+                      <div class="mulan van-ellipsis">
+                        <span class="lake">{{item.lanspacePlaceName}}</span>
+                        <span class="five">{{item.lanspacePlaceGrade}}级风景区</span>
+                      </div>
+                      <!--评分-->
+                      <div class="grade">
+                        <star :rate="item.totalMark"></star>
+                        <span class="score">{{item.totalMark}}分</span>
+                        <p class="much">
+                          <span>￥{{item.admissionPrice}}</span>/人
+                        </p>
+                      </div>
+                      <!--定位-->
+                      <div class="position van-ellipsis">
+                        <i class="iconfont icon-dizhi"></i>
+                        {{item.fcityName}}-{{item.fareaName}}
+                      </div>
+                      <!--数据-->
+                      <div class="data" v-if="item.characteristics">
+                        <span v-for="aa in (item.characteristics.slice(0,3))">{{aa}}</span>
+                      </div>
+                    </div>
+                  </van-col>
+                </van-row>
+              </router-link>
+
+              <router-link tag="p" :to="{name:'scenic'}" class="more">更多景点</router-link>
+            </div>
+          </van-tab>
+          <!--游玩-->
+          <van-tab title="游玩">
+            <div class="scenic_wrap">
+              <router-link
+                v-for="(item,index) in playarray"
+                :to="{name:'grangedetail',params:{id:item.grangeNumber}}"
+              >
+                <van-row gutter="20">
+                  <!--图-->
+                  <van-col span="8">
+                    <div class="left">
+                      <img :src="item.fileUrl" v-lazy="item.fileUrl">
+                    </div>
+                  </van-col>
+                  <!--右边文字-->
+                  <van-col span="16">
+                    <div class="right">
+                      <!--风景区-->
+                      <div class="mulan van-ellipsis">
+                        <span class="lake">{{item.grangeName}}</span>
+                      </div>
+                      <!--评分-->
+                      <div class="grade">
+                        <star :rate="item.totalMark"></star>
+                        <span class="score">{{item.totalMark}}分</span>
+                        <p class="much">
+                          <span>￥{{item.personConsumption}}</span>/人
+                        </p>
+                      </div>
+                      <!--定位-->
+                      <div class="position van-ellipsis">
+                        <i class="iconfont icon-dizhi"></i>
+                        {{item.fcityName}}-{{item.fareaName}}-{{item.fstreetName}}
+                      </div>
+                      <!--数据-->
+                      <div class="data" v-if="item.facilities">
+                        <span v-for="aa in (item.facilities.slice(0,3))">{{aa}}</span>
+                      </div>
+                    </div>
+                  </van-col>
+                </van-row>
+              </router-link>
+
+              <router-link tag="p" :to="{name:'sharePlay'}" class="more">更多玩乐</router-link>
+            </div>
+          </van-tab>
+          <!--住宿-->
+          <van-tab title="住宿">
+            <div class="scenic_wrap">
+              <router-link
+                v-for="(item,index) in innarray"
+                :to="{name:'grangedetail',params:{id:item.grangeNumber}}"
+              >
+                <van-row gutter="20">
+                  <!--图-->
+                  <van-col span="8">
+                    <div class="left">
+                      <img :src="item.fileUrl" v-lazy="item.fileUrl">
+                    </div>
+                  </van-col>
+                  <!--右边文字-->
+                  <van-col span="16">
+                    <div class="right">
+                      <!--风景区-->
+                      <div class="mulan van-ellipsis">
+                        <span class="lake">{{item.grangeName}}</span>
+                      </div>
+                      <!--评分-->
+                      <div class="grade">
+                        <star :rate="item.totalMark"></star>
+                        <span class="score">{{item.totalMark}}分</span>
+                        <p class="much">
+                          <span>￥{{item.personConsumption}}</span>/人
+                        </p>
+                      </div>
+                      <!--定位-->
+                      <div class="position van-ellipsis">
+                        <i class="iconfont icon-dizhi"></i>
+                        {{item.fcityName}}-{{item.fareaName}}-{{item.fstreetName}}
+                      </div>
+                      <!--数据-->
+                      <div class="data" v-if="item.facilities">
+                        <span v-for="aa in (item.facilities.slice(0,3))">{{aa}}</span>
+                      </div>
+                    </div>
+                  </van-col>
+                </van-row>
+              </router-link>
+
+              <router-link tag="p" :to="{name:'shareInn'}" class="more">更多住宿</router-link>
+            </div>
+          </van-tab>
+          <!--美食-->
+          <van-tab title="美食">
+            <div class="scenic_wrap">
+              <router-link
+                v-for="(item,index) in foodarr"
+                :to="{name:'grangedetail',params:{id:item.grangeNumber}}"
+              >
+                <van-row gutter="20">
+                  <!--图-->
+                  <van-col span="8">
+                    <div class="left">
+                      <img :src="item.fileUrl" v-lazy="item.fileUrl">
+                    </div>
+                  </van-col>
+                  <!--右边文字-->
+                  <van-col span="16">
+                    <div class="right">
+                      <!--风景区-->
+                      <div class="mulan van-ellipsis">
+                        <span class="lake">{{item.grangeName}}</span>
+                      </div>
+                      <!--评分-->
+                      <div class="grade">
+                        <star :rate="item.totalMark"></star>
+                        <span class="score">{{item.totalMark}}分</span>
+                        <p class="much">
+                          <span>￥{{item.personConsumption}}</span>/人
+                        </p>
+                      </div>
+                      <!--定位-->
+                      <div
+                        class="position van-ellipsis"
+                      >{{item.fcityName}}-{{item.fareaName}}-{{item.fstreetName}}</div>
+                      <!--美食品种-->
+                      <div
+                        class="variety van-ellipsis"
+                        v-if="item.specialCuisine"
+                      >{{item.specialCuisine}}</div>
+                    </div>
+                  </van-col>
+                </van-row>
+              </router-link>
+
+              <router-link tag="p" :to="{name:'shareFood'}" class="more">更多美食</router-link>
+            </div>
+          </van-tab>
+
+        </van-tabs>
+      </div>
+    </div>
+    <Footer v-if="type==3"></Footer>
+    <goTotop/>
+  </div>
+</template>
+
+<script>
+import Sweep from "com/grange/swiper";
+import Five from "com/common/five";
+import star from "com/common/rates";
+import Footer from "com/common/Footer";
+import Header from "com/common/header";
+import Scroll from "com/common/swiperX";
+import nozhaung from "@/assets/imgs/nz_01.png";
+import jingdain from "@/assets/imgs/nz_02.png";
+import youwan from "@/assets/imgs/nz_03.png";
+import zhusu from "@/assets/imgs/nz_04.png";
+import meishi from "@/assets/imgs/nz_05.png";
+import goTotop from "com/common/goTop";
+export default {
+  name: "grangeindex",
+  components: { Sweep, Five, star, Footer, Header, Scroll, goTotop },
+  props: { isapp: null },
+  data() {
+    return {
+      type: null,
+      tabnum: 0, //tab选项卡
+      cityname: "上海",
+      wonder_list: [], //精彩推荐左
+      right_list: [], //精彩推荐右
+      scenic_list: [], //景点
+      play_list: [], //游玩
+      food_list: [], //美食
+      //景点选项卡
+      scenic: [],
+      fourSpan: [],
+      text: "",
+      landscape: [],
+      playarray: [],
+      innarray: [],
+      foodarr: [],
+      isback: true,
+      title: "农庄首页",
+      bannerlist: [],
+      imglist: [
+        { title: "农庄", src: nozhaung },
+        { title: "景点", src: jingdain },
+        { title: "游玩", src: youwan },
+        { title: "住宿", src: zhusu },
+        { title: "美食", src: meishi }
+      ],
+
+      loading: false,
+      finished: false,
+      page: 1,
+
+      landtotal: 1,
+      playtotal: 1,
+      inntotal: 1,
+      foodtotal: 1,
+      rows: 30
+    };
+  },
+  methods: {
+
+    tabone() {
+      this.tabnum = 0;
+    },
+    tabtwo() {
+      this.tabnum = 1;
+    },
+
+
+    init(){
+      this.$http.post("appServiceGrange/grangeIndexData").then(res => {
+        if (res.msg == "success") {
+          this.landscape = res.data.landspace.rows;
+          this.playarray = res.data.playList.rows;
+          this.innarray = res.data.stayList.rows;
+          this.foodarr = res.data.foodsList.rows;
+        } else {
+          this.$toast(res.info);
+        }
+      });
+    }
+  },
+  computed: {},
+  created: function() {
+    if (localStorage.getItem("grangeIndexData")) {
+      var grangeIndexData = JSON.parse(localStorage.getItem("grangeIndexData"));
+      this.wonder_list = grangeIndexData.wonder_list;
+      this.right_list = grangeIndexData.right_list;
+      this.scenic_list = grangeIndexData.scenic_list;
+      this.food_list = grangeIndexData.food_list;
+      this.bannerlist = grangeIndexData.bannerlist;
+    }
+
+    this.$http.post("appServiceGrange/grangeIndex").then(res => {
+      this.wonder_list = res.data.activityList.slice(0, 3);
+      this.right_list = res.data.activityList.slice(3);
+      let array = [
+        { color: "#ff6500" },
+        { color: "#8ab8d4" },
+        { color: "#e38800" },
+        { color: "#b4b4b9" },
+        { color: "#b4b4b9" },
+        { color: "#b4b4b9" }
+      ];
+      let newarray = [];
+      res.data.landspaceTopList.map((item, index) => {
+        let newitem = Object.assign(item, array[index]);
+        newarray.push(newitem);
+      });
+      this.scenic_list = newarray;
+      //游玩
+      let playarr = [];
+      res.data.playTopList.map((item, index) => {
+        let newitem = Object.assign(item, array[index]);
+        playarr.push(newitem);
+      });
+      this.play_list = playarr;
+      //美食
+      let foodarr = [];
+      res.data.foodsTopList.map((item, index) => {
+        let newitem = Object.assign(item, array[index]);
+        foodarr.push(newitem);
+      });
+      this.food_list = foodarr;
+      //banner图
+      res.data.bannerList.forEach(item => {
+        item.bannerSkipurl = item.bannerSkipurl.substring(22);
+      });
+
+      this.bannerlist = res.data.bannerList;
+      const obj = {
+        wonder_list:res.data.activityList.slice(0, 3),
+        right_list:res.data.activityList.slice(3),
+        scenic_list:newarray,
+        play_list:playarr,
+        food_list:foodarr,
+        bannerlist:this.bannerlist
+      }
+      localStorage.setItem('grangeIndexData',JSON.stringify(obj));
+    });
+    this.init();
+    this.type = this.$proType;
+  },
+
+  mounted: function() {
+
+  },
+  destroy: function() {}
+};
+</script>
+
+<style scoped lang="less" type="text/less">
+@import "../../style/public.css";
+.wrap {
+  #container {
+    width: 100%;
+    height: 4rem;
+  }
+  //隔开
+  .separate {
+    height: 0.2rem;
+    background-color: #f1f0f6;
+  }
+  //精彩推荐
+  .wonder {
+    padding: 0 0.3rem;
+    .top {
+      height: 1.15rem;
+      line-height: 1.15rem;
+      font-size: 0.32rem;
+      font-weight: bold;
+      .orang {
+        color: #ff6500;
+      }
+      div {
+        float: right;
+        span {
+          display: inline-block;
+          width: 0.3rem;
+          height: 0.3rem;
+          border: 1px #c6c6c8 solid;
+          line-height: 0.2rem;
+          text-align: center;
+          background-color: #f6f5fb;
+          i {
+            color: #98979d;
+          }
+        }
+      }
+    }
+    ul {
+      li {
+        padding: 0.3rem 0;
+        border-top: 0.02rem #e4e4e4 solid;
+        .left {
+          font-size: 0.2rem;
+          .text {
+            line-height: 0.3rem;
+            height: 0.9rem;
+            overflow: hidden;
+            font-size: 0.31rem;
+          }
+          p {
+            color: grey;
+            font-size: 0.2rem;
+            padding-top: 0.09rem;
+          }
+        }
+        .right {
+          height: 1.18rem;
+        }
+      }
+    }
+  }
+  //景点排行榜
+  .scenic {
+    .scenic_top {
+      padding: 0 0.3rem;
+      height: 1.15rem;
+      line-height: 1.15rem;
+      a {
+        font-size: 0.32rem;
+        font-weight: bold;
+      }
+      .orang {
+        color: #ff6500;
+      }
+      .right {
+        height: 1rem;
+        float: right;
+      }
+    }
+    .scenic_bottom {
+      border-bottom: 0.02rem #e4e4e4 solid;
+      padding-bottom: 0.2rem;
+      padding-left: 0.3rem;
+      .rank {
+        padding-right: 0.2rem;
+        div {
+          height: 2rem;
+          position: relative;
+          span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0.9rem;
+            height: 0.4rem;
+            text-align: center;
+            line-height: 0.3rem;
+            i {
+              font-size: 0.2rem;
+              color: white;
+            }
+          }
+        }
+        p {
+          font-size: 0.24rem;
+          padding-top: 0.13rem;
+        }
+      }
+      .last {
+        div {
+          i {
+            font-size: 1rem;
+            color: #b4b4b9;
+          }
+        }
+        p {
+          font-size: 0.18rem;
+          padding-left: 0.12rem;
+        }
+      }
+    }
+  }
+  //游玩排行榜
+  .play {
+    .play_top {
+      padding: 0 0.3rem;
+      height: 1.15rem;
+      line-height: 1.15rem;
+      a {
+        font-size: 0.32rem;
+        font-weight: bold;
+      }
+      .orang {
+        color: #ff6500;
+      }
+      .right {
+        height: 1rem;
+        float: right;
+      }
+    }
+    .play_bottom {
+      border-bottom: 0.02rem #e4e4e4 solid;
+      padding-bottom: 0.2rem;
+      padding-left: 0.3rem;
+      .rank {
+        padding-right: 0.2rem;
+        div {
+          height: 2rem;
+          position: relative;
+          span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0.9rem;
+            height: 0.4rem;
+            text-align: center;
+            line-height: 0.3rem;
+            i {
+              font-size: 0.2rem;
+              color: white;
+            }
+          }
+        }
+        p {
+          font-size: 0.24rem;
+          padding-top: 0.13rem;
+        }
+      }
+      .last {
+        div {
+          i {
+            font-size: 1rem;
+            color: #b4b4b9;
+          }
+        }
+        p {
+          font-size: 0.18rem;
+          padding-left: 0.12rem;
+        }
+      }
+    }
+  }
+  //美食排行榜
+  .food {
+    .food_top {
+      padding: 0 0.3rem;
+      height: 1.15rem;
+      line-height: 1.15rem;
+      a {
+        font-size: 0.32rem;
+        font-weight: bold;
+      }
+      .orang {
+        color: #ff6500;
+      }
+      .right {
+        height: 1rem;
+        float: right;
+      }
+    }
+    .food_bottom {
+      padding-bottom: 0.2rem;
+      padding-left: 0.3rem;
+      .rank {
+        padding-right: 0.2rem;
+        div {
+          height: 2rem;
+          position: relative;
+          span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0.9rem;
+            height: 0.4rem;
+            text-align: center;
+            line-height: 0.3rem;
+            i {
+              font-size: 0.2rem;
+              color: white;
+            }
+          }
+        }
+        p {
+          font-size: 0.24rem;
+          padding-top: 0.13rem;
+        }
+      }
+      .last {
+        div {
+          i {
+            font-size: 1rem;
+            color: #b4b4b9;
+          }
+        }
+        p {
+          font-size: 0.18rem;
+          padding-left: 0.12rem;
+        }
+      }
+    }
+  }
+  //tab选项卡
+  .tab {
+    padding-bottom: 0.2rem;
+    border-bottom: 1px rgba(192, 192, 192, 0.5) solid;
+
+    //景点
+    .scenic_wrap {
+      padding: 0 0.3rem;
+      a {
+        & > div {
+          padding: 0.2rem 0;
+          border-top: 0.5px rgba(192, 192, 192, 0.5) solid;
+        }
+        .left {
+          width: 2.15rem;
+          height: 1.58rem;
+        }
+        .right {
+          & > div {
+            margin-bottom: 0.12rem;
+          }
+          .mulan {
+            font-size: 0.24rem;
+            .lake {
+            }
+            .five {
+              display: inline-block;
+              width: 1.71rem;
+              height: 0.3rem;
+              font-size: 0.18rem;
+              text-align: center;
+              line-height: 0.3rem;
+              vertical-align: middle;
+              border-radius: 0.3rem;
+              color: #00a62e;
+              margin-left: 0.1rem;
+              background-color: #ebf8ee;
+            }
+          }
+          .grade {
+            .score {
+              font-size: 0.18rem;
+              vertical-align: middle;
+              color: #ff6500;
+            }
+            .much {
+              display: inline-block;
+              font-size: 0.2rem;
+              vertical-align: middle;
+              float: right;
+              span {
+                color: #e90009;
+                font-size: 0.24rem;
+                font-weight: bold;
+              }
+            }
+          }
+          .position {
+            i {
+              font-size: 0.3rem;
+              color: #c7c6cb;
+              vertical-align: middle;
+              margin-right: 0.05rem;
+            }
+            font-size: 0.2rem;
+            color: grey;
+          }
+          .data {
+            span {
+              font-size: 0.18rem;
+              padding: 0 0.1rem;
+              border-radius: 0.05rem;
+              margin-right: 0.15rem;
+            }
+            span:first-child {
+              border: 0.01rem #099b4c solid;
+              color: #099b4c;
+            }
+            span:nth-child(2) {
+              border: 0.01rem #00a0e9 solid;
+              color: #00a0e9;
+            }
+            span:nth-child(3) {
+              border: 0.01rem #eb3d00 solid;
+              color: #eb3d00;
+            }
+            span:nth-child(4) {
+              border: 0.01rem #e3007b solid;
+              color: #e3007b;
+            }
+          }
+        }
+        .van-row {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+        .variety {
+          font-size: 0.18rem;
+          color: #ff6500;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+      .more {
+        height: 0.7rem;
+        background-color: #fff2ea;
+        color: #ff6500;
+        text-align: center;
+        line-height: 0.7rem;
+        border-radius: 0.2rem;
+      }
+    }
+  }
+}
+//样式的修改
+.van-tabs /deep/ .van-ellipsis {
+  font-size: 0.26rem;
+  font-weight: bold;
+}
+.van-tabs /deep/ .van-tabs__nav--line {
+  padding: 0 0.3rem;
+}
+.van-tabs /deep/ .van-tabs__line {
+  height: 0.02rem;
+  bottom: 0rem;
+  background-color: #ff6500;
+}
+.van-tabs /deep/ .van-col {
+  padding-left: 0 !important;
+}
+.van-tabs /deep/ .van-tab--active {
+  color: #ff6500;
+}
+.van-tabs /deep/ .van-hairline--top-bottom::after {
+  border-width: 0;
+}
+</style>
+

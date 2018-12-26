@@ -1,0 +1,412 @@
+<template>
+  <div style="margin-bottom: 1rem;">
+    <div class="topBar">
+    <Header :title='title' />
+    </div>
+    <div style="width:100%; height:.92rem;"></div>
+
+          
+
+    <div class="list release">
+      <div class="use">
+        <div class="top">
+          <div class="iconfont icon-xingxing"></div>
+          <p>出租用途</p>
+        </div>
+        <div class="btn" v-for="(index,i) in btnList">{{index.name}}</div>
+      </div>
+      <div class="bot">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>所在地区</p>
+        </div>
+        <div class="middle">
+          <p>请选择</p>
+          <!-- <van-tree-select
+            :items="items"
+            :main-active-index="mainActiveIndex"
+            :active-id="activeId"
+            @navclick="onNavClick"
+            @itemclick="onItemClick"
+          /> -->
+        </div>
+        <div class="right">
+          <div class="iconfont icon-tiaozhuanqianwangyoujiantouxiangyouxiayibuxianxing"></div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>详细位置</p>
+        </div>
+        <div class="middle">
+          <van-field v-model="value" placeholder="请精确到门牌号" />
+        </div>
+        <div class="right">
+          <div class="iconfont"></div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>位置标注</p>
+        </div>
+        <div class="middle">
+          <p>请选择</p>
+        </div>
+        <div class="right">
+          <div class="iconfont icon-tiaozhuanqianwangyoujiantouxiangyouxiayibuxianxing"></div>
+        </div>
+      </div>
+      <div class="bot bot4">
+        <div class="left">
+          <div class="iconofnt"></div>
+          <p>周边景点</p>
+        </div>
+        <div class="middle">
+          <p>请选择</p>
+          <div class="iconfont"></div>
+        </div>
+        <div class="right">
+          <div class="iconfont"></div>
+        </div>
+      </div>
+      <div class="bot bot5">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>建筑面积</p>
+        </div>
+        <div class="middle">
+          <van-field v-model="value" placeholder="请填写" />
+        </div>
+        <div class="right">
+          <p>平方米</p>
+        </div>
+      </div>
+      <div class="bot bot6">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>宅基地面积</p>
+        </div>
+        <div class="middle">
+          <van-field v-model="value" placeholder="请填写" />
+        </div>
+        <div class="right">
+          <p>平方米</p>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>房屋户型</p>
+        </div>
+        <div class="middle">
+          <p>请选择</p>
+        </div>
+        <div class="right">
+          <div class="iconfont icon-tiaozhuanqianwangyoujiantouxiangyouxiayibuxianxing"></div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>楼层</p>
+        </div>
+        <div class="middle">
+          <van-field v-model="value" placeholder="请填写" />
+        </div>
+      </div>
+      <div class="bot bot9">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>出租年限</p>
+        </div>
+        <div class="middle">
+          <van-field v-model="value" placeholder="请填写" />
+        </div>
+        <div class="right">
+          <p>年</p>
+        </div>
+      </div>
+      <div class="bot bot10">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>出租价格</p>
+        </div>
+        <div class="middle lotaMiddle">
+          <van-field v-model="value" :disabled='isFace' :placeholder="(!isFace?'请填写':'不可填写')" />
+        </div>
+        <div class="right">
+          <div :class="isFace?'btn':'ischeck btn'" @click="face(0)">万元/年</div>
+          <div :class="isFace?'ischeck btn':'btn'" @click="face(1)">面议</div>
+        </div>
+      </div>
+      <div class="bot bot11">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>出租情况</p>
+        </div>
+        <div class="middle">
+          <div :class="isRent?'btn':'ischeck btn'" @click="rent(0)">整租</div>
+          <div :class="isRent?'ischeck btn':'btn'" @click="rent(1)">部分</div>
+        </div>
+      </div>
+      <div class="bot bot11" v-show="isRent" style="height: auto;min-height: 2rem">
+        <div class="left">
+          <div class="iconfont icon-xingxing"></div>
+          <p>部分出租情况</p>
+        </div>
+        <div class="middleR" style="height: auto;min-height: 2rem">
+          <van-field
+           style="height: auto;min-height: 2rem;  vertical-align: top;font-size: .26rem"
+            v-model="message"
+            type="textarea"
+            placeholder="请填写部分出租情况"
+            rows="1"
+            autosize
+          />
+        </div>
+      </div>
+    </div>
+
+    <List />
+    <Pictures/>
+    <Headline/>
+    
+    <div class="nextStep" @click="next()">
+      下一步
+    </div>
+  </div>
+</template>
+
+<script>
+  import Footer from "./components/footer"
+  import Headline from "./components/headline"
+  import Pictures from "./components/pictures"
+  import List from "./components/list"
+  import Header from "../../common/header2"
+  export default {
+    name: "issueFarm",
+    data() {
+      return {
+        title: '发布',
+        isFace: false,
+        isRent: false,
+        message: '',
+        value: '',
+        btnList: [
+          {name: "民宿"},
+          {name: "农家乐"},
+          {name: "康养"},
+          {name: "工作室"},
+          {name: "仓储"},
+          {name: "其他"},
+        ],
+        items: [
+          {
+            text: '所有城市',
+            children: [
+              {
+                text: '温州',
+                id: 1002
+              },
+              {
+                text: '杭州',
+                id: 1001
+              }
+            ]
+          }
+        ],
+        // 左侧高亮元素的index
+        mainActiveIndex: 0,
+        // 被选中元素的id
+        activeId: 1001
+      }
+    },
+    components: {
+      Footer,
+      Headline,
+      Pictures,
+      List,
+      Header
+    },
+    methods:{
+      face(o){
+        this.isFace = (o == 1?true:false)
+      },
+      rent(o){
+        this.isRent = (o == 1?true:false)
+      },
+      onNavClick(index) {
+        this.mainActiveIndex = index;
+      },
+      onItemClick(data) {
+        this.activeId = data.id;
+      }
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../style/public.less";
+
+  .list {
+    padding: 0 0.3rem;
+    margin-top: 0.44rem;
+    .use {
+      min-height: 2.33rem;
+      .bt();
+      .top {
+        height: 0.58rem;
+        .iconfont {
+          .xx()
+        }
+        p {
+          font-size: 0.26rem;
+          color: #2b2b2d;
+          float: left;
+        }
+      }
+      .btn {
+        .button();
+        float: left;
+        margin-right: 0.19rem;
+        background-color: @mr;
+        color: #fff;
+        padding: 0.15rem 0.57rem;
+        border-radius: 0.3rem;
+        margin-bottom: 0.3rem;
+      }
+    }
+    .bot {
+      height: 0.38rem;
+      padding: 0.3rem 0;
+      .bt();
+      .left {
+        float: left;
+        width: 2rem;
+        margin-right: 0.23rem;
+        .iconfont {
+          .xx();
+        }
+        p {
+          font-size: 0.26rem;
+          color: #2b2b2d;
+          float: left;
+        }
+      }
+      .middle {
+        &.lotaMiddle{
+          width: 2rem
+        }
+        float: left;
+        font-size: 0.26rem;
+        .hc();
+      }
+      .right {
+        float: right;
+        .iconfont {
+          line-height: 0.38rem;
+          font-size: 0.29rem;
+          color: #bababc;
+        }
+      }
+      .middleR{
+        padding-left: 2.23rem;
+        textarea{
+          height: auto;min-height: 2rem;
+        }
+      }
+    }
+    .bot4{
+      .left{
+        p{
+          margin-left: 0.26rem;
+        }
+      }
+    }
+    .bot5, .bot6 {
+      .right {
+        p {
+          font-size: 0.26rem;
+        }
+      }
+    }
+    .bot9 {
+      .right {
+        font-size: 0.26rem;
+      }
+    }
+    .bot10 {
+      .right {
+        margin-top: -0.1rem;
+        .btn {
+          float: left;
+          border-radius: 1.2rem 0 0 1.2rem;
+          width: 1.2rem;
+          height: 0.5rem;
+          line-height: 0.5rem;
+          text-align: center;
+          transform: translateY(.04rem);
+          background-color: #e7e6ec;
+          color: #908f94;
+          &:nth-child(2){
+            background-color: #e7e6ec;
+            border-radius:  0 1.2rem 1.2rem  0 ;
+            .hc();
+          }
+        }
+      }
+    }
+    .ischeck{
+      background-color: #ff6400!important;
+      color: #fff!important;
+    }
+    .bot11{
+      .middle{
+        margin-top: -0.1rem;
+        font-size: 0.2rem;
+        .btn {
+          float: left;
+          border-radius: 1.2rem 0 0 1.2rem;
+          width: 1.2rem;
+          height: 0.50rem;
+          line-height: 0.50rem;
+          text-align: center;
+            background-color: #e7e6ec;
+          transform: translateY(.04rem);
+          &:nth-child(2){
+            border-radius:  0 1.2rem 1.2rem  0 ;
+            background-color: #e7e6ec;
+            .hc();
+          }
+        }
+      }
+    }
+  }
+  .nextStep {
+    background-color: @mr;
+    .jz();
+    font-size: 0.35rem;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1rem;
+  }
+</style>
+
+<style>
+.list.release .van-cell.van-hairline.van-field{
+  padding: 0;
+  height: .38rem;
+  line-height: .36rem;
+}
+.list.release .van-cell.van-hairline.van-field input{
+  font-size: 0.26rem;
+}
+.middleR textarea{
+  height: auto;min-height: 2rem;
+} 
+</style>

@@ -1,0 +1,53 @@
+<template>
+<div class="recommend">
+    <div v-if="village.length>0">
+        <!--周边农房-->
+        <div class="scenic">
+            <div class="scenic_top clear">
+            <span>村庄</span><span>排行榜</span>
+            </div>
+            <div class="scenic_bottom" style="overflow: hidden;">
+                <scroll ref="scroll" class="recommend-content" :data="village">
+                    <div :style="'width:' + village.length * 3.2 + 'rem'">
+                        <router-link v-for="(item,index) in village" :to="{name:'villageDetail',params:{id:item.villageNumber}}">
+                            <div style="width: 3rem; display: inline-block; padding-right: .2rem">
+                            <div v-if='item.logoUrl' :style="'background:url(' + item.logoUrl + ');width: 100%;height: 2rem;background-size:cover;background-position: center center'"></div>
+                            <router-link :to="{name:'villageDetail',params:{id:item.villageNumber}}" class="van-ellipsis">
+                                {{item.villageName}}
+                            </router-link>
+                            </div>
+                        </router-link>
+                    </div>
+                </scroll>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+<script type="text/ecmascript-6">
+import Scroll from './common/swiperX'
+
+export default {
+  name: 'recommend',
+  data() {
+    return {
+        village: []
+    }
+  },
+  created() {
+  },
+  methods: {
+  },
+  components: {
+    Scroll
+  }
+}
+</script>
+<style lang="less" scoped>
+    .recommend{
+        width: 100%;
+    }
+    .aaa{
+        height: 1rem
+    }
+</style>

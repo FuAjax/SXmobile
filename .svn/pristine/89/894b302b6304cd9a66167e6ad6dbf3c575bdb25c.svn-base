@@ -1,0 +1,934 @@
+<template>
+  <div class="myCollect">
+    <div class="head">
+      <van-nav-bar :title='title'
+        @click-left="back"
+        @click-right="onClickRight"
+        :right-text="doit"
+        style="text-align: center"
+        left-arrow>
+      </van-nav-bar>
+    </div>
+	  <div style="padding-top: .91rem;">
+      <van-tabs @click="onClick">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        @load="init"
+        >
+        <van-tab title="农房">
+          <!--农房-->
+          <van-checkbox-group v-model="checkedList">
+             <div class="farmhouse" style="position: relative;" v-for="(item,index) in list" >
+               <van-row gutter="10">
+                <div :style="'position: relative; left: ' + (show ? '1' : '0') + 'rem;'">
+                  <div class="checkBox">
+                    <!-- checkedList[index] -->
+                    <van-checkbox v-model='aaa' :name="item" ref="checkboxes" />
+                  </div>
+                  <van-col span="24">
+                    <!--右边的内容-->
+                    <p class="top">
+                      {{item.updatetime}}
+                    </p>
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src=item.logoUrl alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                            {{item.farmhouseTitle}}
+                          </p>
+                          <div class="van-ellipsis">
+                            <span>朝向: {{item.houseOrientation}}</span>
+                            <p v-if="item.isInterview == 0">
+                              <span>￥{{item.rentingPrice}}万</span>元/年
+                            </p>
+                            <p v-else>
+                              <span>面谈</span>
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            {{item.fareaName}} - {{item.fvillageName}} - {{item.fstreetName}}
+                          </div>
+                          <div class="van-ellipsis">
+                            装修情况: {{item.decorationSituation}}
+                          </div>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="bottom">
+                      {{item.isTurnover}}
+                      <!-- <stars :rate="4.7"></stars> <span class="score">4.0分</span> | 30条评论 -->
+                      <p>
+                        <span>取消收藏</span>
+                        <span class="fix">预约看房</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </div>
+               </van-row>
+               <div class="separate"></div>
+             </div>
+          </van-checkbox-group>
+          <div class="farmBottom" v-show="show">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+        <van-tab title="农庄">
+          <!--农房-->
+          <van-checkbox-group v-model="result">
+            <div class="grange" v-for="(item,index) in list" >
+              <van-row gutter="10">
+                <div :style="'position: relative; left: ' + (show ? '1' : '0') + 'rem;'">
+                  <div class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </div>
+                  <van-col span="24">
+                    <!--右边的内容-->
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src="item.logoUrl" alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                            {{item.grangeName}}
+                          </p>
+                          <div class="van-ellipsis">
+                            <span>{{item.managementClass}}</span>
+                            <p>
+                              <span>￥{{item.personConsumption}}起</span>
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            <i class="iconfont icon-dizhi"></i>{{item.addressDetail}}
+                          </div>
+                          <p class="van-ellipsis">
+                            <span v-for="play in item.plays">{{play}}</span>
+                          </p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="bottom">
+                      <stars :rate="item.totalMark"></stars> <span class="score">{{item.totalMark}}分</span> | {{item.totalAppraisalnumber}}条评论
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </div>
+              </van-row>
+              <div class="separate"></div>
+            </div>
+          </van-checkbox-group>
+          <div class="farmBottom" v-show="show">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+        <van-tab title="村庄">
+          <!--村庄-->
+          <van-checkbox-group v-model="result">
+            <div class="village" v-for="(item,index) in list" >
+              <van-row gutter="10">
+                <div :style="'position: relative; left: ' + (show ? '1' : '0') + 'rem;'">
+                  <div class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </div>
+                  <van-col span="24">
+                    <!--右边的内容-->
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src="item.logoUrl" alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                          {{item.flanspacePlaceName}}
+                            <span v-if="item.beautifulCountry != ''">美丽乡村</span>
+                          </p>
+                          <div class="van-ellipsis">
+                            <span>已租出{{item.completedFarmhouse}}套</span>
+                            <p>
+                              <span>{{item.rentingAverage}}万元</span>/年
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            <i class="iconfont icon-dizhi"></i>{{item.fareaName}} - {{item.fstreetName}} - {{item.flanspacePlaceName}}
+                            <p>村庄均价</p>
+                          </div>
+                          <p class="van-ellipsis">
+                            <span v-for="play in item.characteristics">{{play}}</span>
+                          </p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="bottom">
+                      <span class="one">{{item.rentFarmhouse}}套</span>在租农房
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </div>
+              </van-row>
+              <div class="separate"></div>
+            </div>
+          </van-checkbox-group>
+          <div class="farmBottom" v-show="show">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+        <van-tab title="景点">
+          <!--景点-->
+          <van-checkbox-group v-model="result">
+            <div class="scenic" v-for="(item,index) in list" >
+              <van-row gutter="10">
+                <div :style="'position: relative; left: ' + (show ? '1' : '0') + 'rem;'">
+                  <div class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </div>
+                  <van-col span="24">
+                    <!--右边的内容-->
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src=item.logoUrl alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                            {{item.lanspacePlaceName}}
+                            <span>{{item.lanspacePlaceGrade}}级风景区</span>
+                          </p>
+                          <div class="van-ellipsis">
+                            <stars :rate="item.totalMark"></stars><span class="four">{{item.totalMark}}分</span>
+                            <p>
+                              <span>￥{{item.totalAppraisalnumber}}</span>/人
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            <i class="iconfont icon-dizhi"></i>{{item.fcityName}} - {{item.fareaName}} - {{item.lanspacePlaceName}}
+                          </div>
+                          <p class="van-ellipsis">
+                            <span v-for="play in item.characteristics">{{play}}</span>
+                          </p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="comment">
+                      <span>金刚点评：</span>{{item.comment}}
+                    </div>
+                    <div class="bottom">
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </div>
+              </van-row>
+              <div class="separate"></div>
+            </div>
+          </van-checkbox-group>
+          <div class="farmBottom" v-show="show">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+        <van-tab title="资讯">
+          <!--资讯-->
+          <van-checkbox-group v-model="result">
+            <div class="infor" v-for="(item,index) in list" >
+              <van-row gutter="10">
+                <div :style="'position: relative; left: ' + (show ? '1' : '0') + 'rem;'">
+                  <div class="checkBox">
+                    <van-checkbox :name="item" v-model='checkedList[index]' ref="checkboxes"/>
+                  </div>
+                  <van-col span="24">
+                    <!--右边的内容-->
+                    <p class="text">
+                      {{item.informationTitle}}
+                    </p>
+                    <div class="bottom">
+                      {{item.createTime}}
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </div>
+              </van-row>
+              <div class="separate"></div>
+            </div>
+          </van-checkbox-group>
+          <div class="farmBottom" v-show="show">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+      </van-list>
+      </van-tabs>
+    </div>
+  </div>
+</template>
+
+<script>
+  import stars from 'com/common/rates'
+    export default {
+        name: "myCollect",
+        components:{stars},
+        data() {
+          return {
+            doit: '操作',
+            title: '我的收藏',
+            imgSrc:'../../../../static/images/slide_01.jpg',
+            checkedList: [],
+            result: [],
+            list: [],
+            show: false,
+            loading: false,
+            finished: false,
+            fourSpan:['有山','拎包入住'],
+            checked: false,
+            path: 'appServiceUser/farmhouseCollection',
+            page: 1,
+            rows: 20,
+            ischeck: true,
+            aaa: true
+          }
+        },
+        methods: {
+          back(){
+            this.$router.back(-1)
+          },
+          onClickLeft(){
+            this.show=false;
+          },
+          onClickRight(){
+            if(this.show){
+              this.doit = '操作'
+              this.show=false;
+            }else{
+              this.doit = '取消'
+              this.show=true;
+            }
+          },
+          onClick(index, title){
+    		    this.page = 1
+            this.loading = false
+            this.finished = false
+            this.doit = '操作'
+            this.show=false;
+            this.list = []
+            if(index == 0){
+              this.path = 'appServiceUser/farmhouseCollection'
+            }
+            if(index == 1){
+              this.path = 'appServiceUser/grangeCollection'
+            }
+            if(index == 2){
+              this.path = 'appServiceUser/villageCollection'
+            }
+            if(index == 3){
+              this.path = 'appServiceUser/landspaceplaceCollection'
+            }
+            if(index == 4){
+              this.path = 'appServiceUser/informationCollection'
+            }
+          },
+          init(info, isclick){
+            var parmas = {
+              page: this.page,
+              rows: this.rows
+            }
+            if(info && info !== ''){
+              this.page = 1
+              parmas.collectinfo = info
+              parmas.page = 1
+            }
+            this.$http.post(this.path, parmas).then(res=>{
+              if(res.msg == 'success'){
+                if(isclick){
+                  this.list = res.data.rows
+                } else {
+                  this.list = this.list.concat(res.data.rows)
+                }
+                this.checkedList = []
+                this.list.forEach((item)=>{
+                  this.checkedList.push(item.index);
+                })
+                this.loading = false;
+                this.total = res.data.total
+                this.page = this.page + 1
+                // 数据全部加载完成
+                if (this.list.length == this.total || this.total == 0) {
+                  this.finished = true;
+                }
+              }else {
+                this.finished = true;
+              }
+            }).catch(error=>{
+                this.finished = true;
+            }) 
+          },
+          checkAll(){
+            var check = []
+            if(this.checked){
+              this.checkedList.forEach((item)=>{
+                check.push(true);
+              })
+            }else{
+              this.checkedList.forEach((item)=>{
+                check.push(false);
+              })
+            }
+            var self = this
+            this.checkedList = []
+            this.$set(this.checkedList,check)
+          }
+        },
+        computed: {},
+        created: function () {},
+        mounted: function () {},
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .checkBox{
+    padding-top: 0.2rem;
+    display: inline-block;
+    position: absolute;
+    width: .6rem;
+    left: -.8rem;
+  }
+    .head{
+  		position: fixed;
+  		left: 0;
+  		top: 0;
+  		width: 100%;
+  		z-index: 999;
+    }
+    .myCollect{
+    overflow: hidden;
+        .farmhouse{
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+             p:first-child{
+                color: black;
+                font-size: 0.28rem;
+              }
+             div{
+                color: grey;
+               margin-top: 0.15rem;
+               p{
+                 float: right;
+                 span{
+                   color: red;
+                   font-size: 0.24rem;
+                 }
+               }
+             }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .score{
+              color: red;
+            }
+            p{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              margin-top: -0.25rem;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+        .farmBottom{
+        position: fixed;
+        background-color: white;
+        width: 100%;
+        z-index: 99;
+        bottom: 0;
+        padding: 0.2rem;
+        border-top: 0.01rem #e6e6e6 solid;
+        box-sizing: border-box;
+        .van-checkbox{
+          display: inline-block;
+          vertical-align: middle;
+        }
+        span{
+          display: inline-block;
+          width: 1.6rem;
+          height: 0.5rem;
+          border-radius: 0.5rem;
+          text-align: center;
+          line-height: 0.5rem;
+          background-color: #ff6500;
+          color: white;
+          vertical-align: middle;
+          margin-left: 0.2rem;
+        }
+      }
+
+        .grange{
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+              p:first-child{
+                color: black;
+                font-size: 0.28rem;
+              }
+              div{
+                color: grey;
+                margin-top: 0.15rem;
+                p{
+                  float: right;
+                  span{
+                    color: red;
+                    font-size: 0.24rem;
+                  }
+                }
+              }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .score{
+              color: red;
+            }
+            p{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              margin-top: -0.25rem;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+
+        .village{
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+              p:first-child{
+                color: black;
+                font-size: 0.28rem;
+                span{
+                  display: inline-block;
+                  width: 1.3rem;
+                  height: 0.3rem;
+                  text-align: center;
+                  line-height: 0.3rem;
+                  background-color: #ebf8ee;
+                  color: #5ac074;
+                  border-radius: 0.3rem;
+                  font-size: 0.15rem;
+                  vertical-align: middle;
+                }
+              }
+              div{
+                color: grey;
+                margin-top: 0.15rem;
+                p{
+                  float: right;
+                  span{
+                    color: red;
+                    font-size: 0.24rem;
+                  }
+                }
+              }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .one{
+             color: black;
+              font-size: 0.26rem;
+            }
+            p{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              margin-top: -0.25rem;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+
+        .scenic{
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+              p:first-child{
+                color: black;
+                font-size: 0.28rem;
+                span{
+                  display: inline-block;
+                  width: 1.3rem;
+                  height: 0.3rem;
+                  text-align: center;
+                  line-height: 0.3rem;
+                  background-color: #ebf8ee;
+                  color: #5ac074;
+                  border-radius: 0.3rem;
+                  font-size: 0.15rem;
+                  vertical-align: middle;
+                }
+              }
+              div{
+                color: grey;
+                margin-top: 0.15rem;
+                p{
+                  float: right;
+                  span{
+                    color: red;
+                    font-size: 0.24rem;
+                  }
+                }
+                .four{
+                  color: red;
+                  vertical-align: middle;
+                  margin-left: 0.15rem;
+                }
+              }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .one{
+              color: black;
+              font-size: 0.26rem;
+            }
+            p{
+              float: right;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .comment{
+            margin:0 0.2rem;
+            margin-top: 0.2rem;
+            padding: 0.2rem 0;
+            border: 0.01rem solid #e6e6e6;
+            background-color: #faf9ff;
+            span{
+              color: grey;
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+
+        .infor{
+          .text{
+            font-size: 0.28rem;
+            color: black;
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .one{
+              color: black;
+              font-size: 0.26rem;
+            }
+            p{
+              float: right;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+        }
+    }
+</style>
+<style>
+.myCollect .van-tab{
+  width: 20%; flex: 0 0 20%;
+}
+.myCollect .van-ellipsis.van-nav-bar__title,.van-hairline--top-bottom.van-actionsheet__header{
+  text-align: center
+}
+</style>

@@ -1,0 +1,237 @@
+<template>
+    <div class="telephone">
+      <div class="navv">
+        <van-nav-bar
+          right-text="注册"
+          left-arrow
+          @click-left="onClickLeft"
+          @click-right="onClickRight"
+        />
+      </div>
+      <p class="account">手机验证码登录</p>
+      <div class="formfield">
+        <van-cell-group>
+          <van-field v-model="mobile" :error-message=message  @input='blur' placeholder="请输入手机号" />
+        </van-cell-group>
+        <van-cell-group>
+          <van-field v-model="code" placeholder="请输入手机验证码" >
+            <span slot="button" v-show="sendAuthCode" class="code" @click="sendCode">
+              获取验证码
+            </span>
+            <span slot="button" v-show="!sendAuthCode" class="recode">{{auth_time}}秒后再发送</span>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="enter" @click="login">
+        登&nbsp;录
+      </div>
+      <p class="two">
+        <router-link to="/login">
+            账户密码登录
+        </router-link>
+      </p>
+      <!-- <div style="height: 1.5rem"></div>
+      <div class="bottom">
+        <p>
+          <span></span>
+          第三方登录
+          <span></span>
+        </p>
+        <div class="img clear">
+          <router-link to="" tag="div">
+            <img src="../../assets/icon/blog.png" alt="">
+          </router-link>
+          <router-link to="" tag="div">
+            <img src="../../assets/icon/wechat.png" alt="">
+          </router-link>
+          <router-link to="" tag="div">
+            <img src="../../assets/icon/QQ.png" alt="">
+          </router-link>
+        </div>
+      </div> -->
+    </div>
+</template>
+
+<script>
+  import {isvalidPhone,isPasswd} from '@/utils/validate'
+    export default {
+        name: "telephone",
+        data() {
+            return {
+              mobile:'',
+              code:'',
+              sendAuthCode:true,
+              auth_time:0,
+              message:'',
+              check:false,
+            }
+        },
+        methods: {
+          onClickLeft(){
+            this.$router.go(-1)
+          },
+
+          blur(){ //手机号的测试
+
+            this.check = isvalidPhone(this.mobile);
+            if(!this.check){
+              this.message=`手机号格式不正确`;
+            }else{
+              this.message='';
+            }
+            if(this.mobile==''){
+
+              this.message='';
+            }
+            console.log(this.check)
+
+          },
+          sendCode(){  //发送验证码
+            if(!this.check){
+              return
+            }
+            this.sendAuthCode=false;
+            this.auth_time=120;
+            let auth_timetimer =  setInterval(()=>{
+              this.auth_time--;
+              if(this.auth_time<=0){
+                this.sendAuthCode = true;
+                clearInterval(auth_timetimer);
+              }
+            }, 1000);
+
+            this.$http.post('appServiceSso/sendCode',{mobile:this.mobile}).then(
+              res=>{
+                if(res.msg=='success'){
+                  this.$toast('验证码发送成功')
+                }else{
+                  this.$toast(res.info)
+                }
+              }
+            ).catch(error=>{
+              this.$toast('网络错误');
+            })
+          },
+          onClickRight(){
+            this.$router.replace('/register')
+          },
+
+
+
+          login(){
+              if(this.mobile==''){
+                this.$toast("请输入手机号")
+                return
+              }
+              if(this.code==''){
+                this.$toast('请输入验证码')
+                return
+              }
+
+              if(!this.check){
+                return
+              }
+
+
+
+              this.$http.post('appServiceSso/mobileLogin',{code:this.code,mobile:this.mobile}).then(res=>{
+                  if(res.msg=='success'){
+                    this.$toast('登录成功');
+                    localStorage.setItem('userInfo',JSON.stringify(res.data));
+                    setTimeout(()=>{
+                      if(this.$proType == 3){
+                        this.$router.push('/')
+                      } else {
+                        this.$router.push('/navbar')
+                      }
+                    },1200)
+                  }else{
+                    this.$toast(res.info)
+                  }
+                }
+              ).catch(error=>{
+                this.$toast('网络错误')
+              })
+          },
+        },
+        computed: {},
+        created: function () {
+          localStorage.clear();
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .telephone{
+    .account{
+      margin: 0.6rem 0.2rem;
+      font-size: 0.42rem;
+    }
+    .code{
+      display: inline-block;
+      width: 1.5rem;
+      background: #ff6500;
+      border-radius: 0.3rem;
+      text-align: center;
+      font-size: 0.2rem;
+      color: white;
+    }
+    .recode{
+      display: inline-block;
+      width: 1.5rem;
+      background: rgba(192,192,192,.5);
+      border-radius: 0.3rem;
+      text-align: center;
+      font-size: 0.2rem;
+      color: white;
+    }
+    .enter{
+      margin: 0.35rem 0.2rem;
+      background-color: #ff6500;
+      height: 0.8rem;
+      border-radius: 0.2rem;
+      text-align: center;
+      line-height: 0.8rem;
+      font-size: 0.32rem;
+      color: white;
+    }
+    .two{
+      text-align: center;
+      color: grey;
+      a{
+        color: grey;
+        font-size: 0.24rem;
+      }
+    }
+    .bottom{
+      width: 100%;
+      p{
+        text-align: center;
+        color: grey;
+        font-size: 0.24rem;
+        span{
+          display: inline-block;
+          border: 0.01rem solid #e6e6e6;
+          width: 2.3rem;
+          vertical-align: middle;
+        }
+      }
+      .img{
+        height: 2.5rem;
+        line-height: 2.5rem;
+        div{
+          float: left;
+          width: 33%;
+          text-align: center;
+          img{
+            width: 0.9rem;
+            height: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+</style>

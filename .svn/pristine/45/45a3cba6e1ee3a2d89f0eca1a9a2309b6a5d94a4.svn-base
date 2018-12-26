@@ -1,0 +1,94 @@
+<template>
+  <!--未找到搜索结果组件-->
+  <div>
+    <div class="notfind">
+      <div class="imgbox">
+        <img :src="url" alt="">
+      </div>
+      <div class="content">
+        <p>{{p1}}</p>
+        <p>{{p2}}</p>
+        <p>{{p3}}</p>
+        <p>{{p4}}</p>
+      </div>
+    </div>
+    <div class="blank"></div>
+    <div class="tuijian">
+      <p>{{wei}}</p>
+      <p>{{you}}</p>
+    </div>
+  </div>
+</template>
+
+<script>
+  import url from '../../assets/images/notFind_03.png'
+
+  export default {
+    name: "notFind",
+    data() {
+      return {
+        url: url,
+        p1: "没有找到与",
+        p2: "“用户搜索词”",
+        p3: "相关农房",
+        p4: "您可以浏览我们为您推荐的农房房源",
+        wei:"为您",
+        you:"推荐"
+      }
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../style/public.less";
+  .notfind {
+    height: 3.04rem;
+    width: 100%;
+    padding-top: 1.53rem;
+    padding-bottom: 1.93rem;
+    .imgbox {
+      margin: 0 auto;
+      width: 1.94rem;
+      height: 1.73rem;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .content {
+      margin-top: 0.6rem;
+      padding-left: 1.45rem;
+      p {
+        font-size: 0.27rem;
+        color: #0a0a0c;
+        letter-spacing: 0.04rem;
+        float: left;
+        &:nth-child(2) {
+          color: #e50000;
+        }
+        &:nth-child(4) {
+          margin-top: 0.2rem;
+        }
+      }
+    }
+  }
+  .blank{
+    .jg()
+  }
+  .tuijian{
+    height: 0.75rem;
+    width: 100%;
+    p {
+      float: left;
+      font-size: 0.35rem;
+      font-weight: 600;
+      letter-spacing: 0.04rem;
+      &:nth-child(1) {
+        color: #fd5c02
+      }
+      &:nth-child(2) {
+        color: #000005
+      }
+    }
+  }
+</style>

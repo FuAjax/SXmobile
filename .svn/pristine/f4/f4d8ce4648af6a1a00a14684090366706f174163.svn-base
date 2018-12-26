@@ -1,0 +1,159 @@
+<template>
+  <div>
+    <div class="message">
+      <div class="top">预约信息</div>
+      <div class="content">
+        <div class="name">
+          <div class="left">
+            <p>称呼</p>
+            <div class="iconfont icon-xingxing"></div>
+          </div>
+          <div class="middle">{{name}}</div>
+        </div>
+        <div class="phone">
+          <div class="left">
+            <p>手机号</p>
+            <div class="iconfont icon-xingxing"></div>
+          </div>
+          <div class="middle">{{phone}}</div>
+        </div>
+        <div class="date">
+          <div class="left">
+            <p>期望看房日期</p>
+            <div class="iconfont icon-xingxing"></div>
+          </div>
+          <div class="middle">{{date}}</div>
+          <div class="right">
+            <div class="iconfont icon-gengduo1" @click="dateShow()"></div>
+          </div>
+        </div>
+        <div class="time">
+          <div class="left">
+            <p>期望看房时间</p>
+            <div class="iconfont icon-xingxing"></div>
+          </div>
+          <div class="middle">{{time}}</div>
+          <div class="right">
+            <div class="iconfont icon-gengduo1"></div>
+          </div>
+        </div>
+        <div class="require">
+          <div class="left">
+            <p>看房要求</p>
+            <div class="iconfont icon-xingxing"></div>
+          </div>
+          <div class="middle"></div>
+        </div>
+
+
+      </div>
+    </div>
+    <!--<van-popup v-model="show" position="bottom">-->
+    <!--<van-datetime-picker-->
+    <!--v-model="currentDate"-->
+    <!--type="date"-->
+    <!--:min-date="minDate"-->
+    <!--/>-->
+    <!--</van-popup>-->
+    <van-popup v-model="show" position="bottom" :overlay="true">
+      <van-datetime-picker
+        v-model="currentDate"
+        type="date"
+        :min-date="minDate"
+        change="getColumnValue"
+      />
+    </van-popup>
+
+    <div class="blank"></div>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: "message",
+    data() {
+      return {
+        minHour: 10,
+        maxHour: 20,
+        minDate: new Date(),
+        maxDate: new Date(2019, 10, 1),
+        currentDate: new Date(),
+        name: "程先生",
+        phone: "12345678911",
+        date: "2018-05-10",
+        time: "11:30-13:00",
+        show: false
+      };
+    },
+    methods: {
+      dateShow() {
+        this.show = true,
+          getColumnValue
+      }
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../../style/public.less";
+
+  .blank {
+    .jg();
+  }
+
+  .message {
+    padding: 0.4rem 0.3rem;
+    .top {
+      height: 0.71rem;
+      .bt();
+      width: 100%;
+      .tt();
+    }
+    .content {
+      margin-top: 0.7rem;
+      .name, .phone, .date, .time, .require {
+        font-size: 0.26rem;
+        color: #646466;
+        min-height: 0.88rem;
+        line-height: 0.88rem;
+        .bt();
+        .left {
+          min-width: 1.79rem;
+          float: left;
+          p {
+            float: left;
+            &:nth-child(1) {
+            }
+          }
+          .iconfont {
+            float: left;
+            font-size: 0.15rem;
+            .rc();
+          }
+        }
+        .middle {
+          margin-left: 0.3rem;
+          float: left;
+        }
+        .right {
+          float: right;
+          .iconfont {
+            font-size: 0.3rem;
+          }
+        }
+      }
+      .require {
+        min-height: 2.55rem;
+        border: none;
+      }
+    }
+  }
+
+  /*.van-popup--bottom {*/
+  /*display: none !important;*/
+  /*}*/
+
+  /*.content /deep/ .van-modal {*/
+  /*display: none !important;*/
+  /*}*/
+</style>

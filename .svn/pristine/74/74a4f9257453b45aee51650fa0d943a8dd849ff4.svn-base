@@ -1,0 +1,180 @@
+/*
+    Created by name: "FuDi", Date:2018/11/20 ,Time:10:30
+*/
+
+let m = {
+
+  showPopup(num) {
+    if (num == 1) {
+      this.show = true;
+      this.date2 = false;
+      this.date1 = true;
+    } else if (num == 2) {
+      this.show = true;
+      this.date2 = true;
+      this.date1 = false;
+    }
+  },
+  confirm2(value) {//离店日期
+    this.value2 = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate();
+    console.log(this.value2);
+    this.show = false;
+    if (this.value1 != '') {
+      this.DateDiff(this.value1, this.value2)
+    }
+    // 入住时间
+    var value1 = this.value1
+
+    // 离店时间
+    var value2 = this.value2
+
+    var id = this.$route.params.id
+    var userID= JSON.parse(localStorage.getItem('userInfo'))
+    this.$http.post('appServiceOrder/returnOrderInfo',{
+      userId: userID,
+      productId: id,
+      checkinTime: value1,
+      checkoutTime: value2
+    }).then(res => {
+      console.log(res);
+      this.drawback = res.data.drawback
+      this.priceDetail = res.data.priceDetail
+      this.totalPrice = `￥` + res.data.totalPrice + `元`
+    })
+    init();
+  },
+  confirm(value) {
+    this.value1 = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate();
+    this.show = false;
+  },
+  cancel() {
+    this.show = false;
+  },
+  DateDiff(sDate1, sDate2) {
+    var aDate, oDate1, oDate2, iDays;
+    aDate = sDate1.split("-");
+    oDate1 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);
+    aDate = sDate2.split("-");
+    oDate2 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);
+    iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24);
+    this.days = iDays;
+  },
+  detail() {
+    this.show2 = true;
+  },
+
+  // 获取入住信息
+  init() {
+    var value1=this.value1
+    var value2=this.value2
+    value1 = value1.getFullYear() + '-' + (value1.getMonth() + 1) + '-' + value1.getDate();
+    value2  = value2.getFullYear() + '-' + (value2.getMonth() + 1) + '-' + (value2.getDate()+1);
+    console.log(value2);
+    var userID= JSON.parse(localStorage.getItem('userInfo'))
+    // console.log(userID);
+    // console.log(userID.userId);
+    // console.log(userID.nickName);
+    // this.phone=userID.nickName
+    // this.UserName=userID.userId
+    var id = this.$route.params.id
+    console.log(id);
+    this.$http.post('appServiceOrder/stay/writeinformation', {productId: id, userId: userID}).then(res => {
+      console.log(res.data);
+      this.productName = res.data.productName
+      this.businessLogoUrl = res.data.businessLogoUrl
+      this.abolitionRules = res.data.abolitionRules
+      this.telephone = res.data.telephone
+      this.areaName = res.data.areaName
+      this.bedType = res.data.bedType
+    })
+    this.$http.post('appServiceOrder/queryGeneralContact', {productId: id,userId: userID}).then(res => {
+      console.log(res);
+      this.info = res.data
+    })
+
+    this.$http.post('appServiceOrder/returnOrderInfo',{
+      userId: userID,
+      productId: id,
+      checkinTime: value1,
+      checkoutTime: value2
+    }).then(res => {
+      console.log(res);
+      this.drawback = res.data.drawback
+      this.priceDetail = res.data.priceDetail
+      this.totalPrice = `￥` + res.data.totalPrice + `元`
+    })
+    // this.$http.post('appServiceOrder/returnOrderInfo',{
+    //   userId: UserName,
+    //   productId: id,
+    //   checkinTime: this.value1,
+    //   checkoutTime: this.value2
+    // }).then(res => {
+    //   console.log(res);
+    //   this.drawback = res.data.drawback
+    //   this.priceDetail = res.data.priceDetail
+    //   this.totalPrice = `￥` + res.data.totalPrice + `元`
+    // })
+  },
+
+  toActive(index) {
+    this.activeIndex = index;
+    this.changeRed = index;
+    console.log(this.changeRed);
+  },
+  // 提交订单
+  submit() {
+    console.log(123);
+    var occupantsName = this.UserName;
+    var occupantsMobile = this.phone
+    var occupantsIdcard = this.card
+    var checkinTime = ''
+    var checkoutTime = ''
+    console.log(this.info);
+    // occupantsName = this.info[this.activeIndex].contactName
+    // occupantsMobile = this.info[this.activeIndex].contactMobile
+    // occupantsIdcard = this.info[this.activeIndex].contactIdcard
+
+    checkinTime = this.value1
+    checkoutTime = this.value2
+    var id = this.$route.params.id
+    console.log(id);
+    this.$http.post('appServiceOrder/stay/submit', {
+      userId: 1,
+      productId: id,
+      occupantsName,
+      occupantsMobile,
+      occupantsIdcard,
+      checkoutTime,
+      checkinTime
+    }).then(res => {
+      console.log(res);
+      if (res.info == '请求成功') {
+        this.$toast("预订成功");
+        console.log(occupantsName);
+        console.log(occupantsIdcard);
+        console.log(occupantsMobile);
+        console.log(occupantsName);
+        this.$router.push({
+          name: "inntoConfirm", params: {
+            id: res.data.orderId,
+            occupantsIdcard: occupantsIdcard,
+            occupantsMobile: occupantsMobile,
+            occupantsName: occupantsName,
+            checkoutTime,
+            checkinTime
+          }
+        })
+      } else {
+        this.$toast("请确认住宿信息")
+      }
+    })
+  }
+  // beforeClose(action, done) {
+  //   if (action === 'confirm') {
+  //     setTimeout(done, 1000);
+  //   } else {
+  //     done();
+  //   }
+  // },
+}
+export default m

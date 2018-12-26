@@ -1,0 +1,87 @@
+<template>
+  <div class="Detail">
+    <Header  :isback='isback'/>
+    <Banner/>
+    <Title/>
+    <Time/>
+    <Swiper/>
+    <Information/>
+    <Recommend/>
+    <Fitment/>
+    <Specil/>
+    <Decorate/>
+    <Location/>
+    <MapGrange/>
+    <RimFarm/>
+    <RimGrange/>
+    <Link/>
+    <Bootom/>
+    <Footer/>
+
+  </div>
+</template>
+
+<script>
+  import Header from '../../common/Header';
+  import Footer from "../rentDetail/components/Footer"
+  import Banner from './components/dealBanner'
+  import Title from '../rentDetail/components/Title'
+  import Time from '../rentDetail/components/Time'
+  import Swiper from '../../common/Swiper'
+  import Information from '../rentDetail/components/Information'
+  import Recommend from '../rentDetail/components/Recommend'
+  import Fitment from '../rentDetail/components/Fitment'
+  import Specil from '../rentDetail/components/Specil'
+  import Decorate from '../rentDetail/components/Decorate'
+  import Location from '../rentDetail/components/Location'
+  import MapGrange from '../rentDetail/components/MapGrange'
+  import RimFarm from '../rentDetail/components/RimFarm'
+  import RimGrange from '../rentDetail/components/RimGrange'
+  import Link from '../rentDetail/components/Link'
+  import Bootom from '../rentDetail/components/Bootom'
+
+  export default {
+    name: "dealDetail",
+    data() {
+      return {
+        isback:true,
+
+      }
+    },
+    components: {
+      Header,
+      Footer,
+      Banner,
+      Title,
+      Time,
+      Swiper,
+      Information,
+      Recommend,
+      Fitment,
+      Specil,
+      Decorate,
+      Location,
+      MapGrange,
+      RimFarm,
+      RimGrange,
+      Link,
+      Bootom
+    },
+    methods:{
+
+    },
+    created:function () {
+      this.init()
+    }
+
+
+
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .Detail {
+    height: 100%;
+    overflow: auto;
+  }
+</style>

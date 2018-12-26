@@ -1,0 +1,77 @@
+<template>
+  <div class="aa">
+    <el-button type="text" v-text="keepTime" @click="StartCountDown"></el-button>
+
+    <!--百度地图容器-->
+    <div id="container"></div>
+  </div>
+
+</template>
+
+<script>
+    export default {
+      name: "test",
+      data() {
+        return {
+          keepTime: '倒计时',
+          limittime: 100,
+          settime: '',
+          flag: false,
+        }
+      },
+      methods: {
+        StartCountDown() {
+          var mydate = new Date();
+          mydate.setMinutes(mydate.getMinutes() + this.limittime);
+          this.settime = mydate;
+
+          let time = setInterval(() => {
+            if (this.flag == true) {
+              clearInterval(time)
+            }
+            this.timeDown()
+          }, 100)
+        },
+        timeDown() {
+          const endTime = new Date(this.settime);
+          const nowTime = new Date();
+          let leftTime = parseInt((endTime.getTime() - nowTime.getTime()) / 1000);
+          let d = parseInt(leftTime / (24 * 60 * 60));
+          let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
+          let m = this.formate(parseInt(leftTime / 60 % 60));
+          let s = this.formate(parseInt(leftTime % 60));
+          if (leftTime <= 0) {
+            this.flag = true;
+            alert("时间到，停止作答");
+          }
+          this.keepTime = `${h}:${m}:${s}`;
+        },
+        formate(time) {
+          if (time >= 10) {
+            return time
+          } else {
+            return `0${time}`
+          }
+        },
+
+
+        setmap(){
+          var map = new BMap.Map("container");    // 创建Map实例
+          map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
+          map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+        }
+      },
+      mounted: function () {
+        this.setmap()
+      },
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .aa{
+    #container{
+      width: 100%;
+      height: 4rem;
+    }
+  }
+</style>

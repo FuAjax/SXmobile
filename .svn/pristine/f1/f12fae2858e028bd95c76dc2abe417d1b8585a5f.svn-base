@@ -1,0 +1,737 @@
+<template>
+  <div class="scenic" id="scenic">
+    <div class="topBar">
+      <Header :title='title' :isback='isback'/>
+    </div>
+    <div style="width:100%; height:.92rem;"></div>
+    <!--搜索-->
+    <!--<div class="top">-->
+      <!--<div class="wrap">-->
+        <!--<router-link :to="{name:'search'}" tag="div" class="search">-->
+          <!--<i class="iconfont icon-sousuo"></i>-->
+          <!--<input type="text" placeholder="请输入区域/景点名称">-->
+        <!--</router-link>-->
+        <!--&lt;!&ndash;<router-link to="" tag="div" class="find">&ndash;&gt;-->
+          <!--&lt;!&ndash;地图找农庄&ndash;&gt;-->
+        <!--&lt;!&ndash;</router-link>&ndash;&gt;-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--景点排行-->
+    <div v-if="scenic_list.length>0">
+      <div class="scenic">
+        <div class="scenic_top clear">
+          <span>景点</span>排行榜
+        </div>
+        <div class="scenic_bottom" style="overflow: hidden;">
+          <scroll ref="scroll" class="recommend-content" :data="scenic_list">
+            <div :style="'width:' + scenic_list.length * 3.2 + 'rem'">
+              <router-link v-for="(item,index) in scenic_list" :to="{name:'scenicDetail',params:{id:item.lanspacePlaceNumber}}">
+                <div style="width: 3rem; display: inline-block; padding-right: .2rem">
+                  <div v-if='item.fileUrl' :style="'background:url(' + item.fileUrl + ');width: 100%;height: 2rem;background-size:cover;background-position: center center'"></div>
+                  <div style="font-size: 0.26rem;"  class="van-ellipsis">
+                    {{item.lanspacePlaceName}}
+                  </div>
+                </div>
+              </router-link>
+            </div>
+          </scroll>
+        </div>
+      </div>
+    </div>
+
+
+    <!--中间分割块-->
+    <div class="separate"></div>
+    <!--条件筛选-->
+    <div class="condition">
+      <ul class="top_tab clear">
+        <li class="list van-ellipsis" @click="area" :class="{active:area1}">
+          {{areatext}}
+          <i class="iconfont icon-xiala1" v-show="area1"></i>
+          <i class="iconfont icon-xiala" v-show="!area1"></i>
+        </li>
+        <li class="list van-ellipsis" @click="group" :class="{active:area2}">
+          {{deliciousfood}}
+          <i class="iconfont icon-xiala1" v-show="area2"></i>
+          <i class="iconfont icon-xiala" v-show="!area2"></i>
+        </li>
+        <li class="list van-ellipsis" @click="weather" :class="{active:area3}">
+         {{fitseason}}
+          <i class="iconfont icon-xiala1" v-show="area3"></i>
+          <i class="iconfont icon-xiala" v-show="!area3"></i>
+        </li>
+        <li class="list van-ellipsis" @click="sort" :class="{active:area4}">
+          排序
+          <i class="iconfont icon-xiala1" v-show="area4"></i>
+          <i class="iconfont icon-xiala" v-show="!area4"></i>
+        </li>
+      </ul>
+
+      <div>
+        <!--区域-->
+        <div class="area">
+          <div v-if="area1" class="regin">
+            <div class="left">
+              <!--景区/区域-->
+              <div v-for="(item,index) in two"
+                   :keys="index"
+                   :class="{active:index==twoNum}"
+              >{{item}}
+              </div>
+            </div>
+            <div class="right">
+              <div v-if="twoNum==0">
+                <!--区域-->
+                <van-tree-select
+                  :items="item1"
+                  :main-active-index="mainActiveIndex"
+                  :active-id="activeId"
+                  @navclick="onNavClick"
+                />
+              </div>
+            </div>
+          </div>
+          <!--适合人群-->
+          <div v-if="area2" class="group">
+            <van-tree-select
+              :items="peopletype"
+              :active-id="activeId"
+              @itemclick="ontypeClick"
+            />
+          </div>
+          <!--适宜季节-->
+          <div v-if="area3" class="season">
+            <van-tree-select
+              :items="weatherlist"
+              :active-id="activeId"
+              @itemclick="onweatherClick"
+            />
+          </div>
+          <!--排序-->
+          <div v-if="area4" class="rank">
+            <van-tree-select
+              :items="items"
+              :active-id="activeId"
+              @itemclick="onItemClick"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--景点列表-->
+    <div class="list">
+      <div class="scenic_wrap">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          @load="init"
+        >
+          <router-link v-for="(item,index) in landlist" :to="{name:'scenicDetail',params:{id:item.lanspacePlaceNumber}}" >
+          <van-row gutter="20" >
+            <!--图-->
+            <van-col span="8">
+              <div class="left">
+                <img :src="(item.fileUrl !='undefine') ?item.fileUrl:defaultimg" v-lazy="item.fileUrl">
+              </div>
+            </van-col>
+            <!--右边文字-->
+            <van-col span="16">
+              <div class="right">
+                <!--风景区-->
+                <div class="mulan van-ellipsis">
+                  <span class="lake">{{item.lanspacePlaceName}}</span>
+                  <span class="five">{{item.lanspacePlaceGrade}}级风景区</span>
+                </div>
+                <!--评分-->
+                <div class="grade">
+                  <stars :rate="item.totalMark"></stars>
+                  <span class="score">{{item.totalMark}}分</span>
+                  <p class="much">
+                    <span>￥{{item.admissionPrice}}</span>/人
+                  </p>
+                </div>
+                <!--定位-->
+                <div class="position van-ellipsis">
+                  <i class="iconfont icon-dizhi"></i>{{item.fcityName}}-{{item.fareaName}}
+                </div>
+                <!--数据-->
+                <div class="data" v-if="item.characteristics">
+                    <span
+                      v-for="aa in (item.characteristics.slice(0,3))"
+                    >{{aa}}</span>
+                </div>
+              </div>
+            </van-col>
+          </van-row>
+          </router-link>
+        </van-list>
+        <noFind v-if="nomessage" name1="景点" :name2='false'></noFind>
+      </div>
+    </div>
+    <div>
+      <Footer></Footer>
+      <goTotop/>
+    </div>
+  </div>
+</template>
+
+<script>
+  import Footer from 'com/common/Footer'
+  import Header from "com/common/header"
+  import stars from 'com/common/rates'
+  import noimg from '@/assets/noimg.jpg'
+  import Scroll from 'com/common/swiperX'
+  import noFind from 'com/common/notFind'
+  import goTotop from 'com/common/goTop'
+  export default {
+    name: "scenic",
+    components: {stars, Header, Footer,Scroll,noFind,goTotop},
+    data() {
+      return {
+        areatext:'区域',
+        deliciousfood:'适合人群',
+        fitseason:'适宜季节',
+        nomessage:false,//没有数据的显示
+        defaultimg: noimg,
+        area1: false,
+        area2: false,
+        area3: false,
+        area4: false,
+        fourSpan: [],
+        isback: true,
+        title: '景点',
+        scenic_list: [],//景点
+        list: ["区域", '适合人群', '适宜季节', '排序'],
+        two: ['区域'],
+        num: -1,
+        twoNum: 0,
+        items: [
+          {
+            // 导航名称
+            text: '所有城市',
+            // 该导航下所有的可选项
+            children: [
+              {
+                text: '智能排序',
+                id: 1002,
+                resful:'znd',
+              },
+              // {
+              //   text: '离我最近',
+              //   id: 1001,
+              //   resful:'',
+              // },
+              {
+                text: '价格低到高',
+                id: 1003,
+                resful:'jgs',
+              },
+              {
+                text: '价格高到低',
+                id: 1004,
+                resful:'jgj',
+              },
+              {
+                text: '评论最高',
+                id: 1005,
+                resful:'pjj',
+              },
+            ]
+          },
+        ],//排序
+        mainActiveIndex: 0,
+        activeId: null,
+
+        loading: false,
+        finished: false,
+        page: 1,
+        rows: 30,
+        total: 1,
+        keywords:'',//关键字
+
+        peopletype: [],//适合人群
+        landlist: [],//景点列表
+        weatherlist: [],//适宜季节
+        item1: [],//区域列表
+
+        arearest: '',//区域rest
+        weatherrest: '',//季节rest
+        peoplerest: [],//适宜人群resT
+        sortresful:'',//排序rest
+
+      }
+    },
+    methods: {
+      rank() {//景点排行
+        this.$http.post('appServiceGrange/grangeIndex').then(res => {
+          if (res.msg == 'success') {
+            this.scenic_list = res.data.landspaceTopList;
+            this.condition();
+          }
+        });
+      },
+
+      init() {//景点列表
+        setTimeout(() => {
+          const params = {
+            page: this.page,
+            rows: this.rows,
+            rest: this.arearest + this.weatherrest + this.peoplerest+this.sortresful,
+            keyword:this.keywords,
+          };
+          this.$http.post('appServiceGrange/getLandspaceData', params).then(res => {
+            if (res.msg == 'success') {
+              if (this.page == 1) {
+                this.landlist = res.data.rows;
+              } else {
+                this.landlist = this.landlist.concat(res.data.rows);
+              }
+              if(this.landlist.length==0){
+                this.nomessage=true;
+              };
+              this.total = res.data.total;
+              this.page++;
+              // let totalpage=Math.ceil(this.total/this.rows);
+              // if(this.page>totalpage){
+              //   this.page=1;
+              // }
+              this.loading = false;
+              console.log(this.landlist.length, this.total)
+              if (this.landlist.length >= this.total || this.total==0) {
+                this.finished = true;
+              }
+            }else{
+              this.finished = true;
+            }
+          }).catch(error=>{
+            this.finished=true;
+          });
+        }, 500)
+
+
+      },
+      condition() {
+        this.$http.post('appServiceGrange/getLandSpaceParam').then(res => {
+          //区域
+          let aaa=res.data.AreaList;
+          aaa.unshift({text:'不限',children:null,areaRestfulDictionary:''});
+          this.item1=aaa;
+          // this.item1 = res.data.AreaList;
+
+          //适合人群
+          let cookaaa=res.data.throngParam;
+          cookaaa.map(item=>{
+            item.children.unshift({menuRestfulDictionary:'',text:'不限',id:null})
+          })
+          this.peopletype=cookaaa;
+
+          // this.peopletype = res.data.throngParam;
+          //适宜季节
+          let seasonaaa=res.data.suitableSeasonParam;
+          seasonaaa.map(item=>{
+            item.children.unshift({menuRestfulDictionary:'',text:'不限',id:null})
+          })
+          this.weatherlist=seasonaaa;
+          // this.weatherlist = res.data.suitableSeasonParam;
+        })
+      },
+
+      area() {
+        this.area2 = false;
+        this.area3 = false;
+        this.area4 = false;
+        this.area1 = !this.area1;
+      },
+      group() {
+        this.area3 = false;
+        this.area4 = false;
+        this.area1 = false;
+        this.area2 = !this.area2;
+      },
+      weather() {
+        this.area4 = false;
+        this.area1 = false;
+        this.area2 = false;
+        this.area3 = !this.area3;
+      },
+      sort() {
+        this.area1 = false;
+        this.area2 = false;
+        this.area3 = false;
+        this.area4 = !this.area4;
+      },
+
+      onNavClick(index) {//区域导航
+        this.mainActiveIndex = index;
+        this.area1=false;
+        this.arearest=this.item1[index].areaRestfulDictionary;
+        this.areatext=this.item1[index].text;
+        if(index==0){
+          this.areatext='区域'
+        }
+        this.nomessage=false,
+        this.page=1;
+        this.init();
+      },
+
+      // onAreaClick(data) {//区域
+      //   this.activeId = data.id;
+      //   this.area1 = false;
+      //   this.arearest = data.restFul;
+      //   this.page = 1;
+      //   this.init();
+      // },
+
+      ontypeClick(data) {//适宜人群
+        if(data.text==='不限'){
+          this.deliciousfood='适合人群';
+        }else{
+          this.deliciousfood=data.text;
+        }
+        this.activeId = data.id;
+        this.area2 = false;
+        this.peoplerest = data.menuRestfulDictionary;
+        this.nomessage=false,
+        this.page = 1;
+        this.init()
+      },
+
+      onweatherClick(data) {//适宜季节
+        if(data.text==='不限'){
+          this.fitseason='适宜季节';
+        }else{
+          this.fitseason=data.text;
+        }
+        this.activeId = data.id;
+        this.area3 = false;
+        this.weatherrest = data.menuRestfulDictionary;
+        this.nomessage=false,
+        this.page = 1;
+        this.init();
+      },
+
+      onItemClick(data) {//排序
+        this.activeId = data.id;
+        this.area4=false;
+        this.sortresful=data.resful;
+        this.nomessage=false,
+        this.page=1;
+        this.init();
+      }
+
+    },
+    computed: {},
+    created: function () {
+      // this.init();
+      this.rank();
+       this.keywords=this.$route.query.searchWord;
+
+    },
+    mounted: function () {
+
+    },
+    watch: {},
+
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .scenic {
+    //头部
+    .top {
+      height: 1rem;
+      background-color: #f6f5fb;
+      position: relative;
+      .wrap {
+        position: absolute;
+        top: 0.2rem;
+        width: 6.8rem;
+        left: 50%;
+        transform: translateX(-50%);
+        .search {
+          i {
+            font-size: 0.3rem;
+            vertical-align: middle;
+            margin-left: 0.2rem;
+          }
+          height: 0.57rem;
+          display: inline-block;
+          width: 4.9rem;
+          vertical-align: middle;
+          background-color: white;
+          border-radius: 0.57rem;
+          padding-top: 0.1rem;
+          box-sizing: border-box;
+          input {
+            vertical-align: middle;
+            font-size: 0.2rem;
+            border: none;
+            outline: none;
+            color: #d5eed1;
+          }
+        }
+        .find {
+          width: 1.8rem;
+          background-color: #00af33;
+          vertical-align: middle;
+          height: 0.57rem;
+          display: inline-block;
+          font-size: 0.2rem;
+          border-radius: 0.57rem;
+          text-align: center;
+          line-height: 0.57rem;
+          color: #d5eed1;
+        }
+      }
+    }
+    //景点
+    .scenic {
+      padding-left: 0.3rem;
+      .scenic_top {
+        height: 1.15rem;
+        line-height: 1.15rem;
+        font-size: 0.32rem;
+        font-weight: bold;
+        span {
+          color: #ff6500;
+        }
+      }
+      .scenic_bottom {
+        padding-bottom: 0.2rem;
+        .rank {
+          padding-right: 0.2rem;
+          div {
+            height: 2rem;
+            position: relative;
+          }
+          p {
+            font-size: 0.24rem;
+            padding-top: 0.13rem;
+          }
+        }
+      }
+    }
+    //隔开
+    .separate {
+      height: 0.2rem;
+      background-color: #f1f0f6;
+    }
+    //条件
+    .condition {
+      position: relative;
+      .top_tab {
+        border-bottom: 0.01rem solid #e5e5e5;
+        margin: 0 0.3rem;
+        li {
+          height: 0.85rem;
+          float: left;
+          width: 25%;
+          font-size: 0.24rem;
+          text-align: center;
+          line-height: 0.85rem;
+        }
+      }
+      .area {
+        position: absolute;
+        top: 0.85rem;
+        width: 100%;
+        background-color: white;
+        border-top: 0.01rem solid #e6e6e6;
+        .regin {
+          .left {
+            width: 25%;
+            float: left;
+            font-size: 0.2rem;
+            margin-left: 0.2rem;
+            box-sizing: border-box;
+            div {
+              border-bottom: 0.01rem solid #e6e6e6;
+              height: 0.8rem;
+              text-align: center;
+              line-height: 0.8rem;
+            }
+          }
+          .right {
+            background-color: #faf9ff;
+            border-left: 0.01rem solid #e6e6e6;
+            width: 72%;
+            float: left;
+          }
+        }
+        .group {
+          background-color: white;
+        }
+      }
+      .area /deep/ .van-tree-select__nitem--active, .van-tree-select__nitem:active{
+        color: #ff6500;
+      }
+      .season {
+        position: relative;
+        margin: 0 0.2rem;
+        p {
+          color: grey;
+          margin: 0.2rem 0;
+        }
+        .content {
+          border-bottom: 0.01rem solid #e5e5e5;
+          padding-bottom: 0.2rem;
+          margin-bottom: 0.2rem;
+          span {
+            display: inline-block;
+            height: 0.55rem;
+            padding: 0 0.2rem;
+            border-radius: 0.55rem;
+            background-color: #f1f0f6;
+            text-align: center;
+            line-height: 0.55rem;
+            margin-right: 0.2rem;
+            margin-top: 0.15rem;
+          }
+        }
+        .bottom {
+          width: 100%;
+          margin-top: 1rem;
+          span {
+            display: inline-block;
+            width: 49%;
+            background-color: #fea541;
+            color: white;
+            height: 0.85rem;
+            line-height: 0.85rem;
+            vertical-align: middle;
+            text-align: center;
+          }
+        }
+      }
+
+    }
+    //景点列表
+    .list {
+      .scenic_wrap {
+        padding: 0 0.3rem;
+        .van-list {
+         a{
+           display: block;
+           border-bottom: 0.01rem solid #e5e5e5;
+           & > div {
+             padding: 0.2rem 0;
+           }
+           .more {
+             height: 0.7rem;
+             background-color: #fff2ea;
+             text-align: center;
+             line-height: 0.7rem;
+             color: #ff6500;
+             font-size: 0.2rem;
+           }
+           .left {
+             width: 2.15rem;
+             height: 1.58rem;
+           }
+           .right {
+             & > div {
+               margin-bottom: 0.12rem;
+             }
+             .mulan {
+               font-size: 0.24rem;
+               .lake {
+
+               }
+               .five {
+                 display: inline-block;
+                 width: 1.71rem;
+                 height: 0.3rem;
+                 font-size: 0.18rem;
+                 text-align: center;
+                 line-height: 0.3rem;
+                 vertical-align: middle;
+                 border-radius: 0.3rem;
+                 color: #00a62e;
+                 margin-left: 0.1rem;
+                 background-color: #ebf8ee;
+               }
+             }
+             .grade {
+               .score {
+                 font-size: 0.18rem;
+                 vertical-align: middle;
+                 color: #ff6500;
+               }
+               .much {
+                 display: inline-block;
+                 font-size: 0.2rem;
+                 vertical-align: middle;
+                 float: right;
+                 span {
+                   color: #e90009;
+                   font-size: 0.24rem;
+                   font-weight: bold;
+                 }
+               }
+             }
+             .position {
+               i {
+                 font-size: 0.3rem;
+                 color: #c7c6cb;
+                 vertical-align: middle;
+                 margin-right: 0.05rem;
+               }
+               font-size: 0.2rem;
+               color: grey;
+             }
+             .data {
+               span {
+                 font-size: 0.18rem;
+                 padding: 0 0.1rem;
+                 border-radius: 0.05rem;
+                 margin-right: 0.15rem;
+               }
+               span:first-child {
+                 border: 0.01rem #099b4c solid;
+                 color: #099b4c;
+               }
+               span:nth-child(2) {
+                 border: 0.01rem #00a0e9 solid;
+                 color: #00a0e9;
+               }
+               span:nth-child(3) {
+                 border: 0.01rem #eb3d00 solid;
+                 color: #eb3d00;
+               }
+               span:nth-child(4) {
+                 border: 0.01rem #e3007b solid;
+                 color: #e3007b;
+               }
+             }
+           }
+           .van-row {
+             margin-left: 0 !important;
+             margin-right: 0 !important;
+           }
+           .variety {
+             font-size: 0.18rem;
+             color: #ff6500;
+             white-space: nowrap;
+             text-overflow: ellipsis;
+             overflow: hidden;
+           }
+         }
+        }
+
+      }
+    }
+
+  }
+
+  .active {
+    color: #ff6500;
+  }
+
+</style>
+
+<style>
+  /*#scenic p {*/
+      /*text-align: left*/
+    /*}*/
+</style>

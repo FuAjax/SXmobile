@@ -1,0 +1,64 @@
+.topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+.separate {
+  height: 0.2rem;
+  background-color: #f1f0f6;
+}
+#loading {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+#loading .content {
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+#loading .load-wrapp {
+  width: 100px;
+  height: 100px;
+  margin: 50% auto;
+  padding: .6rem .2rem .2rem;
+  transform: translateY(1.4rem);
+  text-align: center;
+}
+#loading .load-wrapp p {
+  padding: 20px 0 0;
+}
+#loading .line {
+  display: inline-block;
+  width: .2rem;
+  height: .2rem;
+  border-radius: 50%;
+  background-color: #4b9cdb;
+}
+#loading .line:nth-child(2) {
+  margin: 0 0.2rem;
+}
+#loading .load-3 .line:nth-last-child(1) {
+  animation: loadingC .6s .1s linear infinite;
+}
+#loading .load-3 .line:nth-last-child(2) {
+  animation: loadingC .6s .2s linear infinite;
+}
+#loading .load-3 .line:nth-last-child(3) {
+  animation: loadingC .6s .3s linear infinite;
+}
+.ranking-cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #fff;
+  font-size: .22rem;
+  padding: 0.06rem 0.1rem 0.06rem 0.06rem;
+}

@@ -1,0 +1,310 @@
+<template>
+  <div class="inntoUse">
+    <div class="top">
+      <van-nav-bar title="订单详情"  left-arrow>
+      </van-nav-bar>
+    </div>
+    <div class="state">
+      订单状态：<span>{{info.stateName}}</span>
+      <p v-if='info.orderStatus == 0 || info.orderStatus == 1 || info.orderStatus == 3' @click='cancel'>取消订单</p>
+    </div>
+    <div class="separate"></div>
+    <div class="number">
+      <p class="top clear">
+        订单号：{{info.orderNo}}  【门票】
+        <span> {{info.orderTime}}</span>
+      </p>
+      <div class="imgcenter">
+        <van-row gutter="20">
+          <van-col span="8" class="left">
+            <img :src='info.businessLogoUrl'>
+          </van-col>
+          <van-col span="16" class="right">
+            <p>{{info.businessName}}</p>
+            <p>数量：{{info.buyNumber}}张</p>
+            <p>使用时间：{{info.useTime}}</p>	
+          </van-col>
+        </van-row>
+      </div>
+    </div>
+    <div class="detail">
+      <p>{{info.businessName}}</p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            地址
+          </van-col>
+          <van-col span="20">
+            {{info.businessAddress}}
+          </van-col>
+        </van-row>
+      </p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            电话
+          </van-col>
+          <van-col span="20">
+            {{info.businessMobile}}
+          </van-col>
+        </van-row>
+      </p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            营业时间
+          </van-col>
+          <van-col span="20">{{info.openTime}}
+          </van-col>
+        </van-row>
+      </p>
+    </div>
+    <div class="separate"></div>
+    <div class="detail" style="border-bottom: 0.01rem solid #e6e6e6">
+      <p>订单总额</p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            原价
+          </van-col>
+          <van-col span="20">
+            <span>￥{{info.costPrice}}</span>
+          </van-col>
+        </van-row>
+      </p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            订单总价
+          </van-col>
+          <van-col span="20">
+            <span>￥{{info.orderPrice}}</span>
+          </van-col>
+        </van-row>
+      </p>
+    </div>
+    
+    <div class="detail">
+      <p>入住人信息
+        <span>共2人</span>
+      </p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            入住人
+          </van-col>
+          <van-col span="20">
+            入住人： 李元坤  李晓霞
+          </van-col>
+        </van-row>
+      </p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            证件号
+          </van-col>
+          <van-col span="20">
+            423123123123123213
+            423123123123123213
+          </van-col>
+        </van-row>
+      </p>
+      <p>
+        <van-row gutter="5">
+          <van-col span="4">
+            手机号
+          </van-col>
+          <van-col span="20">
+            135423213633
+            135423213633
+          </van-col>
+        </van-row>
+      </p>
+    </div>
+    <div class="separate"></div>
+    <div class="condition">
+      <p style="color: #23aae4" v-if="info.abolitionRules==1">有条件退</p>
+      <p style="color: #06ad43" v-if="info.abolitionRules==2">随时退</p>
+      <p style="color: #f89669" v-if="info.abolitionRules==3">不可退</p>
+      <div v-if="info.abolitionRules==1">
+        {{info.drawback}}
+      </div>
+    </div>
+    	<div class="separate"></div>
+    <div class="bottom" v-if="info.additionalRemarks">
+      <p>其他说明</p>
+      <p>{{info.additionalRemarks}}</p>
+    </div>
+    
+    
+    
+      <!--取消订单的弹框-->
+      <van-dialog 
+        v-model="show"
+        show-cancel-button
+        :before-close="beforeClose1"
+        className="dialog"
+      >
+        <p>您确认要取消订单吗？取消后，订单将不可恢复</p>
+        <p>
+          <span>取消原因:</span>
+          <select name="" id="">
+            <option value="">行程有变</option>
+            <option value="">房间实际描述和照片不符</option>
+            <option value="">无法联系商家</option>
+            <option value="">涨价了</option>
+            <option value="">商家服务态度差</option>
+            <option value="">没房了</option>
+            <option value="">设施故障无法继续入住</option>
+            <option value="">重新预订</option>
+            <option value="">其他原因</option>
+          </select>
+        </p>
+        <p class="fee">
+          <span>消费的费用：</span>￥{{info.orderStatus == 1 ? 0 : info.orderPrice}}
+        </p>
+        <p class="fee">
+          <span>退还的费用：</span>￥{{info.orderStatus == 1 ? 0 : info.orderPrice}}
+        </p>
+      </van-dialog>
+    
+  </div>
+</template>
+
+<script>
+  import methods from './m/methods'
+    export default {
+        name: "inntoUse",
+        data() {
+            return {
+            	info: {},id: null,show:false
+            }
+        },
+        methods: {
+        	init(orderId){
+        		var params = {
+        			orderId
+        		}
+        		this.$http.post('appServiceOrder/detail', params).then(res=>{
+        			console.log(res)
+        			this.info = res.data
+	        	})
+        	},
+          cancel(o){//取消订单
+         		this.show=true;
+          },
+          beforeClose1(action, done){
+            if (action === 'confirm') {
+            	setTimeout(done, 1000);
+            	setTimeout(()=>{
+            		this.$toast('删除订单操作');
+            	},900)
+            } else {
+            	done();
+            }
+          },
+        },
+        computed: {},
+        created: function () {
+        	var id = this.$route.params.id;
+        	this.id = id
+        	this.init(id)
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .inntoUse{
+    .state{
+      padding: 0.2rem;
+      border-bottom: 0.01rem #e6e6e6 solid;
+      position: relative;
+      span{
+        color: grey;
+      }
+      p{
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        line-height: 0.5rem;
+        position: absolute;
+        top: 50%;
+        width: 1.7rem;
+        right: 0;
+        height: 0.5rem;
+        border: 0.01rem solid #e6e6e6;
+        border-radius: 0.5rem;
+        margin-top: -0.25rem;
+        margin-right: 0.2rem;
+      }
+    }
+    .separate{
+      height: 0.28rem;
+      background-color: #f1f0f6;
+    }
+    .number{
+      margin: 0 0.2rem;
+      padding: 0.2rem 0;
+      .top{
+        padding: 0.2rem 0;
+        border-bottom: 0.01rem solid #e6e6e6;
+        span{
+          color: #ff6500;
+          float: right;
+        }
+      }
+      .imgcenter{
+        padding: 0.2rem 0;
+        border-bottom: 0.01rem solid #e6e6e6;
+        .left{
+          height: 1.6rem;
+        }
+        .right{
+          p:first-child{
+            font-size: 0.24rem;
+            font-weight: bold;
+            color: black;
+          }
+          p{
+            color: grey;
+            margin-bottom: 0.18rem;
+          }
+        }
+      }
+    }
+    .bottom{
+      p:first-child{
+        font-size: 0.24rem;
+        font-weight: bold;
+      }
+      p:nth-child(2){
+        font-weight: bold;
+      }
+      div{
+        color: grey;
+      }
+      p,div{
+        padding: 0.1rem 0.2rem;
+      }
+    }
+    .detail{
+      margin: 0 0.2rem;
+      padding: 0.2rem 0;
+      border-bottom: 0.01rem #e6e6e6 solid;
+      p:first-child{
+        font-size: 0.24rem;
+        font-weight: bold;
+        span{
+          color: #ff6500;
+        }
+      }
+      p{
+        span{
+          color: red;
+        }
+        margin-bottom: 0.2rem;
+      }
+    }
+  }
+</style>

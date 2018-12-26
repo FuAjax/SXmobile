@@ -1,0 +1,223 @@
+<template>
+    <div class="myTrade">
+      <van-nav-bar title='我的交易'
+                   @click-right="onClickRight"
+                   right-text="筛选" left-arrow>
+      </van-nav-bar>
+      <ul class="list">
+        <li>
+          <p class="top">
+            2017-11-13  11：45
+            <span>
+              交易完成
+            </span>
+          </p>
+          <div class="center">
+            <van-row gutter="10">
+              <van-col span="8" class="left">
+                <img :src=imgSrc alt="">
+              </van-col>
+              <van-col span="16" class="right">
+                <p class="van-ellipsis">
+                  黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街
+                </p>
+                <p class="van-ellipsis">
+                  6是一厅
+                </p>
+                <p class="van-ellipsis">
+                  黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街
+                </p>
+                <p class="van-ellipsis">
+                  承租人：李元坤 &nbsp;&nbsp;   电话 18622222222
+                </p>
+              </van-col>
+            </van-row>
+          </div>
+          <div class="bottom">
+            整租：10年
+            <p>
+              成交价格
+              <span>￥1.2万元</span>/年
+            </p>
+          </div>
+          <div class="separate"></div>
+        </li>
+      </ul>
+
+
+
+      <!--右侧弹出层-->
+      <van-popup v-model="show"
+                 class="layer"
+                 :close-on-click-overlay=false
+                 position="right">
+        <div class="container">
+          <van-nav-bar
+            title="筛选"
+            left-arrow
+            @click-left="onClickLeft"
+          />
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">标题搜索</van-col>
+              <van-col span="16" class="right">
+                <input type="text" v-model="value" placeholder="请输入标题搜索">
+              </van-col>
+            </van-row>
+          </div>
+          <!--两个下拉-->
+          <div class="common">
+            <van-row gutter="10">
+              <van-col span="8" class="left">
+                更新时间
+              </van-col>
+              <van-col span="8" class="center">
+                <select name="" ></select>
+              </van-col>
+              <van-col span="8" class="center">
+                <select name=""></select>
+              </van-col>
+            </van-row>
+          </div>
+          <div class="bottom">
+            <button>搜索</button>
+          </div>
+        </div>
+      </van-popup>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "myTrade",
+        data() {
+            return {
+              show:false,
+              value:'',
+              imgSrc:'../../../../static/images/slide_01.jpg',
+            }
+        },
+        methods: {
+          onClickRight(){
+            this.show=true;
+          },
+          onClickLeft(){
+            this.show=false;
+          },
+        },
+        computed: {},
+        created: function () {
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .myTrade{
+    li{
+      padding: 0.2rem 0;
+      .top{
+        margin:0 0.2rem;
+        border-bottom: 0.01rem solid #e6e6e6;
+        padding: 0.2rem 0;
+        span{
+          float: right;
+          color: #63cf83;
+        }
+      }
+      .center{
+        margin:0 0.2rem;
+        border-bottom: 0.01rem solid #e6e6e6;
+        padding: 0.2rem 0;
+        .left{
+          height: 1.6rem;
+          position: relative;
+          p{
+            position: absolute;
+            width: 95%;
+            height: 0.3rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            bottom: 0;
+            color: white;
+            line-height: 0.3rem;
+            text-indent: 0.2rem;
+          }
+        }
+        .right{
+          p:first-child{
+            color: black;
+            font-size: 0.24rem;
+          }
+          p{
+            color: grey;
+            margin-bottom: 0.15rem;
+          }
+          p:nth-child(4){
+            span{
+              font-size: 0.24rem;
+              color: red;
+            }
+          }
+        }
+      }
+      .bottom{
+        margin:0 0.2rem;
+        padding: 0.2rem 0;
+       p{
+         float: right;
+         color: grey;
+         span{
+           color: red;
+           font-size: 0.24rem;
+         }
+       }
+      }
+      .separate{
+        height: 0.28rem;
+        background-color: #f1f0f6;
+      }
+    }
+
+    .layer{
+      .container{
+        .common{
+          margin: 0.2rem;
+          .left{
+            color: grey;
+          }
+          .right{
+            input{
+              border: 0.01rem solid #e6e6e6;
+              background-color: #f1f0f6;
+              font-size: 0.2rem;
+            }
+            select{
+              width: 73%;
+              height: 0.3rem;
+            }
+          }
+          .center{
+            select{
+              width: 100%;
+              height: 0.3rem;
+            }
+          }
+        }
+        .bottom{
+          padding: 0.15rem;
+          button{
+            width: 100%;
+            height: 0.8rem;
+            line-height: 0.8rem;
+            background-color: #ff6500;
+            text-align: center;
+            border-radius: 3px;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,310 @@
+<template>
+<div id="search" class="container">
+<div class="topBar">
+<Header :title='title' />
+</div>
+<div style="width:100%; height:.92rem;"></div>
+  <div class="search">
+    <van-search placeholder="请输入区域/关键字" v-model="searchValue" @cancel="onCancel"/>
+    <div class="btn" @click="search(searchValue)">搜索</div>
+  </div>
+  <div class="contain-in" v-show="!searchEnd">
+      <p class="titin">指定搜索内容</p>
+      <div>
+          <div class="act-button" v-for="item in actBtn">
+            <router-link :to="{name: item.to}">
+              {{item.link}}
+            </router-link>
+          </div>
+      </div>
+      <p class="titin">搜索历史</p>
+      <div class="hisotory-box">
+          <div class="act-button" v-for="item in history" @click="search(item)">
+              {{item}}
+          </div>
+      </div>
+  </div>
+  <div class="contain-in" v-show="searchEnd" style="padding:0">
+    <van-cell-group>
+        <van-cell class="search-item" @click="cellClick('scenic',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>景点</span>
+            <span>{{searchEnd.landspace}}</span>
+            </template>
+        </van-cell>
+        <van-cell class="search-item" @click="cellClick('sharePlay',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>游玩</span>
+            <span>{{searchEnd.play}}</span>
+            </template>
+        </van-cell>
+        <van-cell class="search-item" @click="cellClick('shareInn',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>住宿</span>
+            <span>{{searchEnd.stay}}</span>
+            </template>
+        </van-cell>
+        <van-cell class="search-item" @click="cellClick('shareFood',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>美食</span>
+            <span>{{searchEnd.cate}}</span>
+            </template>
+        </van-cell>
+
+        <van-cell class="search-item" @click="cellClick('rentList',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>农房</span>
+            <span>{{searchEnd.farmhouse}}</span>
+            </template>
+        </van-cell>
+        <van-cell class="search-item" @click="cellClick('wantedList',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>求租</span>
+            <span>{{searchEnd.farmhouserenting}}</span>
+            </template>
+        </van-cell>
+        <van-cell class="search-item" @click="cellClick('dealList',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>成交</span>
+            <span>{{searchEnd.farmhouseturnover}}</span>
+            </template>
+        </van-cell>
+        
+        <van-cell class="search-item" @click="cellClick('textList',searchData.value)">
+            <template slot="title">
+            <span class="van-cell-text">{{searchData.value}}</span>
+            <span>资讯</span>
+            <span>{{searchEnd.information}}</span>
+            </template>
+        </van-cell>
+    </van-cell-group>
+  </div>
+</div>
+</template>
+
+<script>
+import Header from "../common/header2"
+export default {
+    name: "search",
+    components:{
+        Header
+    },
+    data() {
+        return {
+            title: '搜索',
+            isSearchEnd: false,
+            actBtn: [{
+                link: "农庄",
+                to: 'grangeindex'
+              },
+              {
+                link: "景点",
+                to: 'scenic'
+              },
+              { 
+                link: "游玩",
+                to: 'sharePlay'
+              },
+              {
+                link: "住宿",
+                to: 'shareInn'
+              },
+              {
+                link: "美食",
+                to: 'shareFood'
+              },
+              {
+                link: "农房",
+                to: 'farmHouse'
+              },
+              {
+                link: "成交",
+                to: 'dealList'
+              },
+              {
+                link: "求租",
+                to: 'wantedList'
+              },
+              {
+                link: "村庄",
+                to: 'villageList'
+              },
+              {
+                link: "资讯",
+                to: 'Information'
+              }],
+            history: [],
+            map: '搜索',
+            searchData: {
+                value: ''
+            },
+            searchValue: '',
+            value: '',
+            searchEnd: false
+        }
+    },
+    methods: {
+        search(info){
+            this.searchValue = info
+            if(window.localStorage.getItem('searchHistory')){
+                this.history = JSON.parse(window.localStorage.getItem('searchHistory')).reverse()
+            }
+            if(info == ''){
+                this.searchEnd = false
+            } else {
+                this.searchData.value = info
+                this.$http.post("appServiceInformation/search", { cityId: 1, info: info })
+                .then(res => {
+                    if (res.msg == "success") {
+                        this.searchEnd = res.data
+                    } else {
+                        this.$toast(res.info);
+                    }
+                })
+                var items = []
+                var item = info
+                if(window.localStorage.getItem('searchHistory')){
+                    items = JSON.parse(window.localStorage.getItem('searchHistory'))
+                    for(var i = 0; i< items.length; i++){
+                        if(items[i] == item){
+                            items.splice(i, 1)
+                        }
+                    }
+                    items.push(item)
+                    if(items.length >= 10){
+                        items.splice(0, 1)
+                    }
+                } else {
+                    items.push(item)
+                }
+                window.localStorage.setItem('searchHistory', JSON.stringify(items));
+            }
+        },
+        cellClick(name,searchWord){
+            this.$router.push({ name, query: { searchWord }})
+        },
+        onCancel(){}
+    },
+    computed: {},
+    created: function () {
+        if(window.localStorage.getItem('searchHistory')){
+            this.history = JSON.parse(window.localStorage.getItem('searchHistory')).reverse()
+        }
+    },
+    mounted: function () {},
+}
+</script>
+
+<style scoped lang="less" type="text/less">
+.container{
+    .topBar{
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        z-index: 9999;
+    }
+    .search {
+        background-color: #f6f5fb;
+        height: 0.95rem;
+        padding: 0.18rem 0rem 0.01rem;
+        box-sizing: border-box;
+        .van-search {
+        width: 6rem;
+        background-color: #f6f5fb !important;
+        height: 0.56rem;
+        float: left;
+        input::placeholder {
+            /* placeholder颜色  */
+            color: #aab2bd;
+            /* placeholder字体大小  */
+            font-size: 12px;
+            /* placeholder位置  */
+            text-align: right;
+        }
+        }
+        .van-search /deep/ .van-field__control {
+            font-size: 0.23rem;
+            color: #69696b;
+        }
+        .van-search /deep/ .van-field {
+            box-shadow: 0.01rem 0.01rem 0.01rem #d4d3d8;
+            border-radius: 1.1rem;
+        }
+        .btn {
+            float: right;
+            width: 1.20rem;
+            height: 0.58rem;
+            line-height: 0.58rem;
+            text-align: center;
+            color: #fff;
+            background-color: #FF6500;
+            font-size: 0.24rem;
+            border-radius: 1.1rem;
+            margin-right: 0.3rem;
+        }
+    }
+    // 内容部分
+    .contain-in{
+        padding: 0 .3rem;
+        // 搜索及历史
+        .titin{
+            color:#5A5A5B;
+            font-size: .24rem;
+            line-height: 3;
+        }
+        .act-button{
+            width: 1.17rem;
+            height: .54rem;
+            line-height: .54rem;
+            border-radius: .27rem;
+            display: inline-block;
+            background: #F1F0F6;
+            color: #313036;
+            text-align: center;
+            font-size: .24rem;
+            margin: .1rem .128rem .2rem;
+            text-indent: 0
+        }
+        .act-button:nth-of-type(5n+1){
+            margin-left: 0; 
+        }
+        .act-button:nth-of-type(5n){
+            margin-right: 0;
+        }
+        .hisotory-box{
+            .act-button{
+                width: auto;
+                padding: 0 .2rem;
+                margin-left: 0;
+                margin-right: .256rem;
+            }
+        }
+        // 搜索结果
+        .search-item{
+            font-size: .24rem;
+            padding: .2rem .3rem;
+            width: 100%;
+            span:nth-of-type(1){
+                color: #FB6000
+            }
+            span:nth-of-type(2){
+                color: #2D2D30
+            }
+            span:nth-of-type(3){
+                color: #909091
+            }
+            .van-cell::after {
+                margin-right: 0.3rem;
+            }
+        }
+
+    }
+}
+</style>

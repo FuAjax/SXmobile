@@ -1,0 +1,94 @@
+<template>
+  <div>
+    <div class="topBar" v-if="(!isapp)">
+      <Header :title='title' :isback='isback'/>
+    </div>
+    <div :style="'height:'+ ( !isapp ?'0.92rem' : '0rem' ) + ';'"></div>
+    <Banner :list="bannerList"/>
+    <Nav/>
+    <Project :newsList="news"/>
+    <Beautiful :villageList="villageList"/>
+    <Specil :characteristic="characteristic"/>
+    <Check/>
+    <Footer/>
+    <GoTop/>
+  </div>
+</template>
+
+<script>
+  import Header from '../../common/Header';
+  import Banner from '../../index/Banner';
+  import Project from './project';
+  import Beautiful from './beautiful'
+  import Specil from './specil'
+  import Check from './check'
+  import Footer from '../../common/Footer';
+  import Nav from '../nav'
+  import GoTop from '../../common/goTop'
+
+  export default {
+    name: "farmIndex",
+    props: {
+      isapp: null
+    },
+    data() {
+      return {
+        // banner图
+        bannerList: [],
+        // 村庄动态
+        news: [],
+        // 美丽乡村
+        villageList: [],
+        // 特色农房
+        characteristic: [],
+        title: "农房首页",
+        isback: true,
+        type: null,
+      }
+    },
+    components: {
+      Header,
+      Project,
+      Banner,
+      Beautiful,
+      Specil,
+      Check,
+      Footer,
+      Nav,
+      GoTop
+    },
+    created: function () {
+      if (localStorage.getItem("farmIndexData")) {
+        var farmIndexData = JSON.parse(localStorage.getItem("farmIndexData"));
+        this.bannerList = farmIndexData.bannerList
+        this.news = farmIndexData.news
+        this.villageList = farmIndexData.villageList
+        this.characteristic = farmIndexData.characteristic
+      }
+      this.init()
+      this.type = this.$proType;
+    },
+    methods: {
+      init() {
+        this.$http.post('appServiceFarmhouse/getFarmhouseIndexParam').then(res => {
+          this.bannerList = res.data.bannerList
+          this.news = res.data.news
+          this.villageList = res.data.villageList
+          this.characteristic = res.data.characteristic
+          const obj = {
+            bannerList:this.bannerList,
+            news:this.news,
+            villageList:this.villageList,
+            characteristic:this.characteristic
+          }
+          localStorage.setItem('farmIndexData',JSON.stringify(obj));
+        })
+      }
+
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

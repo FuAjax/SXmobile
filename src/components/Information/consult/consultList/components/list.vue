@@ -1,0 +1,172 @@
+<template>
+  <div>
+    <div class="search">
+      <van-search placeholder="请输入搜索关键字" v-model="value"/>
+      <div class="btnbox">
+        <div class="btn" @click="searchList">{{map1}}</div>
+        <div class="btn" @click="Consult">{{map2}}</div>
+      </div>
+    </div>
+    <div class="list">
+      <div class="top">{{classes}}</div>
+      <router-link class="content" v-for="(index,i) in consult" :key="i"  :to="{name:'consultDetail',params:{consultId:index.consultId}}" tag="div">
+        <div class="title">{{index.consultTitle}}</div>
+        <div class="message">{{index.consultDescribe}}</div>
+        <div class="time">{{index.consultTime}}</div>
+      </router-link>
+    </div>
+    <div class="blank"></div>
+  </div>
+</template>
+
+<script>
+  import RouterLink from "vant/es/mixins/router-link";
+
+  export default {
+    name: "list",
+    components: {},
+    data() {
+      return {
+        policy: "政策咨询",
+        map1: "搜索",
+        map2: "我要咨询",
+        value: '',
+        consult: [],
+        classes:''
+      }
+    },
+    mounted() {
+
+
+    },
+    methods: {
+      search(){
+
+        var restful=this.$route.params.restful
+        console.log(restful);
+        var array = []
+        this.$http.post('/appServiceInformation/consultList', {type: 1,info: restful}).then(res => {
+          console.log(res);
+          this.consult = res.data.consult
+          console.log(this.consult);
+          this.classes = res.data.classes[0].name
+        })
+      },
+      searchList(){
+        if (this.value) {
+          var value=this.value
+          this.$http.post('/appServiceInformation/consultList',{type:2,info:value}).then(res=>{
+            this.consult = res.data.consult
+          })
+          this.$emit('datachage',array)
+        }else {
+          this.$toast("搜索关键字不能为空")
+        }
+      },
+      Consult(){
+        this.$router.push({
+          name:"IssueConsult"
+        })
+      }
+    },
+    created:function () {
+      this.search()
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../../../style/public.less";
+
+  .search {
+    background-color: #f6f5fb;
+    height: 0.95rem;
+    padding: 0.21rem 0.2rem 0.01rem;
+    margin-top: 0.92rem;
+    .van-search {
+      width: 4.02rem;
+      background-color: #f6f5fb !important;
+      height: 0.56rem;
+      float: left;
+      input::placeholder {
+        /* placeholder颜色  */
+        color: #aab2bd;
+        /* placeholder字体大小  */
+        font-size: 12px;
+        /* placeholder位置  */
+        text-align: right;
+      }
+    }
+    .van-search /deep/ .van-field__control {
+      font-size: 0.23rem;
+      color: #69696b;
+    }
+    .van-search /deep/ .van-field {
+      box-shadow: 0.1rem 0.1rem 0.1rem #d4d3d8;
+      border-radius: 1.1rem;
+    }
+    .btnbox {
+      float: right;
+    }
+    .btn {
+      float: left;
+      width: 1.77rem;
+      height: 0.58rem;
+      line-height: 0.58rem;
+      text-align: center;
+      color: #d4efce;
+      background-color: #00b234;
+      font-size: 0.24rem;
+      border-radius: 1.1rem;
+      margin-right: 0.2rem;
+      &:nth-child(1) {
+        width: 0.9rem;
+      }
+    }
+  }
+
+  .blank {
+    .jg();
+  }
+
+  .list {
+    padding: 0.3rem;
+    .top {
+      height: 0.64rem;
+      font-size: 0.31rem;
+      color: #000003;
+      font-weight: 600;
+      .bt();
+    }
+    .content {
+      margin-top: 0.31rem;
+      padding-bottom: 0.2rem;
+      .bt();
+      .title {
+        font-size: 0.3rem;
+        color: #000003;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-bottom: 0.26rem;
+        letter-spacing: 0.05rem;
+
+      }
+      .message {
+        font-size: 0.23rem;
+        line-height: 0.43rem;
+        color: #69696b;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        letter-spacing: 0.05rem;
+      }
+      .time {
+        margin-top: 0.1rem;
+        font-size: 0.16rem;
+        .hc();
+      }
+    }
+  }
+</style>

@@ -1,0 +1,335 @@
+<template>
+  <div id="foodbook" class="ticketBook">
+    <div class="topBar">
+      <Header :title='title' :color='color'/>
+    </div>
+    <div style="width:100%; height:.92rem;"></div>
+    <router-link :to="info.businessType==1?{name:'scenicDetail', params: {id: info.businessNumber}}:{name:'grangedetail', params: {id: info.businessNumber}}" tag="div" class="detail" style="background: #FF6400">
+      <img src="./../../../assets/ticket-Bg1.png" alt="">
+      <div>
+        <h3>{{info.businessName}}</h3>
+        <p>{{info.voucherName}}</p>
+        <p style="color:#4FC874; border: .01rem solid #4FC874; display: inline-block; line-height: 1.6; padding: 0  .1rem; border-radius: .08rem;">{{info.abolitionRules}}</p>
+        <p style="color: #f00;font-size: .32rem;font-weight: 600;">￥{{info.voucherPrice}}元</p>
+      </div>
+    </router-link>
+    <div class="item">
+			<div class="mount">
+        <span>购买数量</span>
+        <van-stepper class="pp" v-model="value" />
+    </div>
+      <!-- <van-cell-group class="floatL">
+        <van-field
+          v-model="userMobile"
+          label="预留手机号"
+          :value="userMobile"
+          placeholder="请输入手机号"
+        />
+      </van-cell-group> -->
+      <div class="agreement">
+        <van-checkbox v-model="checked">我同意该协议</van-checkbox>
+      </div>
+    </div>
+
+
+    <!--底部-->
+    <div class="bottom clear" style="position: fixed; bottom: 0; left: 0; font-size: .26rem; color: #606063">
+      <div>
+        <span>总价</span>
+        <span class="price">￥<span style="font-size: .3rem;">{{info.voucherPrice * value}}</span> 元</span>
+      </div>
+      <p>
+        <button @click="detail" style="color: #606063">明细 <i class="iconfont icon-shangsanjiaoxiangshangmianxing"></i></button>
+        <span v-if="checked && value>0" @click="submit">
+          提交订单
+        </span>
+        <span v-else style="background: #B2B2B2">
+          提交订单
+        </span>
+      </p>
+    </div>
+
+    <!--明细-->
+    <van-popup v-model="show2" position="bottom">
+      <div style="line-height: .8rem; fon-size: .26rem; padding: 0 .2rem; box-sizing: border-box;color: #1e1e1e;background-color: #e3e3e4;">价格明细</div>
+      <div style="line-height: .8rem; fon-size: .26rem; padding: 0 .2rem; box-sizing: border-box;color: #1e1e1e;">
+        <p style="float: left">美食代金券</p>
+        <p style="float: right">{{info.voucherPrice}}元 * {{value}}张</p>
+      </div>
+    </van-popup>
+  </div>
+</template>
+
+<script>
+    import Header from "../../common/header2"
+    export default {
+        name: "ticketBook",
+        components:{
+          Header
+        },
+        data() {
+          return {
+            title: '创建订单',
+            isback: true,
+            color: '#FF6400',
+            info: {},
+            friends: [], //好友
+            check: [],
+            ID: '', // 身份证
+            userTime: null, // 使用时间
+            price: 0,// 价格
+            checked: false, // 同意协议
+            userMobile: '',
+            value: 1 , // 数量
+            show2: false
+          }
+        },
+        methods: {
+          init(){
+            var id = this.$route.params.id
+            this.id = id
+            this.$http.post('/appServiceOrder/voucher/writeinformation',{productId: id}).then(res=>{ 
+              if(res.msg == "success"){
+                this.info = res.data
+                if(res.data.mobile){
+                	this.userMobile = res.data.mobile
+                }
+              }
+            })
+          },
+          queryGeneralContact(){
+            this.$http.post('/appServiceOrder/queryGeneralContact').then(res=>{
+              if(res.msg == "success"){
+                this.friends = res.data
+                this.check = []
+                for(var i = 0; i < res.data.length; i++){
+                  this.check.push(false)
+                }
+              }
+            })
+          },
+          queryTicketPrice(){
+            this.$http.post('/appServiceOrder/queryTicketPrice',{productId: this.id, useTime: this.userTime || new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()})
+            .then(res=>{
+              if(res.msg == "success"){
+                this.price = res.data.price
+              }
+            })
+          },
+          checkFriend(index){
+            for(var i = 0; i < this.check.length; i++){
+              this.check = false
+            }
+            this.check[index] = true
+          },
+          showpopup(){
+            this.show=true;
+          },
+          confirm(value){
+            this.userTime = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate();
+            this.show = false;
+            this.queryTicketPrice()
+          },
+          cancel(){
+            this.show = false;
+          },
+          detail(){
+            this.show2 = true;
+          },
+          add(){//新增联系人
+            this.showadd=true;
+          },
+          beforeClose(action, done) {
+            if (action === 'confirm') {
+              setTimeout(done, 1000);
+            } else {
+              done();
+            }
+          },
+          submit(){
+            if(this.value>0){
+                if(this.userMobile.length == 11){
+                    const params = {
+                      buyNumber: this.value,//	购买数量	strin
+                      productId: this.id,//	门票id	number
+                    }
+                    this.$http.post('/appServiceOrder/voucher/submit',params).then(res=>{
+                      if(res.msg == "success"){
+                        if(this.$proType == 1){
+                          // this.$router.push({ name: 'payment', params: { id: res.data.orderId, type: 2 }, query: { userId: JSON.parse(localStorage.getItem('userInfo')).userId }})
+                          window.open('https://m.3xgc.com/#/payment/' + 2 + '/' + res.data.orderId + '?userId=' + JSON.parse(localStorage.getItem('userInfo')).userId, '_self')
+                          return false
+                        }
+                        this.$router.push({ name: 'payment', params: { id: res.data.orderId, type: 2 }})
+                      }
+                    })
+                } else {
+                  this.$toast("请填写正确手机号")
+                }
+            } else {
+              this.$toast("购买数量不能小于1")
+            }
+          }
+        },
+        computed: {},
+        created: function () {
+          this.init()
+        },
+        mounted: function () {
+        }
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../style/public.less";
+  .ticketBook{
+    .detail{
+      padding: 0 0 .3rem;
+      position: relative;
+      width: 100%;
+      height: 3.6rem;
+      img{
+        width: 100%;
+        position: absolute;
+        height: 3.6rem;
+      }
+      div{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 1rem .5rem;
+        line-height: 2;
+        h3{
+          font-size: .3rem;
+        }
+        p{
+          font-size: .26rem;
+          color: #2c2c22
+        }
+      }
+    }
+    .separate{
+      height: 0.2rem;
+      background-color: #f1f0f6;
+    }
+    .date{
+      margin: 0;
+      border-bottom: 0.01rem #e6e6e6 solid;
+    }
+    .mount{
+      margin: 0 0.3rem;
+      padding: 0.2rem 0;
+      font-size: 0.28rem;
+      color: #58585B;
+      overflow: hidden;
+      span{
+        line-height: .5rem;
+        display: inline-block;
+      }
+      .pp{
+        margin-left: 0.8rem;
+        float: right;
+      }
+    }
+    .verify{
+      padding: 0.2rem;
+      color: grey;
+      span{
+        font-size: 0.28rem;
+        font-weight: bold;
+        color: black;
+      }
+    }
+    .nameadd{
+      margin: 0 0.2rem;
+      padding: 0.2rem 0;
+      border-bottom: 0.01rem solid #e6e6e6;
+      span{
+        display: inline-block;
+        width: 2.11rem;
+        height:0.5rem;
+        background-color: #ff6500;
+        border-radius: 0.5rem;
+        text-align: center;
+        line-height: 0.5rem;
+        color: white;
+      }
+      span:last-child{
+        display: inline-block;
+        width: 2.11rem;
+        height:0.5rem;
+        background-color: #e6e6e6;
+        border-radius: 0.5rem;
+        text-align: center;
+        line-height: 0.5rem;
+        color: grey;
+      }
+    }
+    //尾部
+    .bottom{
+      width: 100%;
+      box-shadow: .02rem 0 .06rem #e6e6e6;
+      div{
+        float: left;
+        height: 1rem;
+        line-height: 1rem;
+        padding-left: 0.2rem;
+        .price{
+          color: red;
+        }
+      }
+      p{
+        float: right;
+        span{
+          display: inline-block;
+          width: 3.04rem;
+          height:1rem;
+          background-color: #ff6500;
+          text-align: center;
+          line-height: 1rem;
+          color: white;
+          font-size: 0.26rem;
+        }
+        button{
+          background-color: white;
+        }
+      }
+    }
+    .agreement{
+      padding: .2rem .3rem;
+      box-sizing: border-box;
+      color: #58585B
+    }
+  }
+</style>
+<style lang="less" type="text/less">
+#foodbook{
+   .van-hairline--bottom::after{
+    border-bottom-width: 0
+  }
+  .van-cell-group.van-hairline--top-bottom{
+    .van-field__control,.van-field__control span{
+      text-align: right;
+      font-size: .26rem;
+    }
+  }
+  .item{
+    padding-bottom: 1rem;
+    .van-cell__title,.mount{
+      span{
+        font-size: .26rem!important;
+        color: #58585B;
+        font-weight:normal!important;
+      }
+    }
+    .floatL {
+      .van-field__control{
+        text-align: left;
+      }
+    }
+  }
+}
+</style>

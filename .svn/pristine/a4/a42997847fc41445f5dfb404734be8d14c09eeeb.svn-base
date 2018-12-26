@@ -1,0 +1,600 @@
+<template>
+  <div>
+    <div class="condition">
+      <ul class="top_tab clear" style="    padding-left: 0.6rem;">
+        <li class="list" @click="area" :class="{active:area1}">
+          <p style="text-overflow: ellipsis;white-space: nowrap;float: left;overflow: hidden;width: 70%;">{{areatext}}</p>
+          <i class="iconfont icon-xiala1" v-show="area1" style="float: left"></i>
+          <i class="iconfont icon-xiala" v-show="!area1" style="float: left"></i>
+        </li>
+        <li class="list" @click="group" :class="{active:area2}">
+          <p style="text-overflow: ellipsis;white-space: nowrap;float: left;overflow: hidden;width: 70%">{{pricetext}}</p>
+          <i class="iconfont icon-xiala1" v-show="area2" style="float: left"></i>
+          <i class="iconfont icon-xiala" v-show="!area2" style="float: left"></i>
+        </li>
+        <li class="list" @click="weather" :class="{active:area3}">
+          <p style="text-overflow: ellipsis;white-space: nowrap;float: left;overflow: hidden;width: 70%">{{speciltext}}</p>
+          <i class="iconfont icon-xiala1" v-show="area3" style="float: left"></i>
+          <i class="iconfont icon-xiala" v-show="!area3" style="float: left"></i>
+        </li>
+        <li class="list" @click="sort" :class="{active:area4}">
+          <p style="text-overflow: ellipsis;white-space: nowrap;float: left;overflow: hidden;width: 70%">  {{moretext}}</p>
+          <i class="iconfont icon-xiala1" v-show="area4" style="float: left"></i>
+          <i class="iconfont icon-xiala" v-show="!area4" style="float: left"></i>
+        </li>
+      </ul>
+
+      <div>
+        <div class="area">
+          <div v-if="area1" class="regin">
+            <div class="left">
+              <!--景区/区域-->
+              <div v-for="(item,index) in two"
+                   @click="twoSpot(index)"
+                   :keys="index"
+                   :class="{active:index==twoNum}"
+              >{{item}}
+              </div>
+            </div>
+            <div class="right">
+              <div v-if="twoNum==0">
+                <!--区域-->
+                <van-tree-select
+                  :items="item1"
+                  :main-active-index="mainActiveIndex"
+                  :active-id="activeId"
+                  @navclick="onNavClick"
+                  @itemclick="onAreaClick"
+                />
+              </div>
+              <div v-if="twoNum==1">
+                <!--景点-->
+                <van-tree-select
+                  :items="landlist"
+                  :main-active-index="mainActiveIndex"
+                  :active-id="activeId"
+                  @navclick="onNavClick"
+                  @itemclick="onLandClick"
+                />
+              </div>
+            </div>
+          </div>
+          <!--价格-->
+          <div v-if="area2" class="group">
+            <van-tree-select
+              :items="typelist"
+              :active-id="activeId"
+              @itemclick="ontypeClick"
+            />
+          </div>
+          <!--筛选-->
+          <div v-if="area3" class="season">
+            <van-tree-select
+              :items="villageCharacteristics"
+              :active-id="activeId"
+              @itemclick="CharacteristicsClick"
+            />
+          </div>
+          <!--排序-->
+          <div v-if="area4" class="rank">
+            <van-tree-select
+              :items="items"
+              :main-active-index="mainActiveIndex"
+              :active-id="activeId"
+              @itemclick="onItemClick"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="village">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        @load="init"
+      >
+      <router-link class="villagelist" v-for="(item,k) in villageList"
+                   :to="{name:'villageDetail',params:{id:item.villageNumber}}"
+                   tag="div" :key="k">
+        <div class="left">
+          <img :src="item.url" alt="">
+        </div>
+        <div class="right">
+          <div class="top">
+            <p>{{item.villageName}}</p>
+            <p>{{item.beautifulCountry==1?"美丽乡村":""}}</p>
+          </div>
+          <div class="middle">
+            <div class="year">在租{{item.rentFarmhouse}}套</div>
+            <div class="price">
+              <p>{{item.rentingAverage}}万元</p>
+              <p>/年</p>
+            </div>
+          </div>
+          <div class="bot">
+            <div class="iconfont icon-dizhi"></div>
+            <p>{{item.fareaName}}</p>
+            <p>{{item.fstreetName}}</p>
+          </div>
+          <div class="btn">
+            <div class="btnbox" v-for="(index,i) in item.characteristics" :key="i">{{index}}</div>
+          </div>
+        </div>
+      </router-link>
+      </van-list>
+    </div>
+    <div class="blank"></div>
+  </div>
+
+</template>
+
+<script>
+  import url from "../../../../../assets/images/yuanluo.png"
+
+  export default {
+    name: "List",
+    props: {
+      villageList: {
+        type: Array,
+        required: true
+      }
+    },
+    data() {
+
+      return {
+        areatext:"区域",
+        pricetext:"价格",
+        speciltext:"美丽乡村",
+        moretext:"排序",
+        page: 1,
+        rows: 30,
+        specil: [],
+        isback: true,
+        title: '',
+        area1: false,
+        area2: false,
+        area3: false,
+        area4: false,
+        two: ['区域', '景点'],
+        twos: ['租赁年限', '用途', '朝向', '房屋类型', '楼层', '出租方式', '装修', '房龄'],
+        twoNum: 0,
+        fourSpan: ['漂流', '烧烤', '棋牌', '野菜'],
+        items: [
+          {
+            // 导航名称
+            text: '所有城市',
+            // 该导航下所有的可选项
+            children: [
+              {
+                text: '智能排序',
+                id: 1002
+              },
+              {
+                text: '离我最近',
+                id: 1001
+              },
+              {
+                text: '价格低到高',
+                id: 1003
+              },
+              {
+                text: '价格高到低',
+                id: 1004
+              },
+              {
+                text: '评论最高',
+                id: 1005
+              },
+            ]
+          },
+        ],
+        mainActiveIndex: 0,
+        activeId: 1001,
+        innlist: [],//住宿列表
+        item1: [],//区域
+        landlist: [],//景点
+        type: [],//类型
+        pricelist: [],//价格
+        houselist: [],//房型
+        facilitylist: [],//设施
+        arearest: '',//区域rest
+        landrest: '',//景点rest
+        pricerest: '',//价格rest
+        peoplerest: '',//房型rest
+        typelist: '',//类型rest
+        facility: '',//设施rest
+        villagerest:'',
+        checknum: 0,
+        num: -1,//价格id
+        pnum: -1,//房型id
+        fnum: -1,//设施id
+        villageCharacteristics: [],//美丽乡村
+        total: 1,
+        loading: false,
+        finished: false,
+
+      }
+    },
+    methods: {
+      onAreaClick(data) {//区域
+        this.activeId = data.id;
+        this.area1 = false;
+        this.arearest = data.restFul;
+        this.areatext=data.text
+        this.page = 1;
+        this.init();
+      },
+      onLandClick(data) {//景点
+        this.activeId = data.id;
+        this.area1 = false;
+        this.landrest = data.restFul;
+        this.areatext=data.text
+        this.page = 1;
+        this.init();
+      },
+
+      ontypeClick(data) {//类型
+        this.activeId = data.id;
+        this.area2 = false;
+        this.typelist = data.menuRestfulDictionary;
+        this.init();
+      },
+      CharacteristicsClick(data) {//美丽乡村
+        this.activeId = data.id;
+        this.area2 = false;
+        this.villagerest = data.menuRestfulDictionary;
+        this.speciltext=data.text
+        this.init();
+      },
+
+
+      //价格的颜色
+      priceSpan(id) {
+        this.num = id;
+        console.log(id)
+      },
+
+      //房型的颜色
+      houseSpan(id) {
+        this.pnum = id;
+        console.log(this.pnum)
+      },
+      //设施的颜色
+      facilitySpan(id) {
+        this.fnum = id;
+        console.log(this.fnum)
+      },
+
+      reset() {//重置
+        this.checknum = 1;
+        this.num = -1;
+        this.pnum = -1;
+        this.fnum = -1;
+      },
+      submit() {//确定
+        this.checknum = 2;
+        if (this.num == -1) {//价格
+          this.pricerest = '';
+        } else {
+          this.pricelist.map(item => {
+            if (item.id == this.num) {
+              this.pricerest = item.menuRestfulDictionary;
+            }
+          })
+        }
+
+        if (this.pnum == -1) {//房型
+          this.peoplerest = '';
+        } else {
+          this.houselist.map(item => {
+            if (item.id == this.pnum) {
+              this.peoplerest = item.menuRestfulDictionary;
+            }
+          })
+        }
+
+        if (this.fnum == -1) {
+          this.facility = '';
+        } else {
+          this.facilitylist.map(item => {
+            if (item.id == this.fnum) {
+              this.facility = item.menuRestfulDictionary;
+            }
+          })
+        }
+
+        this.init();
+        this.area3 = false;
+      },
+
+
+      area() {
+        this.area2 = false;
+        this.area3 = false;
+        this.area4 = false;
+        this.area1 = !this.area1;
+      },
+      group() {
+        this.area3 = false;
+        this.area4 = false;
+        this.area1 = false;
+        this.area2 = !this.area2;
+      },
+      weather() {
+        this.area4 = false;
+        this.area1 = false;
+        this.area2 = false;
+        this.area3 = !this.area3;
+      },
+      sort() {
+        this.area1 = false;
+        this.area2 = false;
+        this.area3 = false;
+        this.area4 = !this.area4;
+      },
+
+      onNavClick(index) {
+        console.log(index);
+        this.mainActiveIndex = index;
+      },
+      onItemClick(data) {
+        console.log(data)
+        this.activeId = data.id;
+        this.area1 = false;
+        this.moretext=data.text
+      },
+      twoSpot(index) {
+        this.twoNum = index;
+      },
+
+      contion() {
+        this.$http.post('appServiceFarmhouse/getVillageParam').then(res => {
+          this.item1 = res.data.areaList;
+          this.landlist = res.data.areaLandList;
+          this.typelist = res.data.houseType;
+          this.type = res.data.stayParam;
+          this.pricelist = res.data.farmhouseRentPrice;
+          this.houselist = res.data.houseType;
+          this.facilitylist = res.data.rentingUse;
+          this.farmhouseRentalLife = res.data.farmhouseRentalLife;
+          this.rentingUse = res.data.rentingUse;
+          this.rentingUse = res.data.houseOrientation;
+          this.floor = res.data.floor;
+          this.rentingStyle = res.data.rentingStyle;
+          this.decorationSituation = res.data.decorationSituation;
+          this.farmhouseAge = res.data.farmhouseAge;
+          this.villageCharacteristics = res.data.villageCharacteristics;
+
+        })
+      },
+      init() {
+        setTimeout(()=>{
+          const params = {
+            page: this.page,
+            rows: this.rows,
+            rest: this.landrest+this.arearest+this.villagerest
+          };
+          this.$http.post('appServiceFarmhouse/getVillageData', params).then(res => {
+            if (res.msg == "success") {
+              if(this.page==1){
+                this.villageList = res.data.rows;
+
+              }else{
+                this.villageList=this.villageList.concat(res.data.rows)
+              }
+              this.page++
+              this.total = res.data.total
+              this.loading=false
+              if(this.rows.length>=this.total){
+                this.finished=true
+              }
+            }else{
+              this.$toast(res.info)
+            }
+          })
+        },500)
+
+      }
+    },
+    created: function () {
+      // this.init();
+      this.contion();
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../../../style/public.less";
+
+  .village {
+    padding: 0 0.3rem;
+    .villagelist {
+      min-height: 2.23rem;
+      overflow: auto;
+      /*display: flex;*/
+      /*margin: 0.4rem 0;*/
+      padding-top: 0.4rem;
+      .bt();
+      .left {
+        width: 2.15rem;
+        height: 1.8rem;
+        float: left;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .right {
+        /*float: left;*/
+        margin-left: 2.35rem;
+        .top {
+          height: 0.4rem;
+          p {
+            float: left;
+            &:nth-child(1) {
+              font-size: 0.27rem;
+              color: #010103;
+              font-weight: 600;
+            }
+            &:nth-child(2) {
+              .button();
+              margin-left: 0.18rem;
+            }
+          }
+        }
+        .middle {
+          height: 0.59rem;
+          line-height: 0.59rem;
+          .year {
+            float: left;
+            font-size: 0.24rem;
+            .hc();
+          }
+          .price {
+            float: right;
+            p {
+              .rc();
+              float: left;
+              font-size: 0.3rem;
+              font-weight: 600;
+              &:nth-child(2) {
+                font-size: 0.22rem;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+        .bot {
+          height: 0.26rem;
+          font-size: 0.26rem;
+          .hc();
+          .iconfont {
+            float: left;
+            margin-top: 0.04rem;
+          }
+          p {
+            float: left;
+            height: 0.2rem;
+            border-right: 1.2px solid #908f94;
+            padding-bottom: 0.1rem;
+            padding-right: 0.05rem;
+            &:nth-child(3) {
+              border: none;
+              margin-left: 0.05rem;
+            }
+          }
+        }
+        .btn {
+          margin-top: 0.2rem;
+        }
+        .btnbox {
+          /*margin-top: 0.17rem;*/
+          float: left;
+          .br();
+          border-radius: 0.18rem;
+          margin-right: 0.09rem;
+          margin-bottom: 0.1rem;
+        }
+      }
+    }
+    .top {
+      font-size: 0.32rem;
+      color: black;
+      font-weight: 600;
+      float: left;
+      float: none;
+      margin-top: 0.2rem;
+    }
+  }
+
+  .blank {
+    .jg()
+  }
+
+  //条件
+  .condition {
+    position: relative;
+    .top_tab {
+      /*border-bottom: 0.01rem solid grey;*/
+      margin-bottom: 0.2rem;
+      li {
+        height: 0.85rem;
+        float: left;
+        width: 25%;
+        font-size: 0.24rem;
+        text-align: center;
+        line-height: 0.85rem;
+      }
+    }
+    .area {
+      position: absolute;
+      top: 0.85rem;
+      width: 100%;
+      background-color: white;
+      border-top: 0.01rem solid #e6e6e6;
+      .regin {
+        .left {
+          width: 25%;
+          float: left;
+          font-size: 0.2rem;
+          margin-left: 0.2rem;
+          box-sizing: border-box;
+          div {
+            border-bottom: 0.01rem solid #e6e6e6;
+            height: 0.8rem;
+            text-align: center;
+            line-height: 0.8rem;
+          }
+        }
+        .right {
+          background-color: #faf9ff;
+          border-left: 0.01rem solid #e6e6e6;
+          width: 72%;
+          float: left;
+        }
+      }
+      .group {
+        background-color: white;
+      }
+    }
+    .season {
+      position: relative;
+      margin: 0 0.2rem;
+      p {
+        color: grey;
+        margin: 0.2rem 0;
+      }
+      .content {
+        border-bottom: 0.01rem solid #e5e5e5;
+        padding-bottom: 0.2rem;
+        margin-bottom: 0.2rem;
+        span {
+          display: inline-block;
+          height: 0.55rem;
+          padding: 0 0.2rem;
+          border-radius: 0.55rem;
+          background-color: #f1f0f6;
+          text-align: center;
+          line-height: 0.55rem;
+          margin-right: 0.2rem;
+          margin-top: 0.15rem;
+        }
+      }
+      .bottom {
+        width: 100%;
+        margin-top: 1rem;
+        span {
+          display: inline-block;
+          width: 49%;
+          background-color: #fea541;
+          color: white;
+          height: 0.85rem;
+          line-height: 0.85rem;
+          vertical-align: middle;
+          text-align: center;
+        }
+      }
+    }
+
+  }
+</style>

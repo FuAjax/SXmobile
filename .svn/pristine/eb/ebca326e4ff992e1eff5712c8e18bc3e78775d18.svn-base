@@ -1,0 +1,784 @@
+<template>
+    <div class="myOrdersAll">
+      <div class="head">
+        <van-nav-bar title="我的订单"
+                     @click-left="onClickLeft"
+                     @click-right="onClickRight"
+                     left-arrow>
+          <van-icon name="search" slot="right" />
+        </van-nav-bar>
+      </div>
+      <div style="padding-top: .91rem; overflow: hidden;">
+        <van-tabs @click="onClick">
+          <van-list
+              v-model="loading"
+              :finished="finished"
+              @load="init"
+              >
+            <van-tab title="全部">
+              <ul class="list" v-if="list.length > 0">
+                <template v-for="(item, index) in list">
+                  <!--待确认-->
+                  <li v-if='item.orderStatus == 0'>
+                    <p class="top clear">
+                      {{item.orderTime}}
+                      <span>{{item.statusName}}</span>
+                    </p>
+                    <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                      <van-row gutter="20">
+                        <van-col span="8" class="left">
+                          <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p>{{item.businessName}}
+                            <span>￥{{item.orderPrice}}</span>
+                          </p>
+                          <p>数量：{{item.orderNumber}}</p>
+                          <p>使用时间：{{item.userTime}}</p>
+                          <p>({{item.productType}})</p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="order">
+                    <span>
+                      {{item.statusName}}
+                    </span>
+                        <p>
+                          <span>应付总额：</span>￥{{item.orderPrice}}
+                        </p>
+                      </div>
+                      <div class="up clear">
+                      <span class="fix">
+                        修改订单
+                    </span>
+                        <span @click="detail(item.orderType, item.orderId)">
+                      订单详情
+                    </span>
+                    </div>
+                  </li>
+                  <!--待支付-->
+                  <li v-if='item.orderStatus == 1'>
+                          <p class="top clear">
+                            {{item.orderTime}}
+                            <span>{{item.statusName}}</span>
+                          </p>
+                          <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                            <van-row gutter="20">
+                              <van-col span="8" class="left">
+                                <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                              </van-col>
+                              <van-col span="16" class="right">
+                                <p>{{item.businessName}}
+                                  <span>￥{{item.orderPrice}}</span>
+                                </p>
+                                <p>数量：{{item.orderNumber}}</p>
+                                <p>使用时间：{{item.userTime}}</p>
+                                <p>({{item.productType}})</p>
+                              </van-col>
+                            </van-row>
+                          </div>
+                          <div class="order">
+                        <span>
+                          {{item.statusName}}
+                        </span>
+                            <p>
+                              <span>应付总额：</span>￥{{item.orderPrice}}
+                            </p>
+                          </div>
+                          <div class="up clear">
+                        <span class="pay" @click="buynow(item.orderType,item.orderId)">
+                          立即支付
+                        </span>
+                        <span @click="cancel(item.orderId)">
+                          取消订单
+                        </span>
+                          </div>
+                  </li>
+                  <!-- 待使用 -->
+                  <li v-if='item.orderStatus == 2'>
+                    <p class="top clear">
+                      {{item.orderTime}}
+                      <span>{{item.statusName}}</span>
+                    </p>
+                    <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                      <van-row gutter="20">
+                        <van-col span="8" class="left">
+                          <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p>{{item.businessName}}
+                            <span>￥{{item.orderPrice}}</span>
+                          </p>
+                          <p>数量：{{item.orderNumber}}</p>
+                          <p>使用时间：{{item.userTime}}</p>
+                          <p>({{item.productType}})</p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="order">
+                      <span>
+                        {{item.statusName}}
+                      </span>
+                        <p>
+                          <span>应付总额：</span>￥{{item.orderPrice}}
+                        </p>
+                      </div>
+                      <div class="up clear">
+                      <span @click="cancel(item.orderId)">
+                        取消订单
+                      </span>
+                    </div>
+                  </li>
+                  <!--已使用-->
+                  <li v-if='item.orderStatus == 3'>
+                    <p class="top clear">
+                      {{item.orderTime}}
+                      <span>{{item.statusName}}</span>
+                    </p>
+                    <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                      <van-row gutter="20">
+                        <van-col span="8" class="left">
+                          <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p>{{item.businessName}}
+                            <span>￥{{item.orderPrice}}</span>
+                          </p>
+                          <p>数量：{{item.orderNumber}}</p>
+                          <p>使用时间：{{item.userTime}}</p>
+                          <p>({{item.productType}})</p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="order">
+                    <span>
+                      {{item.statusName}}
+                    </span>
+                        <p>
+                          <span>应付总额：</span>￥{{item.orderPrice}}
+                        </p>
+                      </div>
+                    <div class="up clear">
+                    <span class="evalute">
+                        评价
+                    </span>
+                    <span @click="detail(item.orderStatus, item.orderId)">
+                      订单详情
+                    </span>
+                    </div>
+                  </li>
+                  <!--退款-->
+                  <li v-if='item.orderStatus < 0'>
+                    <p class="top clear">
+                      {{item.orderTime}}
+                      <span>{{item.statusName}}</span>
+                    </p>
+                    <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                      <van-row gutter="20">
+                        <van-col span="8" class="left">
+                          <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p>{{item.businessName}}
+                            <span>￥{{item.orderPrice}}</span>
+                          </p>
+                          <p>数量：{{item.orderNumber}}</p>
+                          <p>使用时间：{{item.userTime}}</p>
+                          <p>({{item.productType}})</p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="order">
+                      <span>
+                        {{item.statusName}}
+                      </span>
+                          <p>
+                            <span>应付总额：</span>￥{{item.orderPrice}}
+                          </p>
+                        </div>
+                      <div class="up clear">
+                      <span>
+                        删除订单
+                      </span>
+                      <span @click="detail(item.orderStatus, item.orderId)">
+                        订单详情
+                      </span>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+              <template v-if="list.length == 0 && finished">
+                <noList :detail='details[currentIndex]'/>
+              </template> 
+            </van-tab>
+            <van-tab title="待确认">
+              <ul class="list" v-if="list.length > 0">
+                <!--待确认-->
+                <li v-for='item in list' v-if='item.orderStatus == 0'>
+                  <p class="top clear">
+                    {{item.orderTime}}
+                    <span>{{item.statusName}}</span>
+                  </p>
+                  <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                    <van-row gutter="20">
+                      <van-col span="8" class="left">
+                        <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                      </van-col>
+                      <van-col span="16" class="right">
+                        <p>{{item.businessName}}
+                          <span>￥{{item.orderPrice}}</span>
+                        </p>
+                        <p>数量：{{item.orderNumber}}</p>
+                        <p>使用时间：{{item.userTime}}</p>
+                        <p>({{item.productType}})</p>
+                      </van-col>
+                    </van-row>
+                  </div>
+                  <div class="order">
+                  <span>
+                    {{item.statusName}}
+                  </span>
+                      <p>
+                        <span>应付总额：</span>￥{{item.orderPrice}}
+                      </p>
+                    </div>
+                    <div class="up clear">
+                    <span class="fix">
+                      修改订单
+                  </span>
+                      <span @click="detail(item.orderStatus, item.orderId)">
+                    订单详情
+                  </span>
+                  </div>
+                </li>
+              </ul>
+              <template v-if="list.length == 0 && finished">
+                <noList :detail='details[currentIndex]'/>
+              </template> 
+            </van-tab>
+            <van-tab title="待支付">
+              <ul class="list" v-if="list.length > 0">
+                <!--待支付-->
+                <li v-for='item in list' v-if='item.orderStatus == 1'>
+                  <p class="top clear">
+                    {{item.orderTime}} {{item.orderStatus}}
+                    <span>{{item.statusName}}</span>
+                  </p>
+                  <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                    <van-row gutter="20">
+                      <van-col span="8" class="left">
+                        <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                      </van-col>
+                      <van-col span="16" class="right">
+                        <p>{{item.businessName}}
+                          <span>￥{{item.orderPrice}}</span>
+                        </p>
+                        <p>数量：{{item.orderNumber}}</p>
+                        <p>使用时间：{{item.userTime}}</p>
+                        <p>({{item.productType}})</p>
+                      </van-col>
+                    </van-row>
+                  </div>
+                  <div class="order">
+                    <span>
+                      {{item.statusName}}
+                    </span>
+                        <p>
+                          <span>应付总额：</span>￥{{item.orderPrice}}
+                        </p>
+                      </div>
+                      <div class="up clear">
+                    <span class="pay" @click="buynow(item.orderType,item.orderId)">
+                      立即支付
+                    </span>
+                    <span @click="cancel(item.orderId)">
+                      取消订单
+                    </span>
+                  </div>
+                </li>
+              </ul>
+              <template v-if="list.length == 0 && finished">
+                <noList :detail='details[currentIndex]'/>
+              </template> 
+            </van-tab>
+            <!-- 待使用 -->
+            <van-tab title="待使用">
+              <ul class="list" v-if="list.length > 0">
+                <li v-for='item in list' v-if='item.orderStatus == 2'>
+                  <p class="top clear">
+                    {{item.orderTime}}
+                    <span>{{item.statusName}}</span>
+                  </p>
+                  <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                    <van-row gutter="20">
+                      <van-col span="8" class="left">
+                        <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                      </van-col>
+                      <van-col span="16" class="right">
+                        <p>{{item.businessName}}
+                          <span>￥{{item.orderPrice}}</span>
+                        </p>
+                        <p>数量：{{item.orderNumber}}</p>
+                        <p>使用时间：{{item.userTime}}</p>
+                        <p>({{item.productType}})</p>
+                      </van-col>
+                    </van-row>
+                  </div>
+                  <div class="order">
+                  <span>
+                    {{item.statusName}}
+                  </span>
+                      <p>
+                        <span>应付总额：</span>￥{{item.orderPrice}}
+                      </p>
+                    </div>
+                    <div class="up clear">
+                    <span>
+                      取消订单
+                    </span>
+                  </div>
+                </li>
+              </ul>
+              <template v-if="list.length == 0 && finished">
+                <noList :detail='details[currentIndex]'/>
+              </template>
+            </van-tab>
+            <van-tab title="已使用">
+              <ul class="list" v-if="list.length > 0">
+                <!--已使用-->
+                <li v-for='item in list' v-if='item.orderStatus == 3'>
+                  <p class="top clear">
+                    {{item.orderTime}}
+                    <span>{{item.statusName}}</span>
+                  </p>
+                  <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                    <van-row gutter="20">
+                      <van-col span="8" class="left">
+                        <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                      </van-col>
+                      <van-col span="16" class="right">
+                        <p>{{item.businessName}}
+                          <span>￥{{item.orderPrice}}</span>
+                        </p>
+                        <p>数量：{{item.orderNumber}}</p>
+                        <p>使用时间：{{item.userTime}}</p>
+                        <p>({{item.productType}})</p>
+                      </van-col>
+                    </van-row>
+                  </div>
+                  <div class="order">
+                    <span>
+                      {{item.statusName}}
+                    </span>
+                    <p>
+                      <span>应付总额：</span>￥{{item.orderPrice}}
+                    </p>
+                  </div>
+                  <div class="up clear">
+                    <span class="evalute">
+                      评价
+                    </span>
+                    <span @click="detail(item.orderStatus, item.orderId)">
+                      订单详情
+                    </span>
+                  </div>
+                </li>
+              </ul>
+              <template v-if="list.length == 0 && finished">
+                <noList :detail='details[currentIndex]'/>
+              </template>
+            </van-tab>
+            <van-tab title="待退款">
+              <ul class="list" v-if="list.length > 0">
+                <!--退款-->
+                <li v-for='item in list' v-if='item.orderStatus < 0'>
+                  <p class="top clear">
+                    {{item.orderTime}}
+                    <span>{{item.statusName}}</span>
+                  </p>
+                  <div class="imgcenter" @click="detail(item.orderType, item.orderId)">
+                    <van-row gutter="20">
+                      <van-col span="8" class="left">
+                        <div :style="'width: 100%; height: 100%;background: url('+item.businessLogoUrl+');'"></div>
+                      </van-col>
+                      <van-col span="16" class="right">
+                        <p>{{item.businessName}}
+                          <span>￥{{item.orderPrice}}</span>
+                        </p>
+                        <p>数量：{{item.orderNumber}}</p>
+                        <p>使用时间：{{item.userTime}}</p>
+                        <p>({{item.productType}})</p>
+                      </van-col>
+                    </van-row>
+                  </div>
+                  <div class="order">
+                    <span>
+                      {{item.statusName}}
+                    </span>
+                        <p>
+                          <span>应付总额：</span>￥{{item.orderPrice}}
+                        </p>
+                      </div>
+                    <div class="up clear">
+                    <span>
+                      删除订单
+                    </span>
+                    <span @click="detail(item.orderStatus, item.orderId)">
+                      订单详情
+                    </span>
+                  </div>
+                </li>
+              </ul>
+              <template v-if="list.length == 0 && finished">
+                <noList :detail='details[currentIndex]'/>
+              </template>
+            </van-tab>
+          </van-list>
+        </van-tabs>
+      </div>
+      <!--条件筛选的弹框-->
+      <van-dialog
+        v-model="searchShow"
+        show-cancel-button
+        :before-close="beforeClose"
+        className="dialog"
+        >
+        <p>条件筛选查询</p>
+        <p>
+    		<van-search placeholder="请输入订单查询关键词" v-model="searchData.info" />
+        </p>
+      </van-dialog>
+
+      <!--取消订单的弹框-->
+      <van-dialog
+        v-model="show"
+        show-cancel-button
+        :before-close="beforeClose"
+        className="dialog"
+        >
+        <p>您确认要取消订单吗？取消后，订单不可恢复</p>
+        <p>
+          <span>取消原因:</span>
+          <select name="" id="">
+            <option value="">行程有变</option>
+            <option value="">房间实际描述和照片不符</option>
+            <option value="">无法联系商家</option>
+            <option value="">涨价了</option>
+            <option value="">商家服务态度差</option>
+            <option value="">没房了</option>
+            <option value="">设施故障无法继续入住</option>
+            <option value="">重新预订</option>
+            <option value="">其他原因</option>
+          </select>
+        </p>
+        <p class="fee">
+          <span>消费的费用：</span>￥233.00
+        </p>
+        <p class="fee">
+          <span>退还的费用：</span>￥233.00
+        </p>
+      </van-dialog>
+    </div>
+</template>
+
+<script>
+import noList from "../../common/noList";
+    export default {
+        name: "myOrdersAll",
+        components: {
+          noList
+        },
+        data() {
+            return {
+            details: ['', '待确认', '待支付', '待使用', '已使用', '待退款'],
+            currentIndex: 0,
+	        	show: false,
+	        	searchShow: false,
+	        	rows: 20,
+	        	page: 1,
+	        	list: [],
+	        	loading: false,
+            finished: false,
+            total: 1,
+            orderStatus: null,
+            currentDate: new Date(),
+            minDate: new Date(),
+            searchData: {}
+          }
+        },
+        methods: {
+          onClickLeft(){
+        	  this.$router.back(-1)
+          },
+          onClickRight(){
+         	  this.searchShow=true;
+          },
+          cancel(){//取消订单
+         	  this.show=true;
+          },
+          detail(type, id){
+            if(type == 3){
+              this.$router.push({name: 'tickettoUse', params: { id: id}})
+            }
+            if(type == 2){
+              this.$router.push({name: 'inntoUse', params: { id: id}})
+            }
+            if(type == 1){
+              this.$router.push({name: 'foodtoUse', params: { id: id}})
+            }
+          },
+          beforeClose(action, done){
+            if (action === 'confirm') {
+              setTimeout(done, 1000);
+            } else {
+              done();
+            }
+          },
+          onClick(index, title) {
+            this.currentIndex = index
+    		    this.page = 1
+            this.loading = false
+            this.finished = false
+            this.list = []
+            if(index == 0){
+            	this.orderStatus = null
+            	// this.init(null, true)
+            }else if(index < 4){
+            	this.orderStatus = index
+            	// this.init(index, true)
+            }else {
+            	this.orderStatus = -3
+            	// this.init(-3, true)
+            }
+          },
+          init(Status, isclick){
+            let self = this;
+            setTimeout(() => {
+              var parmas = {
+                page: this.page,
+                rows: this.rows
+              }
+              if(this.orderStatus){
+        			  parmas.orderStatus = this.orderStatus - 1
+              }
+              this.$http.post('appServiceUser/myorder',parmas).then(res=>{
+                if(res.msg == 'success'){
+                  if(isclick){
+                    this.list = res.data.rows
+                  } else {
+                    this.list = this.list.concat(res.data.rows)
+                  }
+                  this.loading = false;
+                  this.total = res.data.total
+                  this.page = this.page + 1
+                  // 数据全部加载完成
+                  if (this.list.length == this.total || this.total == 0) {
+                    this.finished = true;
+                  }
+                }else {
+				          this.finished = true;
+                }
+			        }).catch(error=>{
+				          this.finished = true;
+              }) 
+            }, 500);
+          },
+        	confirm(){
+          },
+          buynow(orderType, orderId){
+            if(orderType == 1){
+              var types = 2
+              var path = 'payment'
+              this.$router.push({name: path, params: {type: types, id: orderId}})
+            } else if(orderType == 3) {
+              var types = 1
+              var path = 'payment'
+              this.$router.push({name: path, params: {type: types, id: orderId}})
+            } else if(orderType == 2) {
+              var path = 'intoPayment'
+              this.$router.push({name: path, params: { id: orderId }})
+            }
+          }
+        },
+        computed: {},
+        created: function () {
+          // this.init(null)
+            document.addEventListener('plusready', function() {
+              var webview = plus.webview.currentWebview();
+              plus.key.addEventListener('backbutton', function() {
+                  webview.canBack(function(e) {
+                      if(e.canBack) {
+                          webview.back();             
+                      } else {
+                          //webview.close(); //hide,quit
+                          //plus.runtime.quit();
+                          //首页返回键处理
+                          //处理逻辑：1秒内，连续两次按返回键，则退出应用；
+                          var first = null;
+                          plus.key.addEventListener('backbutton', function() {
+                              //首次按键，提示‘再按一次退出应用’
+                              if (!first) {
+                                  first = new Date().getTime();
+                            this.$toast('再按一次退出应用');
+                                  setTimeout(function() {
+                                      first = null;
+                                  }, 1000);
+                              } else {
+                                  if (new Date().getTime() - first < 1500) {
+                                      plus.runtime.quit();
+                                  }
+                              }
+                          }, false);
+                      }
+                  })
+              });
+            });
+        },
+        mounted: function () {},
+
+    }
+</script>
+<style scoped lang="less" type="text/less">
+  .myOrdersAll{
+  	.head{
+  		position: fixed;
+  		left: 0;
+  		top: 0;
+  		width: 100%;
+  		z-index: 999;
+    }
+    .allHead{
+      padding: 0.2rem 0;
+      li{
+        width: 16%;
+        float: left;
+        text-align: center;
+        position: relative;
+        padding-bottom: 0.2rem;
+        border-bottom: 0.01rem solid #ff6500;
+        span{
+          position: absolute;
+          top: -0.15rem;
+          width: 0.25rem;
+          display: inline-block;
+          height: 0.25rem;
+          border-radius: 50%;
+          border: 0.03rem solid red;
+          color: red;
+        }
+      }
+
+    }
+    //列表
+    .list{
+      li{
+      	box-sizing: border-box;
+        padding: 0.2rem 0.3rem;
+        .top{
+          padding: 0.2rem 0;
+        	font-size: .22rem;
+          border-bottom: 0.01rem solid #e6e6e6;
+          span{
+            color: #ff6500;
+            float: right;
+            font-size: .24rem;
+          }
+        }
+        .imgcenter{
+          padding: 0.2rem 0;
+          border-bottom: 0.01rem solid #e6e6e6;
+          .left{
+            height: 1.6rem;
+            div{
+              background-size: cover!important;
+              background-position: center center!important;
+            }
+          }
+          .right{
+            p:first-child{
+              font-size: 0.32rem;
+              font-weight: bold;
+              color: black;
+              span{
+              	float: right;
+              	color: #DC0000;
+              	font-weight: 400;
+              }
+            }
+            p{
+              color: grey;
+              font-size: .26rem;
+              margin-bottom: 0.04rem;
+            }
+          }
+        }
+        .order{
+          padding: 0.2rem 0;
+          border-bottom: 0.01rem solid #e6e6e6;
+          p{
+            float: right;
+            color:red;
+            span{
+              color: grey;
+            }
+          }
+        }
+        .up{
+          padding: 0.2rem 0;
+          border-bottom: 0.01rem solid #e6e6e6;
+          span{
+            width: 1.7rem;
+            height: 0.55rem;
+            text-align: center;
+            line-height: 0.55rem;
+            border-radius:0.55rem;
+            float: right;
+            border: 0.01rem solid #e6e6e6;
+            margin-right: 0.2rem;
+          }
+          .pay{
+            background-color: #ff6500;
+            color: white;
+          }
+          .fix{
+            background-color: #06a3ea;
+            color: white;
+          }
+          .evalute{
+            background-color: #00b034;
+            color: white;
+          }
+        }
+      }
+    }
+
+    .dialog{
+      p{
+        font-size: 0.26rem;
+        margin-bottom: 0.2rem;
+        &:nth-child(1){
+        	font-size: 0.3rem;
+        	text-align: center;
+        	margin-bottom: 0.1rem;
+        	line-height: 2;
+        	padding-top: .2rem;
+        }
+      }
+      .van-search{
+      	background: transparent!important;
+      }
+      .fee{
+        color: red;
+        span{
+          color: black;
+        }
+      }
+    }
+  }
+</style>
+<style>
+
+  .myOrdersAll .van-nav-bar__title {
+    text-align: center
+  }
+</style>

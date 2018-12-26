@@ -1,0 +1,113 @@
+<template>
+  <div class="Detail">
+    <Header  :isback='isback'/>
+    <Banner :list="banner"/>
+    <Title :detail="detail"/>
+    <Time :detail="detail"/>
+    <Swiper :detail="detail"/>
+    <Information :detail="detail"/>
+    <Recommend :detail="detail"/>
+    <Fitment :detail="detail"/>
+    <Specil :detail="detail"/>
+    <Decorate :list="decoration"/>
+    <Location/>
+    <MapGrange :village="village"/>
+    <RimFarm :list="farmHouse"/>
+    <RimGrange :foodList="foodList" :playList="playList" :stayList="stayList"/>
+    <Link/>
+    <Bootom/>
+    <Footer/>
+  </div>
+</template>
+
+<script>
+  import Header from '../../common/Header';
+  import Footer from './components/Footer'
+  import Banner from './components/Banner'
+  import Title from './components/Title'
+  import Time from './components/Time'
+  import Swiper from '../../common/Swiper'
+  import Information from './components/Information'
+  import Recommend from './components/Recommend'
+  import Fitment from './components/Fitment'
+  import Specil from './components/Specil'
+  import Decorate from './components/Decorate'
+  import Location from './components/Location'
+  import MapGrange from './components/MapGrange'
+  import RimFarm from './components/RimFarm'
+  import RimGrange from './components/RimGrange'
+  import Link from './components/Link'
+  import Bootom from './components/Bootom'
+
+  export default {
+    name: "rentDetail",
+    data() {
+      return {
+        banner: [],
+        // 详情
+        detail:'',
+        // 装修套餐
+        decoration:[],
+        // 村庄
+        village:'',
+        // 周边农房
+        farmHouse:[],
+        // 周边美食
+        foodList:[],
+        // 周边游玩
+        playList:[],
+        // 周边住宿
+        stayList:[],
+        isback:true,
+
+      }
+    },
+    components: {
+      Header,
+      Footer,
+      Banner,
+      Title,
+      Time,
+      Swiper,
+      Information,
+      Recommend,
+      Fitment,
+      Specil,
+      Decorate,
+      Location,
+      MapGrange,
+      RimFarm,
+      RimGrange,
+      Link,
+      Bootom
+    },
+    methods: {
+      init() {
+        var id = this.$route.params.id
+        this.$http.post('appServiceFarmhouse/getRentalHouseDetail', {farmhouseRentalsNumber: id}).then(res => {
+          console.log(res);
+          this.banner = res.data.detail.banner
+          this.detail = res.data.detail
+          this.decoration = res.data.decoration
+          this.village = res.data.village
+          this.farmHouse = res.data.farmHouse
+          this.foodList = res.data.foodList
+          this.playList = res.data.playList
+          this.stayList = res.data.stayList
+          console.log(this.foodList);
+        })
+      }
+    },
+    created: function () {
+
+      this.init()
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .Detail {
+    height: 100%;
+    overflow: auto;
+  }
+</style>

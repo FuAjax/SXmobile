@@ -1,0 +1,37 @@
+<template>
+  <div>
+      <Header />
+      <!--<Search />-->
+      <List />
+      <Link />
+  </div>
+</template>
+
+<script>
+  import Search from "../../common/search"
+  import Header from "../../../common/Header2"
+  import Link from "../../../common/Link"
+  import List from "./components/list"
+  import methods from './m/methods'
+
+  export default {
+    name: "consultList",
+    data() {
+      return {}
+    },
+    components: {
+      Header,
+      Search,
+      Link,
+      List
+    },
+    created:function () {
+      this.init()
+    },
+    methods:methods
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+
+</style>

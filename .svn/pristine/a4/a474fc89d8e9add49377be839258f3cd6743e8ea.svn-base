@@ -1,0 +1,878 @@
+<template>
+    <div class="myCollect">
+      <van-nav-bar title='我的收藏'
+                   right-text="筛选" left-arrow>
+      </van-nav-bar>
+      <van-tabs>
+        <van-tab title="农房">
+          <!--农房-->
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad"
+          >
+            <van-checkbox-group v-model="result">
+             <div class="farmhouse" v-for="(item,index) in list1" >
+               <van-row gutter="10">
+
+                 <van-col span="3" class="checkBox">
+                   <van-checkbox :name="item" ref="checkboxes" />
+                 </van-col>
+
+                 <van-col span="21">
+                   <!--右边的内容-->
+                   <p class="top">
+                     2017-11-13  11：45
+                   </p>
+                   <div class="center">
+                     <van-row gutter="10">
+                       <van-col span="8" class="left">
+                         <img :src=imgSrc alt="">
+                       </van-col>
+                       <van-col span="16" class="right">
+                         <p class="van-ellipsis ">
+                           黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街
+                         </p>
+                         <div class="van-ellipsis">
+                           <span>可租50年/2层3室/200平</span>
+                           <p>
+                             <span>￥1.2万</span>元/年
+                           </p>
+                         </div>
+                         <div class="van-ellipsis">
+                           <i class="iconfont icon-dizhi"></i>黄陂-木兰山分景区
+                           <p>1000元/月</p>
+                         </div>
+                         <p class="van-ellipsis">
+                          <span>有山</span>
+                         </p>
+                       </van-col>
+                     </van-row>
+                   </div>
+                   <div class="bottom">
+                     <stars :rate="4.7"></stars> <span class="score">4.0分</span> | 30条评论
+                     <p>
+                       <span>取消订单</span>
+                       <span class="fix">预约看房</span>
+                     </p>
+                   </div>
+                 </van-col>
+               </van-row>
+               <div class="separate"></div>
+             </div>
+            </van-checkbox-group>
+          </van-list>
+          <div class="farmBottom">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+        <van-tab title="农庄">
+          <!--农房-->
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad"
+          >
+            <van-checkbox-group v-model="result">
+              <div class="grange" v-for="(item,index) in list1" >
+                <van-row gutter="10">
+
+                  <van-col span="3" class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </van-col>
+
+                  <van-col span="21">
+                    <!--右边的内容-->
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src=imgSrc alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                            黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街黄陂区  晴川街 黄陂区  晴川街黄陂区  晴川街
+                          </p>
+                          <div class="van-ellipsis">
+                            <span>农家乐</span>
+                            <p>
+                              <span>￥1.2万</span>元/年
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            <i class="iconfont icon-dizhi"></i>黄陂-木兰山分景区
+                          </div>
+                          <p class="van-ellipsis">
+                            <span>有山</span>
+                          </p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="bottom">
+                      <stars :rate="4.7"></stars> <span class="score">4.0分</span> | 30条评论
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </van-row>
+                <div class="separate"></div>
+              </div>
+            </van-checkbox-group>
+          </van-list>
+          <div class="farmBottom">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+        <van-tab title="村庄">
+          <!--村庄-->
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad"
+          >
+            <van-checkbox-group v-model="result">
+              <div class="village" v-for="(item,index) in list1" >
+                <van-row gutter="10">
+
+                  <van-col span="3" class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </van-col>
+
+                  <van-col span="21">
+                    <!--右边的内容-->
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src=imgSrc alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                          黄陂区
+                            <span>美丽乡村</span>
+                          </p>
+                          <div class="van-ellipsis">
+                            <span>在租50年</span>
+                            <p>
+                              <span>1.2万元</span>/年
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            <i class="iconfont icon-dizhi"></i>黄陂-木兰山分景区
+                            <p>村庄均价</p>
+                          </div>
+                          <p class="van-ellipsis">
+                            <span>有山</span>
+                          </p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="bottom">
+                      <span class="one">106套</span>在租农房
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </van-row>
+                <div class="separate"></div>
+              </div>
+            </van-checkbox-group>
+          </van-list>
+          <div class="farmBottom">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+
+        <van-tab title="景点">
+          <!--景点-->
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad"
+          >
+            <van-checkbox-group v-model="result">
+              <div class="scenic" v-for="(item,index) in list1" >
+                <van-row gutter="10">
+
+                  <van-col span="3" class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </van-col>
+
+                  <van-col span="21">
+                    <!--右边的内容-->
+                    <div class="center">
+                      <van-row gutter="10">
+                        <van-col span="8" class="left">
+                          <img :src=imgSrc alt="">
+                        </van-col>
+                        <van-col span="16" class="right">
+                          <p class="van-ellipsis ">
+                            木兰天池
+                            <span>AAAAA级风景区</span>
+                          </p>
+                          <div class="van-ellipsis">
+                            <stars :rate="4.7"></stars><span class="four">4.0分</span>
+                            <p>
+                              <span>￥35</span>/人
+                            </p>
+                          </div>
+                          <div class="van-ellipsis">
+                            <i class="iconfont icon-dizhi"></i>黄陂-木兰山分景区
+                          </div>
+                          <p class="van-ellipsis">
+                            <span>有山</span>
+                          </p>
+                        </van-col>
+                      </van-row>
+                    </div>
+                    <div class="comment">
+                      <span>金刚点评：</span>的hi哦啊好大的还是低哦按死哦冬奥会大手我aiodioasi
+                    </div>
+                    <div class="bottom">
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </van-row>
+                <div class="separate"></div>
+              </div>
+            </van-checkbox-group>
+          </van-list>
+          <div class="farmBottom">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+
+
+        <van-tab title="资讯">
+          <!--资讯-->
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad"
+          >
+            <van-checkbox-group v-model="result">
+              <div class="infor" v-for="(item,index) in list1" >
+                <van-row gutter="10">
+
+                  <van-col span="3" class="checkBox">
+                    <van-checkbox :name="item" ref="checkboxes"/>
+                  </van-col>
+
+                  <van-col span="21">
+                    <!--右边的内容-->
+                    <p class="text">
+                      农村土地承包法将修改,解除进城务工农民后顾之忧 ？
+                    </p>
+                    <div class="bottom">
+                      2017-11-13 11:45
+                      <p>
+                        <span>取消收藏</span>
+                      </p>
+                    </div>
+                  </van-col>
+                </van-row>
+                <div class="separate"></div>
+              </div>
+            </van-checkbox-group>
+          </van-list>
+          <div class="farmBottom">
+            <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
+            <span>取消收藏</span>
+          </div>
+        </van-tab>
+      </van-tabs>
+    </div>
+</template>
+
+<script>
+  import stars from 'com/common/rates'
+    export default {
+        name: "myCollect",
+        components:{stars},
+        data() {
+            return {
+              imgSrc:'../../../../static/images/slide_01.jpg',
+              list1: ['a', 'b', 'c'],
+              result: [],
+              list: [],
+              loading: false,
+              finished: false,
+              fourSpan:['有山','拎包入住'],
+              checked:false,
+            }
+        },
+        methods: {
+          onLoad() {
+            // 异步更新数据
+            setTimeout(() => {
+              for (let i = 0; i < 10; i++) {
+                this.list.push(this.list.length + 1);
+              }
+              // 加载状态结束
+              this.loading = false;
+
+              // 数据全部加载完成
+              if (this.list.length >= 40) {
+                this.finished = true;
+              }
+            }, 500);
+          },
+
+          checkAll(){
+            if(this.checked){
+              let that=this;
+              this.list1.forEach(function(item){
+                that.result.push(item);
+              })
+            }else{
+              this.result=[];
+            }
+
+          },
+
+        },
+        computed: {},
+        created: function () {
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+    .myCollect{
+        .farmhouse{
+          .checkBox{
+            padding-top: 1rem;
+            padding-left: 0.3rem!important;
+          }
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+             p:first-child{
+                color: black;
+                font-size: 0.28rem;
+              }
+             div{
+                color: grey;
+               margin-top: 0.15rem;
+               p{
+                 float: right;
+                 span{
+                   color: red;
+                   font-size: 0.24rem;
+                 }
+               }
+             }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .score{
+              color: red;
+            }
+            p{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              margin-top: -0.25rem;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+        .farmBottom{
+        position: fixed;
+        background-color: white;
+        width: 100%;
+        z-index: 99;
+        bottom: 0;
+        padding: 0.2rem;
+        border-top: 0.01rem #e6e6e6 solid;
+        .van-checkbox{
+          display: inline-block;
+          vertical-align: middle;
+        }
+        span{
+          display: inline-block;
+          width: 1.6rem;
+          height: 0.5rem;
+          border-radius: 0.5rem;
+          text-align: center;
+          line-height: 0.5rem;
+          background-color: #ff6500;
+          color: white;
+          vertical-align: middle;
+          margin-left: 0.2rem;
+        }
+      }
+
+        .grange{
+          .checkBox{
+            padding-top: 1rem;
+            padding-left: 0.3rem!important;
+          }
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+              p:first-child{
+                color: black;
+                font-size: 0.28rem;
+              }
+              div{
+                color: grey;
+                margin-top: 0.15rem;
+                p{
+                  float: right;
+                  span{
+                    color: red;
+                    font-size: 0.24rem;
+                  }
+                }
+              }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .score{
+              color: red;
+            }
+            p{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              margin-top: -0.25rem;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+
+        .village{
+          .checkBox{
+            padding-top: 1rem;
+            padding-left: 0.3rem!important;
+          }
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+              p:first-child{
+                color: black;
+                font-size: 0.28rem;
+                span{
+                  display: inline-block;
+                  width: 1.3rem;
+                  height: 0.3rem;
+                  text-align: center;
+                  line-height: 0.3rem;
+                  background-color: #ebf8ee;
+                  color: #5ac074;
+                  border-radius: 0.3rem;
+                  font-size: 0.15rem;
+                  vertical-align: middle;
+                }
+              }
+              div{
+                color: grey;
+                margin-top: 0.15rem;
+                p{
+                  float: right;
+                  span{
+                    color: red;
+                    font-size: 0.24rem;
+                  }
+                }
+              }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .one{
+             color: black;
+              font-size: 0.26rem;
+            }
+            p{
+              position: absolute;
+              right: 0;
+              top: 50%;
+              margin-top: -0.25rem;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+
+        .scenic{
+          .checkBox{
+            padding-top: 1rem;
+            padding-left: 0.3rem!important;
+          }
+          padding: 0.2rem 0;
+          .top{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+          }
+          .center{
+            margin:0 0.2rem;
+            border-bottom: 0.01rem solid #e6e6e6;
+            padding: 0.2rem 0;
+            .left{
+              height: 1.6rem;
+              position: relative;
+              p{
+                position: absolute;
+                width: 95%;
+                height: 0.3rem;
+                background-color: rgba(0, 0, 0, 0.5);
+                bottom: 0;
+                color: white;
+                line-height: 0.3rem;
+                text-indent: 0.2rem;
+              }
+            }
+            .right{
+              p:first-child{
+                color: black;
+                font-size: 0.28rem;
+                span{
+                  display: inline-block;
+                  width: 1.3rem;
+                  height: 0.3rem;
+                  text-align: center;
+                  line-height: 0.3rem;
+                  background-color: #ebf8ee;
+                  color: #5ac074;
+                  border-radius: 0.3rem;
+                  font-size: 0.15rem;
+                  vertical-align: middle;
+                }
+              }
+              div{
+                color: grey;
+                margin-top: 0.15rem;
+                p{
+                  float: right;
+                  span{
+                    color: red;
+                    font-size: 0.24rem;
+                  }
+                }
+                .four{
+                  color: red;
+                  vertical-align: middle;
+                  margin-left: 0.15rem;
+                }
+              }
+              p:nth-child(4){
+                margin-top: 0.1rem;
+                span{
+                  font-size: 0.18rem;
+                  padding: 0 0.1rem;
+                  border-radius: 0.05rem;
+                }
+                span:first-child{
+                  border: 0.01rem #099b4c solid;
+                  color:#099b4c;
+                }
+                span:nth-child(2){
+                  border: 0.01rem #00a0e9 solid;
+                  color:#00a0e9;
+                }
+                span:nth-child(3){
+                  border: 0.01rem #eb3d00 solid;
+                  color:#eb3d00;
+                }
+                span:nth-child(4){
+                  border: 0.01rem #e3007b solid;
+                  color:#e3007b;
+                }
+              }
+            }
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .one{
+              color: black;
+              font-size: 0.26rem;
+            }
+            p{
+              float: right;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+          .comment{
+            margin:0 0.2rem;
+            margin-top: 0.2rem;
+            padding: 0.2rem 0;
+            border: 0.01rem solid #e6e6e6;
+            background-color: #faf9ff;
+            span{
+              color: grey;
+            }
+          }
+          .separate{
+            margin-top: 0.2rem;
+            height: 0.28rem;
+            background-color: #f1f0f6;
+          }
+        }
+
+        .infor{
+          .checkBox{
+            padding-top: 0.2rem;
+            padding-left: 0.3rem!important;
+          }
+          .text{
+            font-size: 0.28rem;
+            color: black;
+          }
+          .bottom{
+            position: relative;
+            margin:0 0.2rem;
+            padding: 0.2rem 0;
+            color: grey;
+            .one{
+              color: black;
+              font-size: 0.26rem;
+            }
+            p{
+              float: right;
+              .fix{
+                background-color: #ff6400;
+                color: white;
+              }
+              span{
+                width: 1.6rem;
+                height: 0.55rem;
+                display: inline-block;
+                border-radius: 0.55rem;
+                border: 0.01rem solid #e6e6e6;
+                text-align: center;
+                line-height: 0.55rem;
+              }
+            }
+          }
+        }
+    }
+</style>

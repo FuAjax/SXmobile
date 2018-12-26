@@ -1,0 +1,1267 @@
+<template>
+  <div class="issueGrange">
+    <div class="topBar">
+      <Header :title='title' />
+    </div>
+    <div style="width:100%; height:0.9rem;"></div>
+    <!--基本信息-->
+    <div class="topWrap">
+    <div>
+       <van-field
+        v-model="grangename"
+        required
+        clearable
+        label="农庄名称"
+        placeholder="请填写"
+        />
+    </div>
+    <div style="border: none"  @click="area">
+      <van-field
+        v-model="location"
+        required
+        disabled
+        label="所在地区"
+        placeholder="请选择"
+      />
+    </div>
+    <div class="three">
+       <van-cell-group>
+         <van-field
+           v-model="detailLocation"
+           clearable
+           required
+           center
+           label="详细地址"
+           placeholder="请精确到门牌号"
+         >
+           <van-button slot="button">号</van-button>
+         </van-field>
+       </van-cell-group>
+     </div>
+    <div>
+        <van-field
+          v-model="position"
+          required
+          label="位置标注"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+    <div>
+      <van-field
+        v-model="sceincAround"
+        label="周边景区"
+        icon="arrow"
+        disabled
+        placeholder="请选择"
+      />
+    </div>
+      <div>
+        <van-field
+          v-model="telephone"
+          required
+          label="前台预约电话"
+          placeholder="请填写"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="openTime"
+          label="营业时间"
+          icon="arrow"
+          disabled
+          required
+          placeholder="请选择"
+        />
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="percost"
+            clearable
+            required
+            center
+            label="人均消费"
+            placeholder="请填写"
+          >
+            <van-button slot="button">元</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="businessArea"
+            clearable
+            required
+            center
+            label="经营面积"
+            placeholder="请填写"
+          >
+            <van-button slot="button">平方米</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="DecorateTime"
+            clearable
+            required
+            center
+            label="装修时间"
+            placeholder="请填写"
+          >
+            <van-button slot="button">年</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="startTime"
+            clearable
+            required
+            center
+            label="开业时间"
+            placeholder="请填写"
+          >
+            <van-button slot="button">年</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+     <div>
+       <van-field
+         v-model="type"
+         label="经营类型"
+         icon="arrow"
+         disabled
+         required
+         placeholder="请选择"
+       />
+     </div>
+      <div class="service">
+        <van-field
+          v-model="product"
+          label="服务产品 多选"
+          disabled
+          required
+          placeholder="请选择"
+        />
+        <div class="product">
+         <span>美食</span>
+        </div>
+      </div>
+      <div>
+        <van-field
+          v-model="DecorateType"
+          label="装修级别"
+          icon="arrow"
+          disabled
+          required
+          placeholder="请选择"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="staffMount"
+          label="员工数量"
+          icon="arrow"
+          disabled
+          required
+          placeholder="请选择"
+        />
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--服务项目-->
+    <div class="serviceItem">
+      <div class="service">
+        <van-field
+          v-model="serviceProject"
+          label="服务项目"
+          disabled
+          required
+        />
+        <div class="product">
+          <span>美食</span>
+          <span>美食</span>
+          <span>美食</span>
+          <span>美食</span>
+        </div>
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="serviceProjectImg"
+          label="服务项目封面图片"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p>上传一特色游玩项目封面图</p>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--配套服务-->
+    <div class="support">
+     <div class="service">
+       <van-field
+         v-model="supportservice"
+         label="配套服务"
+         disabled
+         required
+       />
+       <div class="product">
+         <span>美食</span>
+         <span>美食</span>
+         <span>美食</span>
+         <span>美食</span>
+       </div>
+     </div>
+    </div>
+    <div class="separate"></div>
+    <!--住宿信息-->
+    <div class="stayInfor">
+      <div class="top">
+        住宿信息
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="roomNum"
+            clearable
+            center
+            label="客房数量"
+            placeholder="请填写"
+          >
+            <van-button slot="button">间</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div>
+        <van-field
+          v-model="roomGet"
+          label="住宿容纳"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="roomInnTime"
+          label="入住时间"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="roomOutTime"
+          label="离店时间"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="roomImg"
+          label="住宿封面图"
+          icon="arrow"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p>上传一张住宿产品的封面图</p>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--美食-->
+    <div class="foodInfo">
+      <div class="top">
+        美食信息
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="foodRoomNum"
+            clearable
+            center
+            label="包间数量"
+            placeholder="请填写"
+          >
+            <van-button slot="button">间</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="foodsNum"
+            clearable
+            center
+            label="散桌数量"
+            placeholder="请填写"
+          >
+            <van-button slot="button">桌</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div>
+        <van-field
+          v-model="getCustorm"
+          label="用餐接待"
+          icon="arrow"
+          disabled
+          placeholder="请选择"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="specialFood"
+          label="特色菜"
+          placeholder="请输入"
+        />
+      </div>
+      <div class="projectimg">
+        <van-field
+          v-model="foodfirstImg"
+          label="美食封面图片"
+          icon="arrow"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p> 上传一张美食产封面图</p>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--图片信息-->
+    <div class="imgInfor">
+      <div class="projectimg">
+        <van-field
+          v-model="outImg"
+          label="外部图片"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p>上传农庄图片，最少1张，第1张为封面，拖动调整图片顺序</p>
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--交通-->
+    <div class="traffic">
+      <div>
+        <van-field
+          v-model="grangeMessage"
+          label="农庄简介"
+          type="textarea"
+          placeholder="请填写"
+          rows="1"
+          :autosize="autosize"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="busroute"
+          label="公交线路"
+          type="textarea"
+          placeholder="示例:旅游一号线直达，每天3班"
+          rows="1"
+          :autosize="autosize"
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="driveRoute"
+          label="自驾线路"
+          type="textarea"
+          placeholder="示例:距汉口站开车仅40分钟路程"
+          rows="1"
+          :autosize="autosize"
+        />
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--商户信息-->
+    <div class="merchantInfo">
+      <div class="top">
+        商户信息
+      </div>
+      <div class="three">
+        <van-cell-group>
+          <van-field
+            v-model="businessName"
+            clearable
+            center
+            required
+            label="经营者姓名"
+            placeholder="请填写"
+          >
+            <van-button slot="button" @click="tab" :style="{background:colorNum==1?'#ff6500':'#e7e6ec',color:colorNum==1?'white':'black'}">先生</van-button>
+            <van-button slot="button" type="primary" @click="tabdiv" :style="{background:colorNum==2?'#ff6500':'#e7e6ec',color:colorNum==2?'white':'black'}">女士</van-button>
+          </van-field>
+        </van-cell-group>
+      </div>
+      <div>
+        <van-field
+          v-model="businessTelephone"
+          label="经营者手机"
+          type="number"
+          placeholder="请填写"
+          required
+          clearable
+        />
+      </div>
+      <div class="three">
+        <van-field v-model="code"  label="验证码" placeholder="请填写"  required clearable>
+          <span slot="button" v-show="sendAuthCode" class="code" @click="sendCode">
+              获取验证码
+          </span>
+          <span slot="button" v-show="!sendAuthCode" class="recode">{{auth_time}}秒后再发送</span>
+        </van-field>
+      </div>
+      <div>
+        <van-field
+          v-model="businessMail"
+          label="经营者邮箱"
+          placeholder="请填写"
+          required
+          clearable
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="bodyId"
+          label="身份证号码"
+          placeholder="请填写"
+          required
+          clearable
+        />
+      </div>
+      <div>
+        <van-field
+          v-model="businessBrand"
+          label="营业执照"
+          placeholder="请填写"
+          required
+          clearable
+        />
+      </div>
+    </div>
+    <div class="separate"></div>
+    <!--营业执照证件-->
+    <div class="bussiness">
+      <div class="projectimg">
+        <van-field
+          v-model="businessBrandImg"
+          label="营业执照"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p>拍复印件需加盖印章，可用有限特许证件代替；不在前台展示，后台可见</p>
+      </div>
+      <div class="projectimgg">
+        <van-field
+          v-model="foodImg"
+          label="食品经营许可证"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p>拍复印件需加盖印章，可用有限特许证件代替；不在前台展示，后台可见</p>
+      </div>
+      <div class="projectimgg">
+        <van-field
+          v-model="handlerImg"
+          label="法人代表手持身份证照（正面及反面各1张）"
+          disabled
+          required
+        />
+        <div class="buttonimg">
+          <div v-for="(item,index) in imglist">
+            <img :src="item" alt="">
+            <i class='iconfont icon-menu_reject2Submitor' @click="delIMg(index)"></i>
+          </div>
+          <span v-show="imglist.length<=3">
+          <input type="file" @change="uploadimg($event)">
+        </span>
+        </div>
+        <p>需清晰展示人物五官和身份证文字信息，上传正面手持及反面手持。</p>
+      </div>
+    </div>
+    <div class="bottom">
+      立即发布
+    </div>
+    <van-popup v-model="popupShow" position="bottom" :close-on-click-overlay="false">
+      <div class="cell-title">
+        <p class="confirm-icon" @click="confirmPop">确定</p>
+        <van-icon slot="right-icon" name="close" class="custom-icon close-icon" @click="closePop"/>
+      </div>
+      <!--所在地区-->
+      <div>
+
+      </div>
+
+    </van-popup>
+  </div>
+</template>
+
+<script>
+  import Header from "../../common/header2"
+  export default {
+    name: "issueGrange",
+    components:{Header},
+    data() {
+      return {
+        colorNum:1,
+        popupShow:false,
+
+        title:'发布农庄',
+        grangename:'',//农庄名称
+        location:'',//所在地区
+        detailLocation:'',//详细地址
+        position:'',//位置标注
+        sceincAround:'',//周边景区
+        telephone:'',//前台电话
+        openTime:'',//营业时间
+        percost:'',//人军消费
+        businessArea:'',//经营面积
+        DecorateTime:"",//装修时间
+        startTime:'',//开业时间
+        type:'',//经营类型
+        product:'',//服务产品
+        DecorateType:'',//装修级别
+        staffMount:'',//员工数量
+        serviceProject:'',//服务项目
+        serviceProjectImg:'',//服务项目封面图片
+        imglist:["../../../","../../../"],//服务项目封面图片数组
+        supportservice:'',//配套服务
+        roomNum:'',//客房数量
+        roomGet:'',//住宿容纳
+        roomInnTime:'',//入住时间
+        roomOutTime:'',//离店时间
+        roomImg:'',//住宿封面图
+
+        foodRoomNum:'',//包间
+        foodsNum:'',//散桌数量
+        getCustorm:'',//用餐接待
+        specialFood:'',//特色菜
+        foodfirstImg:'',//美食封面图
+
+        outImg:'',//外部图片
+        innerImg:'',//内部图片
+        surroundImg:'',//周边环境
+
+        grangeMessage:'',//农庄简介
+        autosize:{maxHeight: 200, minHeight: 200},
+        busroute:'',//公交线路
+        driveRoute:'',//自驾线路
+
+        businessName:'',//经营者姓名
+        businessTelephone:'',//经营者手机
+        code:'',//验证码
+        sendAuthCode:true,
+        auth_time:60,
+        businessMail:'',//经营者邮箱
+        bodyId:'',//身份证
+        businessBrand:'',//营业执照
+
+        businessBrandImg:'',//执照图片
+        handlerImg:'',//手持照片
+
+        foodImg:'',//食品经营
+
+        specialId:null,
+      }
+    },
+    methods:{
+      init(){
+        const params={
+          cityId:1,
+          userId:this.specialId,
+        };
+        this.$http.post('/appServiceInformation/publishGrangeParameter',params).then(res=>{
+          if(res.msg=='success'){
+            console.log(res)
+          }
+        }).catch()
+      },
+      tab(){
+        this.colorNum=1;
+      },
+      tabdiv(){
+        this.colorNum=2;
+      },
+      area(){//所在地区
+      this.popupShow=true;
+      },
+      confirmPop(){//弹窗确定
+
+      },
+      closePop(){//弹窗关闭
+      this.popupShow=false;
+      },
+      sendCode(){//发送验证码
+
+      },
+      delIMg(){//服务项目封面图片
+
+      },
+      uploadimg(){//服务项目封面图片
+
+      },
+    },
+    created:function(){
+      if(localStorage.getItem('userInfo')){
+        this.specialId=JSON.parse(localStorage.getItem('userInfo')).userId;
+      }else{
+        this.specialId=null;
+      }
+      this.init()
+    },
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../style/public.less";
+  .issueGrange{
+    //基本信息
+    .topWrap{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    .separate {
+      height: 0.2rem;
+      background-color: #f1f0f6;
+    }
+    //服务项目
+    .serviceItem{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-field .van-cell__title{
+        max-width: 3rem;
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //配套服务
+    .support{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+      .service /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //住宿信息
+    .stayInfor{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .top{
+        height: 1rem;
+        font-size: 0.3rem;
+        font-weight: bold;
+        line-height: 1rem;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //美食
+    .foodInfo{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .top{
+        height: 1rem;
+        font-size: 0.3rem;
+        font-weight: bold;
+        line-height: 1rem;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //图片信息
+    .imgInfor{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+    }
+    //交通
+    .traffic{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+    }
+    //商户信息
+    .merchantInfo{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+        .code{
+          display: inline-block;
+          width: 1.5rem;
+          background: #ff6500;
+          border-radius: 0.3rem;
+          text-align: center;
+          font-size: 0.2rem;
+          color: white;
+        }
+        .recode{
+          display: inline-block;
+          width: 1.5rem;
+          background: rgba(192,192,192,.5);
+          border-radius: 0.3rem;
+          text-align: center;
+          font-size: 0.2rem;
+          color: white;
+        }
+      }
+      .top{
+        font-size: 0.35rem;
+        font-weight: bold;
+        height: 1rem;
+        line-height: 1rem;
+      }
+      .three{
+        border: none;
+        padding: 0;
+      }
+      .three /deep/ .van-button{
+        height: 0.6rem;
+        line-height: 0.6rem;
+      }
+      .three /deep/ .van-button--default{
+        border: none;
+        border-top-left-radius: 50%;
+        border-bottom-left-radius: 50%;
+        background-color: #e7e6ec;
+        color: black;
+
+      }
+      .three /deep/ .van-button--primary{
+        background-color: #e7e6ec;
+        border: none;
+        color: black;
+        border-top-right-radius: 50%;
+        border-bottom-right-radius: 50%;
+      }
+      .service{
+        .product{
+          margin-bottom: 0.2rem;
+          span{
+            display: inline-block;
+            width: 1.4rem;
+            height: 0.6rem;
+            text-align: center;
+            line-height: 0.6rem;
+            border-radius: 0.6rem;
+            background-color: #e7e6ec;
+            color: #66656b;
+            margin-top: 0.2rem;
+            margin-right: 0.2rem;
+          }
+        }
+      }
+    }
+    //营业执照
+    .bussiness{
+      margin: 0 0.3rem;
+      font-size: 0.28rem;
+      &>div{
+        padding: 0.1rem 0;
+        border-bottom: 0.01rem #e6e6e6 solid;
+      }
+      .projectimg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+      .projectimgg{
+        .buttonimg{
+          margin-top: 0.3rem;
+          margin-bottom: 0.3rem;
+          div{
+            width: 1.58rem;
+            height: 1.58rem;
+            border: 0.01rem solid #e5e5e5;
+            display: inline-block;
+            position: relative;
+            margin-right: 0.22rem;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+            i{
+              position: absolute;
+              font-size: 0.4rem;
+              top: -0.2rem;
+              right: -0.2rem;
+            }
+          }
+          span{
+            display: inline-block;
+            width: 1.58rem;
+            height: 1.58rem;
+            background: url("../../../assets/button.png") center center no-repeat;
+            background-size: cover;
+            border: 0.01rem solid #e5e5e5;
+            position: relative;
+            vertical-align: top;
+            input{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              outline: transparent;
+              opacity: 0;
+            }
+          }
+        }
+        p{
+          color: #ff6500;
+        }
+      }
+      .projectimgg /deep/ .van-cell:not(:last-child)::after{
+        border: none;
+      }
+      .projectimgg /deep/  .van-cell__value{
+        display: none;
+      }
+      .projectimgg /deep/ .van-field .van-cell__title{
+        max-width:100%;
+      }
+
+    }
+    .bottom{
+      height: 1rem;
+      background: #fd6400;
+      font-size: 0.32rem;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1rem;
+    }
+
+
+
+
+    .cell-title{
+      padding: .3rem;
+    }
+    .confirm-icon{
+      color: #3979F5;
+      font-size: .3rem;
+      float: right;
+    }
+    .close-icon{
+      display: inline-block;
+      font-size: .4rem;
+      color: #bababc
+    }
+  }
+</style>

@@ -1,0 +1,12 @@
+.topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+.separate {
+  height: 0.2rem;
+  background-color: #f1f0f6;
+}
+/*# sourceMappingURL=public.css.map */

@@ -1,0 +1,428 @@
+<template>
+    <div class="scenic">
+      <!--搜索-->
+      <div class="top">
+        <div class="wrap">
+          <router-link to="" tag="div" class="search">
+            <i class="iconfont icon-sousuo"></i>
+            <input type="text" placeholder="请输入区域/景点名称">
+          </router-link>
+          <router-link to="" tag="div" class="find">
+            地图找农庄
+          </router-link>
+        </div>
+      </div>
+      <!--景点排行-->
+      <div class="scenic">
+        <router-link to="" tag="div" class="scenic_top">
+          <span>景点</span>排行榜
+        </router-link>
+        <div class="scenic_bottom">
+          <van-swipe
+            :loop=false
+            :show-indicators=false
+            >
+
+            <van-swipe-item v-for="(item,index) in scenic_list">
+              <router-link to="" tag="div" class="rank">
+                <div>
+                  <img :src="item.src" alt="">
+                </div>
+                <p>{{item.text}}</p>
+              </router-link>
+            </van-swipe-item>
+          </van-swipe>
+        </div>
+      </div>
+      <!--中间分割块-->
+      <div class="separate"></div>
+      <!--条件筛选-->
+        <div class="condition">
+         <div class="top_tab clear">
+           <div
+             v-for="(item,index) in list"
+             :class="{active:index==num}"
+             :keys="index"
+             @click="tab(index)"
+             class="list"
+           >
+             {{item}}
+             <i class="iconfont icon-xiala" v-if="index!=num"></i>
+             <i class="iconfont icon-xiala1" v-if="index ==num"></i>
+           </div>
+         </div>
+          <!--条件的对应区域-->
+         <div v-show="num==0" class="area clear">
+            <div class="left">
+              <div
+                v-for="(item,index) in tab_area"
+                :class="{active:index==area_num}"
+                @click="areaTab(index)"
+              >{{item}}</div>
+            </div>
+            <div class="right">
+              <van-area :area-list="areaList" :columns-num="3"  />
+            </div>
+         </div>
+        </div>
+
+      <!--景点列表-->
+        <div class="list">
+          <div class="scenic_wrap">
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              @load="onLoad"
+            >
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              @load="onLoad"
+            >
+            <van-row gutter="20">
+              <!--图-->
+              <van-col span="8">
+                <router-link to="" tag="div" class="left">
+                  <img src="../../../static/images/slide_01.jpg" alt="">
+                </router-link>
+              </van-col>
+              <!--右边文字-->
+              <van-col span="16">
+                <div class="right">
+                  <!--风景区-->
+                  <router-link to="" tag="div" class="mulan">
+                    <span class="lake">木兰天池</span>
+                    <span class="five">AAAAA级风景区</span>
+                  </router-link>
+                  <!--评分-->
+                  <div class="grade">
+                        <span class="star">
+                          <i class="iconfont icon-pingfenshixing"></i>
+                          <i class="iconfont icon-pingfenkongxing"></i>
+                          <i class="iconfont icon-pingfenbanxing"></i>
+                          <i class="iconfont icon-pingfenshixing"></i>
+                          <i class="iconfont icon-pingfenbanxing"></i>
+                        </span>
+                    <span class="score">4.0分</span>
+                    <p class="much">
+                      <span>￥35</span>/人
+                    </p>
+                  </div>
+                  <!--定位-->
+                  <div class="position">
+                    <i class="iconfont icon-dizhi"></i>黄陂-木兰乡  距离我30.9KM
+                  </div>
+                  <!--数据-->
+                  <div class="data">
+                    <span>漂流</span>
+                    <span>烧烤</span>
+                    <span>棋牌</span>
+                    <span>野菜</span>
+                  </div>
+                </div>
+              </van-col>
+            </van-row>
+            </van-list>
+            </van-list>
+          </div>
+        </div>
+      <div style="height: 3rem"></div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "scenic",
+        data() {
+            return {
+              scenic_list:[
+                {text:'推荐项目名称',src:'../../../static/images/slide_01.jpg',color:'#ff6500'},
+                {text:'推荐项目名称',src:'../../../static/images/slide_01.jpg',color:'#8ab8d4'},
+                {text:'推荐项目名称',src:'../../../static/images/slide_01.jpg',color:'#e38800'},
+                {text:'推荐项目名称',src:'../../../static/images/slide_01.jpg',color:'#b4b4b9'},
+                {text:'推荐项目名称',src:'../../../static/images/slide_01.jpg',color:'#b4b4b9'}
+              ],//景点
+              list:["区域",'适合人群','适宜季节','排序'],
+              tab_div:["内容1",'内容2','内容3','内容4'],
+              num:0,
+              area_num:0,
+              tab_area:['区域','景点'],
+              areaList:{
+                province_list: {
+                  100000:'不限',
+                  110000: '北京市',
+                  120000: '天津市'
+                },
+                city_list: {
+                  100100:'不限',
+                  110100: '北京市',
+                  110200: '县',
+                  120100: '天津市',
+                  120200: '县'
+                },
+                county_list: {
+                  100101:"不限",
+                  110101: '东城区',
+                  110102: '西城区',
+                  110105: '朝阳区',
+                  110106: '丰台区',
+                  120101: '和平区',
+                  120102: '河东区',
+                  120103: '河西区',
+                  120104: '南开区',
+                  120105: '河北区',
+                }
+              },
+            }
+        },
+        methods: {
+            tab(index){
+              this.num=index;
+            },
+          areaTab(index){
+              this.area_num=index;
+          },
+        },
+        computed: {},
+        created: function () {
+        },
+        mounted: function () {
+        },
+
+    }
+</script>
+
+<style scoped lang="less" type="text/less">
+  .scenic{
+    //头部
+    .top{
+      height: 1rem;
+      background-color: #f6f5fb;
+      position: relative;
+      .wrap{
+        position: absolute;
+        top: 0.2rem;
+        width: 6.8rem;
+        left: 50%;
+        transform: translateX(-50%);
+        .search{
+          i{
+            font-size: 0.3rem;
+            vertical-align: middle;
+            margin-left: 0.2rem;
+          }
+          height: 0.57rem;
+          display: inline-block;
+          width: 4.9rem;
+          vertical-align: middle;
+          background-color: white;
+          border-radius: 0.57rem;
+          input{
+            vertical-align: middle;
+            font-size: 0.2rem;
+            border: none;
+            outline: none;
+            color: #d5eed1;
+          }
+        }
+        .find{
+          width: 1.8rem;
+          background-color: #00af33;
+          vertical-align: middle;
+          height: 0.57rem;
+          display: inline-block;
+          font-size: 0.2rem;
+          border-radius: 0.57rem;
+          text-align: center;
+          line-height: 0.57rem;
+          color: #d5eed1;
+        }
+      }
+    }
+    //景点
+    .scenic{
+      padding-left: 0.3rem;
+      .scenic_top{
+        height: 1.15rem;
+        line-height: 1.15rem;
+        font-size: 0.24rem;
+        font-weight: bold;
+        span{
+          color: #ff6500;
+        }
+      }
+      .scenic_bottom{
+        padding-bottom: 0.2rem;
+        .rank{
+          padding-right:0.2rem;
+          div{
+            height: 2rem;
+            position: relative;
+          }
+          p{
+            font-size: 0.18rem;
+            padding-top: 0.13rem;
+          }
+        }
+      }
+    }
+    //隔开
+    .separate{
+      height: 0.28rem;
+      background-color: #f1f0f6;
+    }
+    //条件
+    .condition{
+      position: relative;
+      .top_tab{
+        border-bottom: 0.01rem solid grey;
+        .list{
+          height: 0.85rem;
+          float: left;
+          width: 25%;
+          font-size: 0.2rem;
+          text-align: center;
+          line-height: 0.85rem;
+        }
+      }
+      .area{
+        position: absolute;
+        top: 0.85rem;
+        width: 100%;
+        background-color: white;
+        height: 2rem;
+        border-top:  0.01rem solid #e6e6e6;
+        .left{
+          width: 25%;
+          float: left;
+          font-size: 0.2rem;
+          margin-left: 0.2rem;
+          box-sizing: border-box;
+          div{
+            border-bottom: 0.01rem solid #e6e6e6;
+            height: 0.8rem;
+            text-align: center;
+            line-height: 0.8rem;
+          }
+        }
+        .right{
+          background-color: #faf9ff;
+          border-left: 0.01rem solid #e6e6e6;
+          width: 72%;
+          float: left;
+        }
+      }
+
+    }
+    //景点列表
+    .list{
+      .scenic_wrap{
+        padding: 0 0.3rem;
+        &>div{
+          padding: 0.2rem 0;
+        }
+        .more{
+          height: 0.7rem;
+          background-color: #fff2ea;
+          text-align: center;
+          line-height: 0.7rem;
+          color: #ff6500;
+          font-size: 0.2rem;
+        }
+        .left{
+          width: 2.15rem;
+          height: 1.58rem;
+        }
+        .right{
+          .mulan{
+            font-size: 0.24rem;
+            .lake{
+
+            }
+            .five{
+              display: inline-block;
+              width: 1.71rem;
+              height: 0.3rem;
+              font-size: 0.18rem;
+              text-align: center;
+              line-height: 0.3rem;
+              vertical-align: middle;
+              border-radius: 0.3rem;
+              color: #00a62e;
+              margin-left: 0.1rem;
+              background-color: #ebf8ee;
+            }
+          }
+          .grade{
+            .score{
+              font-size: 0.18rem;
+              vertical-align: middle;
+              color: #ff6500;
+            }
+            .much{
+              display: inline-block;
+              font-size: 0.2rem;
+              vertical-align: middle;
+              margin-left: 0.8rem;
+              span{
+                color: #e90009;
+              }
+            }
+          }
+          .position{
+            i{
+              font-size: 0.3rem;
+              color: #c7c6cb;
+              vertical-align: middle;
+              margin-right: 0.05rem;
+            }
+            font-size: 0.2rem;
+          }
+          .data{
+            span{
+              font-size: 0.18rem;
+              padding: 0 0.1rem;
+              border-radius: 0.05rem;
+            }
+            span:first-child{
+              border: 0.01rem #099b4c solid;
+              color:#099b4c;
+            }
+            span:nth-child(2){
+              border: 0.01rem #00a0e9 solid;
+              color:#00a0e9;
+            }
+            span:nth-child(3){
+              border: 0.01rem #eb3d00 solid;
+              color:#eb3d00;
+            }
+            span:nth-child(4){
+              border: 0.01rem #e3007b solid;
+              color:#e3007b;
+            }
+          }
+        }
+        .van-row{
+          margin-left: 0!important;
+          margin-right: 0!important;
+        }
+        .variety{
+          font-size: 0.18rem;
+          color: #ff6500;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+    }
+
+
+
+  }
+  .scenic /deep/ .van-swipe-item{
+    width: 3.2rem!important;
+  }
+  .active{
+    color: #ff6500;
+  }
+</style>

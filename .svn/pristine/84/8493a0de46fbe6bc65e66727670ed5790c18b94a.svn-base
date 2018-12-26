@@ -1,0 +1,159 @@
+<template>
+  <header>
+    <div class="header">
+      <div :style="'box-sizing: border-sizing;position: relative;z-index: 999;' + ( color ? 'background: '+color+'; color: #fff' : 'background: #fff; color: #000' ) +';' + ''">
+          <van-icon name="arrow-left"
+            slot="left"
+            :color='color?"#fff":"#000"'
+            style="line-height: .92rem; padding: 0 .2rem 0 0; margin: 0;float:left;"
+            size="0.3rem"
+            v-show="isback"
+          />
+          <!-- <div class="po" style="float:left;line-height: .92rem;" @click="city">武汉 </div>
+          <div class="iconfont icon-xia" style="float:left;line-height: .96rem;"></div>　 -->
+          <div class="field clear">
+			      <div class="inputt" @click="tosearch">
+			        <i class="iconfont icon-sousuo"></i>
+			        <input type="text" readonly placeholder="请输入区域/农庄/景区">
+			      </div>
+			      <div v-show="type !== 2" tag="div" class="issuea" @click="map">地图找房</div>
+			      <div v-show="type !== 2" tag="div" class="issue" @click="issue">{{types== 1 ? '发布农庄':types == 2 ? '发布农庄':types == 3 ? '发布咨询':''}}</div>
+			    </div>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script>
+  export default {
+    name: "aHeader2",
+    props:{
+      title: '', color: null, isback: false, types: 0
+    },
+    data() {
+      return {
+      }
+    },
+    methods: {
+      onClickLeft() {
+        this.$router.back(-1)
+      },
+      onClickRight() {
+        // Toast('按钮');
+      },
+      city(){
+        this.$router.push({ name: 'cityQuery'})
+      },
+      tosearch(){
+        var query = {}
+        if (this.types == 1){
+          query = { to: '', name: '农庄' }
+        } else if (this.types == 2){
+          query = { to: '', name: '农房' }
+        } else if (this.types == 3){
+          query = { to: '', name: '资讯' }
+        }
+        this.$router.push({ name: 'search', query})
+      },
+      issue(){        // 发布 农庄 农房 咨询
+        // var to = ''
+        // if (this.types == 1){
+        //   to = 'issueGrange'
+        // } else if (this.types == 2){
+        //   to = 'issueFarm'
+        // } else if (this.types == 3){
+        //   to = ''
+        // }
+        // this.$router.push({ name: to})
+      },
+      map(){
+        this.$router.push({ name: 'mapFindGrange'})
+      }
+    },
+    created(){
+      this.type = this.$proType
+    }
+  }
+</script>
+
+<style scoped lang="less" type="text/less">
+  @import "../../../style/public.less";
+
+  .van-icon {
+    &:nth-child(1) {
+      margin-right: 0.3rem;
+    }
+  }
+  .van-nav-bar {
+    font-weight: 600;
+    font-size: 0.32rem;
+  }
+.field {
+  position: absolute;
+  top: 0.2rem;
+  width: 100%;
+  padding: 0 .3rem;
+  box-sizing: border-box;
+  & > div {
+    float: left;
+    margin-left: 0.1rem;
+  }
+  .inputt {
+    margin-left: 0;
+    width: 3.8rem;
+    height: 0.53rem;
+    border-radius: 0.54rem;
+    background: #FAF9FF;
+    padding-top: 0.12rem;
+    text-align: center;
+    box-sizing: border-box;
+    i {
+      font-size: 0.3rem;
+      vertical-align: top;
+    }
+    input {
+      outline: none;
+      background: #FAF9FF;
+      vertical-align: top;
+      height: 56%;
+      width: 3rem;
+      border: none;
+      font-size: 0.2rem;
+    }
+  }
+  .issue,.issuea {
+    height: 0.53rem;
+    padding: 0 .2rem;
+    background-color: #ff6400;
+    border-radius: 0.53rem;
+    font-size: 0.2rem;
+    text-align: center;
+    line-height: 0.53rem;
+    color: #fff;
+    float: right;
+  }
+  .issuea {
+    background-color: #00B134;
+  }
+}
+</style>
+
+<style>
+.header{
+  z-index: 999999;
+  height: .92rem;
+}
+header .van-popup--top{
+  top: .92rem;
+  z-index: 90!important;
+}
+header .van-modal{
+  z-index: 10!important;
+}
+header .van-nav-bar{
+  background: transparent;
+}
+header .van-nav-bar__title{
+  text-align: center
+}
+</style>
