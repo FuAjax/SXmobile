@@ -39,6 +39,19 @@
     <div class="order" @click="payNow">
       确认支付 ￥{{order.orderPrice}}元
     </div>
+    
+    <!--取消弹窗-->
+    <van-dialog
+        v-model="dialogShow"
+        show-cancel-button
+        confirmButtonText="已完成支付"
+        cancelButtonText="遇到问题,重新支付"
+        :before-close="beforeClose"
+        className="foodDialog"
+        >
+        <p style="line-height: 3; border-bottom: .02rem #F9F9F9 solid; text-align: center;">支付结果确认</p>
+        <p style="line-height: 3; border-bottom: .01rem #F9F9F9 solid; text-align: center;">请确认微信支付是否已完成</p>
+    </van-dialog>
   </div>
 </template>
 
@@ -73,8 +86,18 @@
         this.$http.post('appServiceOrder/stay/waittingpay',{orderId: id,userId:userID}).then(res=>{
           if(res.msg == "success"){
             this.order = res.data
+            localStorage.removeItem('wxPay');
           }
         })
+      },
+      beforeClose(action, done){
+          if (action === 'confirm') {
+              setTimeout(done, 1000);
+              this.$router.push({name: 'intoSuccess', params: { id: this.$route.params.id }})
+          } else {
+              this.init()
+              done(); 
+          }
       },
       payNow(){
         const params = {
@@ -98,14 +121,16 @@
             document.forms[0].submit()
           }
           if (this.radio == 1){
-            var htmls = '<a href="'
-              + res.data.mweb_url +
-              '" target="_self"><span id="sp"></span></a>'
-            let routerData = this.$router.resolve({path:'/apply',query:{htmls:htmls, type: 1}})
-            window.open(routerData.href,'_self')
-            const div = document.createElement('div');
-            div.innerHTML = htmls;
-            document.body.appendChild(div);
+            // var htmls = '<a href="'
+            //   + res.data.mweb_url +
+            //   '" target="_self"><span id="sp"></span></a>'
+            // let routerData = this.$router.resolve({path:'/apply',query:{htmls:htmls, type: 1}})
+            // window.open(routerData.href,'_self')
+            // const div = document.createElement('div');
+            // div.innerHTML = htmls;
+            // document.body.appendChild(div);
+                window.open(res.data.mweb_url,'_self')
+                localStorage.setItem('wxPay',JSON.stringify(this.id));
           }
         })
       }
@@ -113,7 +138,16 @@
     computed: {},
     created: function () {
       // console.log(this.$route.params.id)
-      this.init()
+      if (((localStorage.getItem('wxPay') && (JSON.parse(localStorage.getItem('wxPay')) - 0) == (this.$route.params.id - 0))) || this.$route.query.out_trade_no) {
+          // 弹窗
+          this.dialogShow = true
+          if(this.$route.query.total_amount){
+            this.money = this.$route.query.total_amount
+          }
+          this.radio = '1'
+      } else {
+          this.init()
+      }
     },
     mounted: function () {
     }

@@ -1,5 +1,6 @@
 <template>
   <div class="text" v-wechat-title="this.TITLE">
+  <!--<div class="text">-->
     <div class="topBar" v-if="(!isapp)">
       <Header :title='title' :isback='isback'/>
     </div>
@@ -13,7 +14,7 @@
       :comment1="comment1"
       v-if="commentShow"/>
     <Footer :detail="info"/>
-    <Gotop/>
+    <!--<Gotop/>-->
   </div>
 </template>
 
@@ -49,7 +50,7 @@
         title: '文章详情',
         // color:'#FF6400',
         commentShow: false,
-        TITLE:''
+        TITLE: '',
       }
     },
     components: {
@@ -65,9 +66,11 @@
     },
     methods: methods,
     created: function () {
-      this.init()
-    },
 
+      this.init();
+
+
+    },
   }
 </script>
 

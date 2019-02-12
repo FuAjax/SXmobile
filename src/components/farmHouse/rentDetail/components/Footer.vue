@@ -82,8 +82,8 @@
       phone(){
         if(localStorage.getItem('userInfo')){
         // ||"02765770321"
-          if(this.detail.mobile){
-            this.accountPhone=this.detail.mobile
+          if(this.detail.accountPhone){
+            this.accountPhone=this.detail.accountPhone
             window.location.href="tel:"+(this.accountPhone)
           }else {
             window.location.href="tel:"+("02765770321")
@@ -97,7 +97,14 @@
         }
 
       }
-    }
+    },
+    created:function () {
+      var id = this.$route.params.id
+      this.$http.post('appServiceFarmhouse/getRentalHouseDetail', {farmhouseRentalsNumber: id}).then(res => {
+        this.isCollection = res.data.detail.iscollection
+        console.log(this.isCollection);
+      })
+    },
   }
 </script>
 
@@ -111,7 +118,7 @@
     width: 100%;
     display: flex;
     border-top: 1px solid #e6e6e6;
-    z-index: 9999;
+    z-index: 100;
     div {
       flex: 1;
       width: 33%;

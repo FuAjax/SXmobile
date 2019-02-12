@@ -1,3 +1,4 @@
+
 <template>
     <div ref="wrapper">
       <slot></slot>
@@ -28,7 +29,9 @@ export default {
         let scroll = new BScroll(this.$refs.wrapper, {
             scrollX: true,
             click: true,
-            preventDefault: false
+            // preventDefault: false,
+            eventPassthrough: 'vertical',
+            probeType: 2
         })
       })
     }

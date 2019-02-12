@@ -78,7 +78,7 @@ export default {
       baseURL: baseurl|| baseUrl,
       url:url,
       data: qs.stringify(params),
-      timeout: 15000,
+      timeout: 150000,
       headers: {
         'Accept' : 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -94,7 +94,7 @@ export default {
       baseURL: baseurl|| baseUrl,
       url:url,
       data: params,
-      timeout: 15000,
+      timeout: 150000,
       headers: header
     }).then(function (res) {
         return checkStatus(res,lock)
@@ -134,7 +134,6 @@ var config={
       x += arr[i];
     }
     var signature = sha1(x);
-    console.log(signature)
     return signature;
   }
 };

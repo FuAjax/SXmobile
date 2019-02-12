@@ -47,11 +47,11 @@
       tosearch(){
         var query = {}
         if (this.types == 1){
-          query = { to: '', name: '农庄' }
+          query = { to: 'sharePlay', name: '农庄' }
         } else if (this.types == 2){
-          query = { to: '', name: '农房' }
+          query = { to: 'rentList', name: '农房' }
         } else if (this.types == 3){
-          query = { to: '', name: '咨询' }
+          query = {}
         }
         this.$router.push({ name: 'search', query})
       },

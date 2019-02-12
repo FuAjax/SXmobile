@@ -213,6 +213,12 @@ let m = {
           if(Phone.test(userPHONE.item(ip).value)){
             for (var ic = 0; ic < userCARD.length; ic++) {
               if (Card.test(userCARD.item(ic).value)) {
+                if (this.itNAME==''){
+                  this.itNAME=userNAME[0].value
+                  this.itPHONE=userPHONE[0].value
+                  this.itCARD=userCARD[0].value
+                  console.log(this.itNAME);
+                }
                 var occupantsName =this.itNAME
                 var occupantsMobile = this.itPHONE
                 var occupantsIdcard =this.itCARD
@@ -238,9 +244,9 @@ let m = {
                     this.$router.push({
                       name: "inntoConfirm", params: {
                         id: res.data.orderId,
-                        occupantsIdcard: nameArray,
-                        occupantsMobile: phoneArray,
-                        occupantsName: cardArray,
+                        occupantsIdcard: occupantsIdcard,
+                        occupantsMobile: occupantsMobile,
+                        occupantsName: occupantsName,
                         checkoutTime,
                         checkinTime
                       }

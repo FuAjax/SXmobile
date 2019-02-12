@@ -37,6 +37,20 @@
             <!-- <div class="tag">确认无误后点击买单</div> -->
             <van-button @click="payment" class="payment-btn" :disabled="!(money.length > 0 && money > 0 && radio)" :style="'' + ((money.length > 0 && money > 0 && radio) ? 'background:#FF6400; color: #fff;' : 'background:#FFD6B9; color: #999;') + 'outline: none; border-radius: 0; border: 0'" type='primary' plain size="large">{{(money.length > 0 && radio) ? '¥' + money : ''}}确认买单</van-button>
         </div>
+            
+        <!--取消弹窗-->
+        <van-dialog
+            v-model="dialogShow"
+            show-cancel-button
+            confirmButtonText="已完成支付"
+            cancelButtonText="遇到问题,重新支付"
+            :before-close="beforeClose"
+            className="foodDialog"
+            >
+            <p style="line-height: 3; border-bottom: .02rem #F9F9F9 solid; text-align: center;">支付结果确认</p>
+            <p style="line-height: 3; border-bottom: .01rem #F9F9F9 solid; text-align: center;">请确认微信支付是否已完成</p>
+        </van-dialog>
+
     </div>
 </template>
 
@@ -47,6 +61,7 @@
     name: "issueFarm",
     data() {
       return {
+        dialogShow:false,
         title: '',
         money: '',
         radio: null
@@ -56,6 +71,14 @@
       Header
     },
     methods: {
+        beforeClose(action, done){
+            if (action === 'confirm') {
+                setTimeout(done, 1000);
+                this.$router.push({name: 'paymentOnlinePay', params: { id: JSON.parse(localStorage.getItem('wxPay')) - 0 }})        // 订单编号查询详情
+            } else {
+                done();
+            }
+        },
         payment(){      // 生成订单 并 支付/payment/:type/:id
             // this.$router.push({ name:'payment', params:{ type: 3, id: 1 }})
             /**
@@ -64,18 +87,17 @@
              * @RequestParam(required=true) BigDecimal costPrice,
              * @RequestParam(required=true) BigDecimal payPrice
              **/
+            const params = {
+                grangeId: this.grangeId,
+                costPrice: this.money,
+                payPrice: this.money
+            }
             if(this.$route.query.userId){
               params.userId = this.$route.query.userId 
               var userInfo = {
                 userId: this.$route.query.userId
               }
               localStorage.setItem('userInfo',JSON.stringify(userInfo));
-            }
-
-            const params = {
-                grangeId: this.grangeId,
-                costPrice: this.money,
-                payPrice: this.money
             }
             if(this.radio == 1){
             var path = '/appServicePay/online/weixpay'
@@ -85,24 +107,26 @@
             this.$http.post(path, params).then(res=>{
                 //返回参数 
                 if (this.radio == 2){
-                var htmls = res
-                let routerData = this.$router.resolve({path:'/apply',query:{htmls:res, type: 2}})
-                //打开新页面
-                window.open(routerData.href,'_self')
-                const div = document.createElement('div');
-                div.innerHTML = htmls;
-                document.body.appendChild(div);
-                document.forms[0].submit()
+                    var htmls = res
+                    let routerData = this.$router.resolve({path:'/apply',query:{htmls:res, type: 2}})
+                    //打开新页面
+                    window.open(routerData.href,'_self')
+                    const div = document.createElement('div');
+                    div.innerHTML = htmls;
+                    document.body.appendChild(div);
+                    document.forms[0].submit()
                 }
                 if (this.radio == 1){
-                var htmls = '<a href="'
-                    + res.data.mweb_url +
-                '" target="_self"><span id="sp"></span></a>'
-                let routerData = this.$router.resolve({path:'/apply',query:{htmls:htmls, type: 1}})
-                window.open(routerData.href,'_self')
-                const div = document.createElement('div');
-                div.innerHTML = htmls;
-                document.body.appendChild(div);
+                    // var htmls = '<a href="'
+                    //     + res.data.mweb_url +
+                    // '" target="_self"><span id="sp"></span></a>'
+                    // let routerData = this.$router.resolve({path:'/apply',query:{htmls:htmls, type: 1}})
+                    // window.open(routerData.href,'_self')
+                    // const div = document.createElement('div');
+                    // div.innerHTML = htmls;
+                    // document.body.appendChild(div);
+                    window.open(res.data.mweb_url,'_self')
+                    localStorage.setItem('wxPay',JSON.stringify(res.data.orderNo));
                 }
             })
         }
@@ -111,6 +135,16 @@
         if(this.$route.query.id){
             this.grangeId = this.$route.query.id;
             this.title = this.$route.query.name;
+        }
+        
+        if (((localStorage.getItem('wxPay') && (JSON.parse(localStorage.getItem('wxPay')) - 0) == this.$route.query.orderNo)) || this.$route.query.out_trade_no) {
+            // 弹窗
+            this.dialogShow = true
+            if(this.$route.query.total_amount){
+                this.money = this.$route.query.total_amount
+                this.out_trade_no = this.$route.query.out_trade_no
+            }
+            this.radio = '1'
         }
     }
   }

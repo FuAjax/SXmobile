@@ -2,7 +2,7 @@
   <div>
     <div class="search">
 
-      <van-search placeholder="请输入区域/农房名称" v-model="value"/>
+      <van-search placeholder="请输入区域/村庄名称" v-model="value" @click="tosearch"/>
 
 
       <div class="btn" @click="farmMap">地图找房</div>
@@ -466,6 +466,12 @@
         }, 500)
 
 
+      },
+      tosearch(){
+        this.$router.push({
+          path:'/search',
+          query:{name:'求租列表',to:'wantedList'}
+        })
       }
     },
     created: function () {

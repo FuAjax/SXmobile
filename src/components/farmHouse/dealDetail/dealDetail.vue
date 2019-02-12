@@ -3,7 +3,7 @@
     <div class="topBar" v-if="(!isapp)">
       <Header :title='title' :isback='isback'/>
     </div>
-    <Banner :list="detail"/>
+    <Banner :detail="detail"/>
     <Title
       :farmhouseRentalsNumber="farmhouseRentalsNumber"
       :farmhouseTitle="farmhouseTitle"
@@ -30,7 +30,6 @@
     <Link/>
     <!--<Bootom/>-->
     <!--<Footer :detail="detail"/>-->
-
   </div>
 </template>
 

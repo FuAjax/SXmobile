@@ -2,7 +2,7 @@
   <div>
     <div class="search">
 
-      <van-search placeholder="请输入区域/农房名称" v-model="value"/>
+      <van-search placeholder="请输入区域/农房名称" v-model="value" @click="tosearch"/>
 
       <div class="btn" @click="farmMap">地图找房</div>
       <div class="btn" @click="search">搜索</div>
@@ -639,11 +639,17 @@
         this.keyword = this.value
         this.page = 1
         this.init();
+      },
+      tosearch(){
+        this.$router.push({
+          path:'/search',
+          query:{name:'成交列表',to:'dealList'}
+        })
       }
     },
     computed: {},
     created: function () {
-      this.init()
+      this.init()+-
       this.contion()
     },
 

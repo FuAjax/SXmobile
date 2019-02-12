@@ -133,6 +133,7 @@
           this.stayList = res.data.stayList
           this.landList = res.data.landList
           this.detailfarmhouseDescribe = res.data.detail.detailfarmhouseDescribe
+          this.matingList = res.data.detail.matingList
         })
         if(this.detailfarmhouseDescribe){
           this.farmhouseDescribe=true

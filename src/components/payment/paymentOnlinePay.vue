@@ -34,6 +34,7 @@
     name: "issueFarm",
     data() {
       return {
+        dialogShow:false,
         title: '支付订单',
         money: '',
         name: '',
@@ -47,17 +48,15 @@
     },
     methods: {
         init(payId){
-            this.$http.post('/appServicePay/queryPayonline', { payId }).then(res=>{
+            this.$http.post('/appServicePay/queryPayonline', { number: payId }).then(res=>{
                 //返回参数 
                 if(res.msg == "success"){
                     this.info = res.data
+                    if(localStorage.getItem('wxPay')){
+                        localStorage.removeItem('wxPay');
+                    }
                 } else {
-                    // this.$router.go(-3)
-                    // if(this.times < 10){
-                    //     setTimeout(()=>{
-                    //         this.again()
-                    //     }, 1000)
-                    // }
+                    this.$router.go(-1)
                 }
             })
         },
@@ -76,6 +75,13 @@
     created(){
         if(this.$route.params.id){
             this.id = this.$route.params.id;
+            if(this.$route.query.userId){
+                params.userId = this.$route.query.userId 
+                var userInfo = {
+                    userId: this.$route.query.userId
+                }
+                localStorage.setItem('userInfo',JSON.stringify(userInfo));
+            }
             this.init(this.id)
         }
     }

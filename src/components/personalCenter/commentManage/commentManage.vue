@@ -53,7 +53,7 @@
                 <div class="bottom clear">
                     <p>
                       <span @click="delComment(2,item.id, index)">删除</span>
-                      <span>编辑</span>
+                      <!-- <span>编辑</span> -->
                     </p>
                 </div>
                 <div class="separate"></div>
@@ -98,7 +98,7 @@
                 <div class="bottom clear">
                     <p>
                       <span @click="delComment(1,item.id, index)">删除</span>
-                      <span>编辑</span>
+                      <!-- <span>编辑</span> -->
                     </p>
                 </div>
                 <div class="separate"></div>

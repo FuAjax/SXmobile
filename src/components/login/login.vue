@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import {isvalidPhone} from '@/utils/validate'
+  import util from '@/utils/validate'
     export default {
         name: "login",
         data() {
@@ -110,6 +110,9 @@
                 if(res.info==="密码错误"){
                   this.$toast(res.info)
                 }
+                if(res.info==="该用户已被系统禁用"){
+                  this.$toast(res.info)
+                }
               }
             }).catch(error=>{
               this.$toast('网络错误')
@@ -117,7 +120,7 @@
           },
 
           blur(){
-             this.check = isvalidPhone(this.mobile);
+             this.check = util.isvalidPhone(this.mobile);
             if(!this.check){
               this.message=`手机号格式不正确`;
             }else{

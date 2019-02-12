@@ -164,8 +164,11 @@
                 this.$http.post(path,params).then(res=>{
                     if(res.msg == "success"){
                         this.order = res.data
+                        if(localStorage.getItem('wxPay')){
+                            localStorage.removeItem('wxPay');
+                        }
                     } else {
-                        this.$router.go(-3)
+                        this.$router.go(-1)
                         // this.$router.replace({name: 'payment', params: { id: this.id, type: this.type }, query: {userId: this.$route.query.userId}})
                     }
                 })

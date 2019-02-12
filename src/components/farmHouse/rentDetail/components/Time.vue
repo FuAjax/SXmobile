@@ -3,8 +3,9 @@
     <div class="total">
       <div class="top">
         <div class="year">
-          <div class="header">
-            <p style="font-size: 0.26rem">{{rentingPrice?+rentingPrice+'万元/年':rentingPrice==0?'面议':""}}</p>
+          <div class="header" style="padding-left: 0;text-align: center;color: #fb5900;">
+            <!--<p style="font-size: 0.26rem">{{rentingPrice?+rentingPrice+'万元/年':rentingPrice==0?'面议':""}}</p>-->
+            {{rentingPrice?+rentingPrice+'万元/年':rentingPrice==0?'面议':""}}
           </div>
           <div class="bot">
             价格
@@ -52,21 +53,21 @@
 <script>
   export default {
     name: "Time",
-    props:{
-      rentingPrice:{
-        type:Number||String,
-        required:true
+    props: {
+      rentingPrice: {
+        type: Number || String,
+        required: true
 
       },
-      bedroom:{
-        type:String,
-        required:true
-      },drawingroom:{
-        type:String,
-        required:true
-      },curtilageArea:{
-        type:String,
-        required:true
+      bedroom: {
+        type: String,
+        required: true
+      }, drawingroom: {
+        type: String,
+        required: true
+      }, curtilageArea: {
+        type: String,
+        required: true
       }, rentingYears: {
         type: String,
         required: true

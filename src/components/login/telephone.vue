@@ -53,7 +53,8 @@
 </template>
 
 <script>
-  import {isvalidPhone,isPasswd} from '@/utils/validate'
+  import util from '@/utils/validate'
+  // {isvalidPhone,isPasswd}
     export default {
         name: "telephone",
         data() {
@@ -72,8 +73,7 @@
           },
 
           blur(){ //手机号的测试
-
-            this.check = isvalidPhone(this.mobile);
+            this.check = util.isvalidPhone(this.mobile);
             if(!this.check){
               this.message=`手机号格式不正确`;
             }else{
@@ -83,7 +83,6 @@
 
               this.message='';
             }
-            console.log(this.check)
 
           },
           sendCode(){  //发送验证码
@@ -142,7 +141,7 @@
                       if(this.$proType == 3){
                         this.$router.replace('/')
                       } else {
-                        this.$router.replace('/navbar')
+                        this.$router.replace('/')
                       }
                     },1200)
                   }else{

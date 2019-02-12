@@ -317,20 +317,31 @@
         methods: {
 
           tosearch(){
+            // if(this.isSearchIn){
+            //   this.$router.go({
+            //     name:'search',
+            //     query:{name:'游玩',to:'sharePlay'}
+            //   })
+            //   console.log({
+            //     path:'search',
+            //     query:{name:'游玩',to:'sharePlay'}
+            //   })
+            // }
             this.$router.push({
               path:'/search',
               query:{name:'游玩',to:'sharePlay'}
             })
+            
           },
 
 
 
           fivesearch(rest,id){
             this.activeId = id;
-           this.typelist=rest;
+            this.typelist=rest;
             this.nomessage=false,
-           this.page=1;
-           this.init();
+            this.page=1;
+            this.init();
           },
 
 
@@ -577,7 +588,10 @@
         created: function () {
           this.rank();
           this.condition();
-          this.keywords=this.$route.query.searchWord;
+          if(this.$route.query.searchWord){
+            this.keywords=this.$route.query.searchWord;
+            this.isSearchIn = true
+          }
         },
         mounted: function () {
         },

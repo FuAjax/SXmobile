@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="search">
-      <van-search placeholder="请输入区域/农房名称" v-model="value"/>
+      <van-search placeholder="请输入区域/村庄名称" v-model="value" @click="tosearch" />
       <div class="btn" @click="farmMap">地图找房</div>
-      <div class="btn" @click="search">搜索</div>
+      <div class="btn" @click="search" >搜索</div>
     </div>
     <div class="condition">
       <ul class="top_tab clear" style="    padding-left: 0.6rem;">
@@ -426,6 +426,9 @@
             keyword: this.keyword,
             rest: this.landrest + this.arearest + this.villagerest + this.pricerest
           };
+          if (this.$route.query.searchWord) {
+            params.keyword = this.$route.query.searchWord
+          }
           this.$http.post('appServiceFarmhouse/getVillageData', params).then(res => {
             if (res.msg == "success") {
               if (this.page == 1) {
@@ -451,10 +454,16 @@
           })
         }, 500)
 
+      },
+      tosearch(){
+        this.$router.push({
+          path:'/search',
+          query:{name:'村庄列表',to:'villageList'}
+        })
       }
     },
     created: function () {
-      // this.init();
+      this.init();
       this.contion();
     },
     components: {

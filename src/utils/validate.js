@@ -1,16 +1,16 @@
-export function isvalidPhone(str) {
+function isvalidPhone(str) {
   const reg = /^1[3|4|5|7|8|9][0-9]\d{8}$/
  // const reg =  /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/
   return reg.test(str)
 }
 
-export function isPasswd(s)
+function isPasswd(s)
 {
   const patrn=/^(\w){6,20}$/;
   return patrn.test(s)
 }
 
-export function returnFloat(value){
+function returnFloat(value){
   var value=Math.round(parseFloat(value)*100)/100;
 
   var xsd=value.toString().split(".");
@@ -24,4 +24,8 @@ export function returnFloat(value){
     }
     return value;
   }
+}
+
+export default {
+  isvalidPhone, isPasswd, returnFloat
 }

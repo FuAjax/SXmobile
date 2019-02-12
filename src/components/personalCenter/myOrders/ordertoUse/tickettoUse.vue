@@ -251,7 +251,7 @@
       confirmButtonText="申请退款"
       :before-close="beforeClose"
       className="foodDialog"
-    >
+      >
       <p>您确认要取消订单吗？</p>
       <p>取消后，订单不可恢复</p>
       <div class="wrap">
@@ -328,7 +328,7 @@
         name: "tickettoUse",
         data() {
             return {
-            	info: {},id: null,foodshow:true,
+            	info: {},id: null,foodshow:false,
             }
         },
         methods: {
@@ -348,10 +348,27 @@
           },
           beforeClose1(action, done){
             if (action === 'confirm') {
-            	setTimeout(done, 1000);
-            	setTimeout(()=>{
-            		this.$toast('删除订单操作');
-            	},900)
+              this.$http.post('appServiceOrder/readyCancelOrder',{orderId: this.id}).then(res=>{
+                if(res.msg == 'success'){
+                  if(res.data.canCancel == 1){    // 可以取消
+                    if(res.data.isDrawback == 1){
+                      this.refundAmount = res.data.refundAmount
+                      this.orderPrice = res.data.orderPrice
+                      this.orderId = this.id
+                    } else {
+                      this.refundAmount = 0
+                      this.orderPrice = 0
+                    }
+                  } else {
+                    this.$toast(res.data.reason);
+                  }
+                  this.foodshow=true;
+            	    done();
+                } else {
+                  this.$toast(res.info);
+                }
+              })
+              this.$toast('删除订单操作');
             } else {
             	done();
             }

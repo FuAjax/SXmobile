@@ -142,7 +142,13 @@ export default {
                 link: "资讯",
                 to: 'infoList',
                 check: false
-              }],
+              },
+              {
+                link: "村庄",
+                to: 'villageList',
+                check: false
+              },
+            ],
             history: [],
             map: '搜索',
             searchData: {
@@ -166,7 +172,7 @@ export default {
                     this.searchEnd = false
                 } else {
                     this.searchData.value = info
-                    this.$http.post("appServiceInformation/search", { cityId: 1, info: info })
+                    this.$http.post("appServiceInformation/search", { cityId: 1, info:info })
                     .then(res => {
                         if (res.msg == "success") {
                             this.searchEnd = res.data
@@ -211,10 +217,13 @@ export default {
             }
         },
         cellClick(name,searchWord){
-            this.$router.push({ name, query: { searchWord }})
+            if(searchWord &&searchWord!==''){
+                this.$router.push({ name, query: { searchWord }})
+            } else {
+                this.$toast('请输入搜索词');
+            }
         },
         onCancel(){
-            console.log(111)
         }
     },
     computed: {},
@@ -222,7 +231,6 @@ export default {
         if(window.localStorage.getItem('searchHistory')){
             this.history = JSON.parse(window.localStorage.getItem('searchHistory')).reverse()
         }
-        console.log(this.$route.query)
         if(this.$route.query){
             if(this.$route.query.name){                 // 标题
                 this.title = this.$route.query.name + '-搜索'

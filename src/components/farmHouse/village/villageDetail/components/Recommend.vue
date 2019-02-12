@@ -6,7 +6,7 @@
           <p>{{title}}</p>
 
         </div>
-        <span>{{detail.simpleSuggest}}</span>
+        <span v-html="detail.simpleSuggest"></span>
       </van-collapse-item>
     </van-collapse>
   </div>

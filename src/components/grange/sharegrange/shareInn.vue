@@ -155,7 +155,7 @@
           <p class="van-ellipsis">{{item.grangeName}}</p>
           <p>
             <stars :rate="item.totalMark"></stars>
-            <span>{{item.totalMark}}分</span> | <span>20条</span>点评
+            <span>{{item.totalMark}}分</span>
           </p>
           <!--定位-->
           <div class="position clear">
@@ -351,7 +351,7 @@
         },
         methods: {
           tosearch(){
-            this.$router.push({
+            this.$router.replace({
               path:'/search',
               query:{name:'住宿',to:'shareInn'}
             })

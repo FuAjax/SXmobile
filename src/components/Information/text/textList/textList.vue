@@ -3,7 +3,6 @@
     <div class="topBar" v-if="(!isapp)">
       <Header :title='title' :isback='isback'/>
     </div>
-    <!--<Banner/>-->
     <Project :newsList="info"/>
     <Link/>
     <Footer/>
@@ -11,7 +10,7 @@
 </template>
 
 <script>
-  import Header from "../../../common/Header"
+  import Header from "../../../common/Header2"
   import Banner from "../../index/components/Banner"
   import Footer from "../../../common/Footer"
   import Link from "../../../common/Link"

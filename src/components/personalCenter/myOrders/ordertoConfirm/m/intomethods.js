@@ -6,7 +6,7 @@ let m = {
 
 
   init() {
-    var userID = JSON.parse(localStorage.getItem('userInfo'))
+    var userID = JSON.parse(localStorage.getItem('userInfo')).userId
     var id = this.$route.params.id
     this.id = id
     this.$http.post('appServiceOrder/stay/waittingcomfirm', {userId: userID, orderId: id}).then(res => {

@@ -10,13 +10,16 @@
       <!-- paymentFailureTime -->
     </div>
     <div class="reason">
-      <p>消费凭证</p>
       <p style="color: grey">
         小提示：记下或凭短信{调用消费券密码名称，后台配置}向商家出示即可消费
+        <!-- info.passwordName -->
       </p>
       <!-- <p style="color: #ff6500">
         0978 1611 已退款
       </p> -->
+      <p style="color: #ff6500" v-if="info.orderStatus == 2">
+       待使用　　消费券名称: {{info.passwordName}}　　消费券密码: {{info.consumerVoucher}}
+      </p>
     </div>
     <div class="separate"></div>
     <div class="number">
@@ -312,10 +315,27 @@
           },
           beforeClose1(action, done){
             if (action === 'confirm') {
-            	setTimeout(done, 1000);
-            	setTimeout(()=>{
-            		this.$toast('删除订单操作');
-            	},900)
+              this.$http.post('appServiceOrder/readyCancelOrder',{orderId: this.id}).then(res=>{
+                if(res.msg == 'success'){
+                  if(res.data.canCancel == 1){    // 可以取消
+                    if(res.data.isDrawback == 1){
+                      this.refundAmount = res.data.refundAmount
+                      this.orderPrice = res.data.orderPrice
+                      this.orderId = this.id
+                    } else {
+                      this.refundAmount = 0
+                      this.orderPrice = 0
+                    }
+                  } else {
+                    this.$toast(res.data.reason);
+                  }
+                  this.foodshow=true;
+            	    done();
+                } else {
+                  this.$toast(res.info);
+                }
+              })
+              this.$toast('删除订单操作');
             } else {
             	done();
             }

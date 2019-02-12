@@ -39,7 +39,9 @@
           placeholder="请输入评论"
           rows="1"
           autosize
-        />
+          >
+        <van-button slot="button" size="small" type="primary" @click="info">发布信息</van-button>
+        </van-field>
       </van-cell-group>
     </van-popup>
   </footer>
@@ -104,6 +106,7 @@
               userId
             }).then(res => {
               this.$toast("评论成功")
+              this.textShow = false
             })
           } else {
             this.$toast("评论内容不能为空")

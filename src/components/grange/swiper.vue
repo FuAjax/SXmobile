@@ -37,7 +37,7 @@
           tosearch(){
             this.$router.push({
               path:'/search',
-              query:{name:'农庄',to:'grangeindex'}
+              query:{name:'农庄',to:'sharePlay'}
             })
           }
         },

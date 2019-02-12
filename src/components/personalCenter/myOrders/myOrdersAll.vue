@@ -48,9 +48,9 @@
                         </p>
                       </div>
                     <div class="up clear">
-                      <span class="fix">
+                      <!-- <span class="fix">
                         修改订单
-                    </span>
+                    </span> -->
                         <span @click="detail(item.orderType, item.orderId)">
                       订单详情
                     </span>
@@ -201,9 +201,9 @@
                           </p>
                         </div>
                       <div class="up clear">
-                      <span>
+                      <!-- <span>
                         删除订单
-                      </span>
+                      </span> -->
                       <span @click="detail(item.orderStatus, item.orderId)">
                         订单详情
                       </span>
@@ -248,9 +248,9 @@
                       </p>
                     </div>
                     <div class="up clear">
-                    <span class="fix">
+                    <!-- <span class="fix">
                       修改订单
-                  </span>
+                  </span> -->
                       <span @click="detail(item.orderType, item.orderId)">
                     订单详情
                   </span>
@@ -340,7 +340,7 @@
                       </p>
                     </div>
                     <div class="up clear">
-                    <span>
+                    <span @click="cancel(item.orderId)">
                       取消订单
                     </span>
                   </div>
@@ -386,7 +386,7 @@
                     <span class="evalute">
                       评价
                     </span>
-                    <span @click="detail(item.orderStatus, item.orderId)">
+                    <span @click="detail(item.orderType, item.orderId)">
                       订单详情
                     </span>
                   </div>
@@ -429,10 +429,10 @@
                         </p>
                       </div>
                     <div class="up clear">
-                    <span>
+                    <!-- <span>
                       删除订单
-                    </span>
-                    <span @click="detail(item.orderStatus, item.orderId)">
+                    </span> -->
+                    <span @click="detail(item.orderType, item.orderId)">
                       订单详情
                     </span>
                   </div>
@@ -451,14 +451,14 @@
       <van-dialog
         v-model="foodshow"
         show-cancel-button
-        confirmButtonText="申请退款"
+        confirmButtonText="取消订单"
         :before-close="beforeClose"
         className="foodDialog"
          >
         <p>您确认要取消订单吗？</p>
         <p>取消后，订单不可恢复</p>
         <div class="wrap">
-          <van-row gutter="5">
+          <!-- <van-row gutter="5">
             <van-col span="8" class="left">可退数量</van-col>
             <van-col span="16" class="right">
               <span class="num">1张</span>
@@ -476,22 +476,22 @@
                 </van-radio-group>
               </div>
             </van-col>
-          </van-row>
+          </van-row> -->
           <van-row gutter="5">
             <van-col span="8" class="left">取消原因</van-col>
             <van-col span="16" class="right">
               <div class="choose">
-                <select name="">
+                <select v-model="select">
                   <option value="" disabled selected>请选择取消原因</option>
-                  <option value="">行程有变</option>
-                  <option value="">房间实际描述和照片不符</option>
-                  <option value="">无法联系商家</option>
-                  <option value="">涨价了</option>
-                  <option value="">商家服务态度差</option>
-                  <option value="">没房了</option>
-                  <option value="">设施故障无法继续入住</option>
-                  <option value="">重新预订</option>
-                  <option value="">其他原因</option>
+                  <option value="行程有变">行程有变</option>
+                  <option value="房间实际描述和照片不符">房间实际描述和照片不符</option>
+                  <option value="无法联系商家">无法联系商家</option>
+                  <option value="涨价了">涨价了</option>
+                  <option value="商家服务态度差">商家服务态度差</option>
+                  <option value="没房了">没房了</option>
+                  <option value="设施故障无法继续入住">设施故障无法继续入住</option>
+                  <option value="重新预订">重新预订</option>
+                  <option value="其他原因">其他原因</option>
                 </select>
               </div>
             </van-col>
@@ -499,13 +499,13 @@
           <van-row gutter="5">
             <van-col span="8" class="left">消费费用</van-col>
             <van-col span="16" class="right">
-              <span class="num">￥233.00</span>
+              <span class="num">￥{{orderPrice}}</span>
             </van-col>
           </van-row>
           <van-row gutter="5">
             <van-col span="8" class="left">退还金额</van-col>
             <van-col span="16" class="right">
-              <span class="num">￥233.00</span>
+              <span class="num">￥{{refundAmount}}</span>
             </van-col>
           </van-row>
 
@@ -518,7 +518,7 @@
             </van-col>
           </van-row>
           <div class="textwrap">
-            <textarea name="" placeholder="更多原因(最多200字)"></textarea>
+            <textarea v-model="textarea" placeholder="更多原因(最多200字)"></textarea>
           </div>
         </div>
       </van-dialog>
@@ -593,6 +593,10 @@ import noList from "../../common/noList";
             ticketValue:1,//门票计
             foodshow:false,//美食
             radio:"1",
+            select: '',
+            textarea: '',
+            orderPrice:0,
+            refundAmount:0,
 
 
 
@@ -630,10 +634,29 @@ import noList from "../../common/noList";
           onClickRight(){
          	  this.searchShow=true;
           },
-          cancel(){//取消订单
-         	  this.show=true;
+          cancel(orderId){//取消订单
+            this.$http.post('appServiceOrder/readyCancelOrder',{orderId}).then(res=>{
+              if(res.msg == 'success'){
+                if(res.data.canCancel == 1){    // 可以取消
+                  if(res.data.isDrawback == 1){
+                    this.refundAmount = res.data.refundAmount
+                    this.orderPrice = res.data.orderPrice
+                    this.orderId = orderId
+                  } else {
+                    this.refundAmount = 0
+                    this.orderPrice = 0
+                  }
+                } else {
+                  this.$toast(res.data.reason);
+                }
+         	      this.foodshow=true;
+              } else {
+                this.$toast(res.info);
+              }
+            })
           },
           detail(type, id){
+            console.log(type, id)
             if(type == 3){
               this.$router.push({name: 'tickettoUse', params: { id: id}})
             }
@@ -646,7 +669,14 @@ import noList from "../../common/noList";
           },
           beforeClose(action, done){
             if (action === 'confirm') {
-              setTimeout(done, 1000);
+              this.$http.post('appServiceOrder/cancelOrder',{orderId:this.orderId,cancelReason:this.select+this.textarea}).then(res=>{
+                if(res.msg == 'success'){
+                  done();
+                  this.$toast('取消成功');
+                } else {
+                  this.$toast(res.info);
+                }
+              })
             } else {
               done();
             }

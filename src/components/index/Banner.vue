@@ -42,7 +42,7 @@
       tosearch(){
         this.$router.push({
           path:'/search',
-          query:{name:'农房',to:'farmHouse'}
+          query:{name:'农房',to:'rentList'}
         })
       }
     },

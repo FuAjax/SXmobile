@@ -164,8 +164,12 @@
         this.$http.post('appServiceOrder/stay/complete',{orderId:id,userId:userID}).then(res=>{
           if(res.msg == "success"){
             this.order = res.data
+
+            if(localStorage.getItem('wxPay')){
+                localStorage.removeItem('wxPay');
+            }
           } else {
-            this.$router.go(-3)
+            this.$router.go(-1)
             // this.$router.replace({name: 'intoPayment', params: { id: this.$route.params.id }, query: {userId: this.$route.query.userId}})
           }
         })

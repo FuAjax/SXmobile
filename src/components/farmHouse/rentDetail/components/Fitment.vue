@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="blank"></div>
+    <!--<div class="blank"></div>-->
     <div class="fitment">
       <div class="top">{{fitment}}</div>
       <div class="content">
         <div class="imgbox" v-for="(index,i) in detail.matingList" :key="i">
           <img :src="index.logoUrl" alt="">
-          <p>{{index.menuName}}</p>
+          <p style="text-align: center">{{index.menuName}}</p>
         </div>
       </div>
     </div>

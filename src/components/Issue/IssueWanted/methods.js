@@ -1,7 +1,7 @@
 /*
     Created by name: "FuDi", Date:2018/12/20 ,Time:9:08
 */
-import {isvalidPhone, returnFloat} from '@/utils/validate'
+import utils from '@/utils/validate'
 
 let m = {
   init() {
@@ -57,11 +57,11 @@ let m = {
           this.hallColumns = hall
 
         });
-        if (this.hallColumns[0].children) {
-          this.hallColumns[0].children.forEach((item, index) => {
-            this.hallColumns.push(item.name)
-          })
-        }
+        // if (this.hallColumns[0].children) {
+        //   this.hallColumns[0].children.forEach((item, index) => {
+        //     this.hallColumns.push(item.name)
+        //   })
+        // }
         // 房屋特色
         this.characteristic = data.characteristic
         this.characteristic.forEach((item, index) => {
@@ -152,7 +152,7 @@ let m = {
 
   hallChange(picker, value, index) {
     this.hallIndex = index
-    console.log(this.hallIndex);
+
   },
 
   spotonChange1(picker, value, index) {
@@ -275,14 +275,19 @@ let m = {
     }
 
     if (this.popType == 3) {         // 房屋户型
-      if (this.roomIndex && this.hallIndex) {
-        this.apartmentName = this.roomColumns[this.roomIndex - 1] + '-' + this.hallColumns[this.hallIndex - 1]
+      if (this.roomIndex && this.hallIndex >=0) {
+        console.log(this.hallIndex);
+        // if (this.hallIndex==0){
+        //
+        //   this.apartmentName = this.roomColumns[this.roomIndex - 1] + '-' + this.hallColumns[0]
+        // }
+        this.apartmentName = this.roomColumns[this.roomIndex - 1] + '-' + this.hallColumns[this.hallIndex]
       }
     }
     this.popShow = false
   },
   getCode() {
-    if (!isvalidPhone(this.linkmobile)) {
+    if (!utils.isvalidPhone(this.linkmobile)) {
       this.$toast('手机号格式错误')
       return false
     }
@@ -367,9 +372,10 @@ let m = {
 
     //	租赁价格
     if (this.rentingPrice!=""){
+      params.isInterview = 1
       params.rentingPrice = parseInt(this.rentingPrice).toFixed(2)
     } else {
-      this.$toast('请填写租赁价格')
+      params.isInterview = 0
     }
     // 特色
     if (this.checkCharacteristicResful.length > 0) {
@@ -466,7 +472,7 @@ let m = {
         return false
       }
     }
-    params.isInterview = 1
+    // params.isInterview = 1
 
 
 

@@ -8,6 +8,19 @@
       订单状态：<span>{{info.stateName}}</span>
       <p v-if='info.orderStatus == 0 || info.orderStatus == 1 || info.orderStatus == 3' @click='cancel'>取消订单</p>
     </div>
+    <div class="reason">
+      <p style="color: grey">
+      <p style="color: grey">
+        小提示：记下或凭短信{调用消费券密码名称，后台配置}向商家出示即可消费
+        <!-- info.passwordName -->
+      </p>
+      <!-- <p style="color: #ff6500">
+        0978 1611 已退款
+      </p> -->
+      <p style="color: #ff6500" v-if="info.orderStatus == 2">
+       待使用　　消费券名称: {{info.passwordName}}　　消费券密码: {{info.consumerVoucher}}
+      </p>
+    </div>
     <div class="separate"></div>
     <div class="number">
       <p class="top clear">
@@ -262,6 +275,17 @@
 </script>
 
 <style scoped lang="less" type="text/less">
+
+    .reason{
+      padding: 0.2rem;
+      p:first-child{
+        font-size: 0.24rem;
+        font-weight: bold;
+      }
+      p{
+        margin-bottom: 0.15rem;
+      }
+    }
   .inntoUse{
     .state{
       padding: 0.29rem 0.2rem;

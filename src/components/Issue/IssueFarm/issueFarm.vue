@@ -206,8 +206,27 @@
                   <video :src="item" style="width: 100%;height: 100%;"></video>
                   <i @click="delVideo(index)">删除</i>
                 </div>
-                <span v-show="videoList.length<=3">
+                <span v-show="videoList.length<1">
                   <input type="file" @change="uploadVideo($event)">
+                </span>
+              </div>
+          </div>
+          <div class="bot">横向拍摄房源视频效果更佳，最大可上传300M视频</div>
+        </div>
+      </div>
+      <div class="picture">
+        <div class="video">
+          <div class="top">
+            <div class="iconfont"></div>
+            <p>视频封面</p>
+          </div>
+          <div class="imgbox upload">
+              <div class="buttonimg">
+                <div v-for="(color,index) in videoCoverList" v-dragging="{item:color,list:videoCoverList,group:'color'}" :style="'background-image:url(' + color + '); background-size: cover; background-position: center center'">
+                  <i @click="delVideoCover(index)">删除</i>
+                </div>
+                <span v-show="videoCoverList.length<1">
+                  <input type="file" @change="uploadVideoCover($event)">
                 </span>
               </div>
           </div>
@@ -222,7 +241,7 @@
             <p>vr链接</p>
           </div>
           <div class="middle">
-            <van-field type='number' v-model="vrUrl" placeholder="请填写" />
+            <van-field v-model="vrUrl" placeholder="请填写" />
           </div>
           <div class="right">
           </div>
@@ -633,6 +652,7 @@
 
         imglist: [],        // 图片集
         videoList: [],      // 视频集
+        videoCoverList:[],  // 视频封面
         phone: null,        // 手机号
         mobile: null,
         code: null,
@@ -942,7 +962,7 @@
     }
     #l-map{
       width: 100%;
-      height: 8rem;
+      height: 300px;
     }
     .location{
       p{

@@ -85,11 +85,11 @@ Vue.use(Pagination)
 const baseUrl = "https://www.3xgc.com"
 Vue.prototype.$url = baseUrl;
 Vue.prototype.$http = Http;
+
 Vue.config.productionTip = false
 
 // 是否app
 const isApp = true;
-
 
 // 是否小程序
 const isWX = false;

@@ -605,7 +605,7 @@
       </div>
       <!--营业时间-->
       <div v-show="popType == 3" class="position-columns timepicker" >
-        <div style="font-size: 0.32rem;padding: 0.5rem">开始时间 <span style="display:inline-block;width:1.35rem;"></span>结束时间</div>
+        <div style="font-size: 0.32rem;padding: 0 0 0.5rem; text-align: center"><span style="display: inline-block; width: 50%;">开始时间</span><span style="display: inline-block; width: 50%;">结束时间</span></div>
         <van-datetime-picker
           v-model="currentDate"
           type="time"
@@ -614,7 +614,7 @@
           @change="getStarTime"
         />
         <van-datetime-picker
-          v-model="currentDate"
+          v-model="currentEnd"
           type="time"
           :min-hour="minHour"
           :max-hour="maxHour"
@@ -673,7 +673,7 @@
 <script>
   import Header from "../../common/header2"
   import getToken from 'com/common/token'
-  import {isvalidPhone,returnFloat} from '@/utils/validate'
+  import utils from '@/utils/validate'
   export default {
     name: "issueGrange",
     components:{Header},
@@ -804,6 +804,7 @@
 
         //营业时间
         currentDate:'00:00',
+        currentEnd:'00:00',
         minHour: 0,
         maxHour: 24,
         timebegin:"",
@@ -851,7 +852,6 @@
             var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
             _this.map.centerAndZoom(pp, 18);
             _this.map.addOverlay(new BMap.Marker(pp));    //添加标注
-            console.log(pp)
             _this.locationSpot.lng=pp.lng;
             _this.locationSpot.lat=pp.lat;
           }
@@ -861,10 +861,6 @@
           local.search(myValue);
         }
       },
-
-
-
-
       // 根据经纬度绘制地图中的坐标点
       drawLocation () {
         if(this.locationSpot.lng !== "" && this.locationSpot.lat !== ""){
@@ -881,9 +877,11 @@
         this.columnsIndex2 = null
         this.columns1=[];
         this.columns2=[];
-        this.region[index].children.forEach((item,index)=>{
-          this.columns1.push(item.label);
-        });
+        if(this.region[index].children){
+          this.region[index].children.forEach((item,index)=>{
+            this.columns1.push(item.label);
+          });
+        }
         if(this.columns1.length>0){
           this.columnsIndex1=1;
         }
@@ -892,9 +890,11 @@
         this.columnsIndex1 = index + 1;
         this.columnsIndex2 = null;
         this.columns2=[];
-        this.region[this.columnsIndex-1].children[index].children.forEach((item,index)=>{
-          this.columns2.push(item.label);
-        })
+        if(this.region[this.columnsIndex-1].children[index].children){
+          this.region[this.columnsIndex-1].children[index].children.forEach((item,index)=>{
+            this.columns2.push(item.label);
+          })
+        }
         if(this.columns2.length>0){
           this.columnsIndex2=1;
         }
@@ -909,9 +909,11 @@
         this.spotColumnsIndex=index+1;
         this.spotColumnsIndex1=null;
         this.spotColumns1=[];
-        this.spot[index].children.forEach((item,index)=>{
-          this.spotColumns1.push(item.label);
-        });
+        if(this.spot[index].children){
+          this.spot[index].children.forEach((item,index)=>{
+            this.spotColumns1.push(item.label);
+          });
+        }
         if(this.spotColumns1>0){
           this.spotColumnsIndex1=1;
         }
@@ -923,11 +925,9 @@
       //时间
       getStarTime(picker){
         this.timebegin=picker.getValues().join(":");
-        console.log(this.timebegin)
       },
       getEndTime(picker){
         this.timeover=picker.getValues().join(":");
-        console.log(this.timeover)
       },
       //经营类型
       management(picker, value, index){
@@ -1152,40 +1152,47 @@
         if(this.popType==9){
          this.position=this.locationSpot.lng+" , "+this.locationSpot.lat;
          this.popupShow=false;
+         let mapdiv=document.getElementsByClassName("tangram-suggestion-main");
+          for(let i=0;i<mapdiv.length;i++){
+            mapdiv.item(i).style.zIndex='0';
+          }
         }
       },
       closePop(){//弹窗关闭
-      this.popupShow=false;
-      if(this.popType==1){
-        this.location="";
-      }
-      if(this.popType == 2){
-        this.sceincAround="";
-      }
-      if(this.popType==3){
-        this.openTime="";
-      }
-      if(this.popType==4){
-        this.type="";
-      }
-      if(this.popType==5){
-        this.DecorateType="";
-      }
-      if(this.popType==6){
-        this.roomInnTime="";
-      }
-      if(this.popType==7){
-        this.this.roomOutTime="";
-      }
-      if(this.popType==8){
-        this.getCustorm="";
-      }
-      if(this.popType==9){
-        this.position="";
-      }
+        this.popupShow=false;
+        if(this.popType==1){
+          this.location="";
+        }
+        if(this.popType == 2){
+          this.sceincAround="";
+        }
+        if(this.popType==3){
+          this.openTime="";
+        }
+        if(this.popType==4){
+          this.type="";
+        }
+        if(this.popType==5){
+          this.DecorateType="";
+        }
+        if(this.popType==6){
+          this.roomInnTime="";
+        }
+        if(this.popType==7){
+          this.this.roomOutTime="";
+        }
+        if(this.popType==8){
+          this.getCustorm="";
+        }
+        if(this.popType==9){
+          this.position="";
+          let mapdiv=document.getElementsByClassName("tangram-suggestion-main");
+          for(let i=0;i<mapdiv.length;i++){
+            mapdiv.item(i).style.zIndex='0';
+          }
+        }
       },
       uploadimg(e,num){ //图片上传
-        console.log(e,num);
         let file=e.target.files[0];
         let imgSize=file.size/1024/1024;//mb
         let fileType=file.name.substring(file.name.lastIndexOf('.')+1, file.name.length).toLocaleLowerCase();
@@ -1261,7 +1268,7 @@
         }else{
           this.mobileValid=false;
         }
-        this.check = isvalidPhone(this.businessTelephone);
+        this.check = utils.isvalidPhone(this.businessTelephone);
         if(!this.check){
           this.teleMessage=`手机号格式不正确`;
         }else{
@@ -1298,9 +1305,6 @@
           this.$toast('网络错误');
         })
       },
-
-
-
       submit(){//提交
         let params={};
         const food={};
@@ -1357,7 +1361,7 @@
           return false
         }
         if(this.percost !==""){
-          params.personConsumption=returnFloat(this.percost);
+          params.personConsumption=utils.returnFloat(this.percost);
         }else{
           this.$toast("请输入人均消费")
           return false
@@ -2325,6 +2329,9 @@
     }
     .timepicker /deep/ .van-picker__toolbar{
       display: none;
+    }
+    .timepicker .van-picker{
+      width: 50%;
     }
     .cell-title{
       padding: .3rem;

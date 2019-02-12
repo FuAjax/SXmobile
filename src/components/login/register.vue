@@ -41,7 +41,8 @@
 </template>
 
 <script>
-  import {isvalidPhone,isPasswd} from '@/utils/validate'
+  import util from '@/utils/validate'
+  // {isvalidPhone,isPasswd}
     export default {
         name: "register",
         data() {
@@ -68,7 +69,7 @@
             this.$router.push('/login')
           },
           blur(){//手机号的input
-            this.check = isvalidPhone(this.mobile);
+            this.check = util.isvalidPhone(this.mobile);
             console.log(this.check );
             if(!this.check){
               this.message=`手机号格式不正确`;
@@ -81,7 +82,7 @@
           },
 
           change(){ //密码的input
-            this.pchecked=isPasswd(this.password);
+            this.pchecked=util.isPasswd(this.password);
             if(!this.pchecked){
               this.pmessage='密码格式不正确'
             }else{

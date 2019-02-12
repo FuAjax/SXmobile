@@ -159,8 +159,8 @@
         <!--景点介绍-->
         <div class="introduce">
           <span>简介</span>
-          <div style="padding-top: .1rem">
-            {{detail.grangeSynopsis || "暂无"}}
+          <div style="padding-top: .1rem" v-html="detail.grangeSynopsis || '暂无'">
+            <!--{{detail.grangeSynopsis || "暂无"}}-->
           </div>
           <!--<button>查看全部&nbsp;&nbsp;<i class="iconfont icon-xia"></i></button>-->
         </div>
@@ -322,7 +322,7 @@
                             <span style="color: #ff6500"><stars :rate="item.totalMark || 0"></stars> {{item.totalMark}}分</span>
                             &nbsp; &nbsp;
                             <span style="color: grey">{{item.fareaName}}</span>
-                          </p>
+                          </p> 
                         </div>
                       </router-link>
                     </div>
@@ -681,11 +681,8 @@
         },
         checkcomment(){//查看全部的评论
           this.commentlist=this.commentlist.concat(this.comment.slice(5))
-          console.log(88888,this.commentlist);
         },
         setmap(){
-          console.log(this.name);
-          console.log(111,this.longitude,this.latitude);
           let map = new BMap.Map('container');
           let point =new BMap.Point(this.longitude,this.latitude);
           map.centerAndZoom(point, 15);
@@ -728,7 +725,6 @@
           this.$http.post('appServiceGrange/getGrangeDetail', {grangeNumber:grangeNumber}).then(res=>{
             if(res.msg=='success'){
               this.detail = res.data.detail;
-              console.log(this.detail)
               this.ticket = res.data.ticket;
               this.name=res.data.detail.grangeName;//景点名称
 
@@ -822,6 +818,10 @@
         payment(){
           if(localStorage.getItem('userInfo')){
             if(this.detail.id && this.name){
+              if(this.$proType == 1){         // App支付
+                window.open('https://m.3xgc.com/#/payOnline?userId=' + JSON.parse(localStorage.getItem('userInfo')).userId + '&id=' + this.detail.id + '&name=' + this.name, '_self')
+                return false
+              }
               this.$router.push({ name:'payOnline', query:{ id:this.detail.id, name: this.name }})
             }
           }else{

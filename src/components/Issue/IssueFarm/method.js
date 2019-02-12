@@ -1,8 +1,8 @@
 import getToken from 'com/common/token'
-import { isvalidPhone, returnFloat } from '@/utils/validate'
+import utils from '@/utils/validate'
 let m = {
   init() {
-    this.$http.post('/appServiceInformation/publishFarmhouseParameter',{cityId:1}).then(
+    this.$http.post('appServiceAccount/getFarmhouseSaveParameter',{cityId:1}).then(
       res => {
         if (res.msg == 'success') {
           const data = res.data
@@ -415,6 +415,9 @@ let m = {
   delVideo(index) {        //删除视频
     this.videoList.splice(index, 1)
   },
+  delVideoCover(index){
+    this.videoCoverList.splice(index, 1)
+  },
   uploadimg(e) {       //图片上传
     let file = e.target.files[0];
     let imgSize = file.size / 1024;//mb
@@ -471,8 +474,36 @@ let m = {
       this.videoList.push(url + res.key)
     })
   },
+  uploadVideoCover(e) {       //视频封面上传
+    let file = e.target.files[0];
+    let imgSize = file.size / 1024;//mb
+    let fileType = file.name.substring(file.name.lastIndexOf('.') + 1, file.name.length).toLocaleLowerCase();
+    let params = new FormData(); //创建form对象
+    let timestamp = (new Date()).getTime();
+    let Atanisi = Math.floor(Math.random() * 999999);
+    let newName = timestamp + Atanisi + "." + fileType;
+    params.append('key', newName);
+    if (fileType != 'jpg' && fileType != 'bmp' && fileType != 'png' && fileType != "jpeg") {
+      this.$toast('上传图片格式不正确')
+      return false
+    }
+    if (imgSize > 5120) {
+      this.$toast('上传的图片不得大于5MB')
+      return false
+    }
+    let Token = getToken.genUpToken(2, newName);
+    params.append('token', Token);
+    params.append('file', file)
+    let config = {
+      "Content-Type": "multipart/form-data"
+    }
+    let url = getToken.niuUrl[1];
+    this.$http.postImg('https://upload.qiniu.com/', params, null, null, config).then(res => {
+      this.videoCoverList.push(url + res.key)
+    })
+  },
   getCode() {
-    if (!isvalidPhone(this.phone)) {
+    if (!utils.isvalidPhone(this.phone)) {
       this.$toast('手机号格式错误')
       return false
     }
@@ -621,6 +652,19 @@ let m = {
         return false
       }
     }
+    
+    if (this.imglist.length > 0) {
+      params.logourl = this.imglist[0]
+      var imgs = this.imglist.join(',')
+      imgs = imgs.split(',')
+      imgs.shift()
+      if (imgs.length > 0) {     // 当有一张以上图片
+        params.otherurl = imgs.join(',')
+      }
+    } else {
+      this.$toast('至少上传一张图片')
+      return false
+    }
     if (this.imglist.length > 0) {
       params.logourl = this.imglist[0]
       var imgs = this.imglist.join(',')
@@ -632,8 +676,13 @@ let m = {
       this.$toast('至少上传一张图片')
       return false
     }
-    if (this.videoList.length > 0) {     // 当有视频
-      params.videourl = this.videoList.join(',')
+    if(this.videoList.length > 0 || this.videoCoverList.length > 0) {
+      if (this.videoList.length > 0 && this.videoCoverList.length > 0) {     // 当有视频
+        params.videourl = this.videoCoverList[0] +','+ this.videoList[0]
+      } else {
+        this.$toast('上传视频同时必须上传视频封面')
+        return false
+      }
     }
     return params
   },
@@ -689,8 +738,12 @@ let m = {
       this.$toast('至少选择一个房屋特色')
       return false
     }
-    params.landState = this.landState ? '宅基地' : '自建房'   // 土地状态
-    params.landCharacteristic = this.landCharacteristic ? '国有土地' : '集体土地'    // 土地性质
+    if(this.landState){
+      params.landState = this.landState == 2 ? '宅基地' : this.landState == 1 ? '自建房' : ''   // 土地状态
+    }
+    if(this.landCharacteristic){
+      params.landCharacteristic = this.landCharacteristic == 2 ? '国有土地' : this.landCharacteristic == 1 ? '集体土地' : ''   // 土地性质
+    }
     if (this.checkUseResful.length > 0) {
       params.matingsId = this.buildingMatchingIds.join(',')
       params.matingsName = this.buildingMatchingName.join(',')
@@ -728,7 +781,7 @@ let m = {
     params.linksex = this.linksex
 
     if (this.phone && this.phone !== '') {
-      if (!isvalidPhone(this.phone)) {
+      if (!utils.isvalidPhone(this.phone)) {
         this.$toast('手机号错误')
         return false
       } else {
@@ -790,6 +843,7 @@ let m = {
     this.$http.post('/appServiceInformation/publishFarmhouse', params).then(res => {
       if (res.msg == "success") {
         this.$toast('新增农房成功')
+        this.$router.back(-1)
       } else {
         this.$toast(res.info)
       }

@@ -19,6 +19,7 @@
       </van-nav-bar>
     </div>
 	  <div style="padding-top: .91rem;">
+      <div></div>
     <van-tabs @click="onClick" v-model="currentIndex">
       <van-list
         v-model="loading"
@@ -503,8 +504,6 @@
                   id += ','
                 })
                 var ids = id.slice(0,id.length-1)
-                console.log(ids)
-
                  Dialog.confirm({
                   title: '删除操作',
                   message: '是否确认删除选中收藏记录'

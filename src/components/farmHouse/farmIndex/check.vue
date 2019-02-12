@@ -38,7 +38,7 @@
                       </div>
                       <!--数据-->
                       <div class="data">
-                        <span v-for="(item2,index2) in item.characteristics">{{item2}}</span>
+                        <span v-for="(item2,index2) in item.characteristics.slice(0,3)">{{item2}}</span>
                       </div>
                     </router-link>
                   </van-col>

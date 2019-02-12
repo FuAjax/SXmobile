@@ -23,7 +23,7 @@
         <div class="left">区位情况</div>
         <div class="right">
           <p>自然条件</p>
-          <p>  良好{{detail.naturalCondition}}</p>
+          <p> {{detail.naturalCondition}}</p>
 
           <p>绿化条件</p>
           <p>{{detail.greeningCondition}}</p>
@@ -163,7 +163,7 @@
           margin-right: 0.3rem;
           margin-bottom: 0.45rem;
           &:nth-child(2n+1) {
-            min-width: 1.9rem;
+            min-width:1.5rem;
             color: #9a9a9c;
           }
         }

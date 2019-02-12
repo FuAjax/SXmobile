@@ -12,9 +12,6 @@ selenium-debug.log
 .idea
 .vscode
 *.suo
-*.n
-tvs*
+*.ntvs*
 *.njsproj
 *.sln
-
-.node_modules

@@ -46,10 +46,6 @@ export default new Router({
         title: '三乡'
       }
     },
-
-
-    //liuyi
-
     {
       path: '/grange/nongzhuang',//农庄首页
       name: 'grangeindex',
@@ -121,8 +117,6 @@ export default new Router({
       name: "/resetDone",
       component: () => import('com/resetPassword/resetDone'),
     },
-
-
     // 农房出租列表
     {
       path: '/farmHouse/rentList',
@@ -210,6 +204,12 @@ export default new Router({
       name: "consultList",
       component: () => import('com/Information/consult/consultList/consultList')
     },
+    // // 资讯咨询列表  无参数
+    // {
+    //   path: "/Information/consultList",
+    //   name: "consultList",
+    //   component: () => import('com/Information/consult/consultList/consultList')
+    // },
     // 资讯咨询详情
     {
       path: "/Information/consultDetail/:consultId",
@@ -261,10 +261,243 @@ export default new Router({
       name: 'personalCenter',
       component: () => import('com/personalCenter/personalCenter')
     },
+    { // 账户设置
+      path: '/personalCenter/setting/index',
+      name: 'setting',
+      component: () => import('com/personalCenter/setting/index')
+    },
     {
       path: '/myOrdersAll',//全部订单
       name: 'myOrdersAll',
       component: () => import('com/personalCenter/myOrders/myOrdersAll')
+    },
+    {
+      path: '/farmhouseManage',//农房管理
+      name: 'farmhouseManage',
+      component: () => import('com/personalCenter/farmhouseManage/farmhouseManage')
+    },
+    {
+      path: '/myAppointment',//我的预约
+      name: 'myAppointment',
+      component: () => import('com/personalCenter/myAppointment/myAppointment')
+    },
+    {
+      path: '/grangeManage',//农庄管理
+      name: 'grangeManage',
+      component: () => import('com/personalCenter/grangeManage/grangeManage')
+    },
+    {
+      path: '/myTrade',//我的交易
+      name: 'myTrade',
+      component: () => import('com/personalCenter/myTrade/myTrade')
+    },
+    {
+      path: '/commentManage',//点评管理
+      name: 'commentManage',
+      component: () => import('com/personalCenter/commentManage/commentManage')
+    },
+    {
+      path: '/myCollect',//我的收藏
+      name: 'myCollect',
+      component: () => import('com/personalCenter/myCollect/myCollect')
+    },
+    {
+      path: '/accountMail',//我的邮箱
+      name: 'accountMail',
+      component: () => import('com/personalCenter/myMessage/accountMail/accountMail')
+    },
+    {
+      path: '/accountPassword',//修改密码
+      name: 'accountPassword',
+      component: () => import('com/personalCenter/myMessage/accountPassword/accountPassword')
+    },
+    {
+      path: '/addPerson',//添加联系人
+      name: 'addPerson',
+      component: () => import('com/personalCenter/myMessage/accountPerson/addPerson')
+    },
+    {
+      path: '/personList',//联系人列表
+      name: 'personList',
+      component: () => import('com/personalCenter/myMessage/accountPerson/personList')
+    },
+    {
+      path: '/accountPhone',//手机号绑定
+      name: 'accountPhone',
+      component: () => import('com/personalCenter/myMessage/accountPhone/accountPhone')
+    },
+    {
+      path: '/accountSetting',//设置
+      name: 'accountSetting',
+      component: () => import('com/personalCenter/myMessage/accountSetting/accountSetting')
+    },
+    {
+      path: '/msgList',//消息列表
+      name: 'textList',
+      component: () => import('com/personalCenter/myMessage/accountText/textList')
+    },
+    {
+      path: '/textManage',//消息管理
+      name: 'textManage',
+      component: () => import('com/personalCenter/myMessage/accountText/textMange')
+    },
+    // 经纪人
+    {
+      path: '/user-agent',//个人中心-经纪人
+      name: 'personalCenter-agent',
+      component: () => import('com/personalCenter/personalCenter-agent')
+    },
+    { // 账户设置
+      path: '/personalCenter/index-agent',
+      name: 'setting-agent',
+      component: () => import('com/personalCenter/setting/index-agent')
+    },
+    {
+      path: '/personalCenter/farmhouseManage-agent',//农房管理
+      name: 'farmhouseManage-agent',
+      component: () => import('com/personalCenter/farmhouseManage/farmhouseManage-agent')
+    },
+    { // 农房详情
+      path: '/personalCenter/farmhouseDetail-agent',
+      name: 'farmhouseDetail-agent',
+      component: () => import('com/personalCenter/farmhouseManage/farmhouseDetail-agent')
+    },
+    { // 农庄详情
+      path: '/personalCenter/grangeDetail-agent',
+      name: 'grangeDetail-agent',
+      component: () => import('com/personalCenter/grangeManage/grangeDetail-agent')
+    },
+    { // 成交
+      path: '/personalCenter/farmhouseDeal-agent',
+      name: 'farmhouseDeal-agent',
+      component: () => import('com/personalCenter/farmhouseManage/farmhouseDeal-agent')
+    },
+    {
+      path: '/paymentManage-agent',     // 在线买单查询
+      name: 'paymentManage-agent',
+      component: () => import('com/personalCenter/myOrders/paymentManage-agent')
+    },
+    {
+      path: '/myAppointment-agent',   //我的预约
+      name: 'myAppointment-agent',
+      component: () => import('com/personalCenter/myAppointment/myAppointment-agent')
+    },
+    {
+      path: '/myAppointmentDetail-agent',   //我的预约
+      name: 'myAppointmentDetail-agent',
+      component: () => import('com/personalCenter/myAppointment/myAppointmentDetail-agent')
+    },
+    {
+      path: '/myAppointmentDetail-detail-agent',   //我的预约
+      name: 'myAppointmentDetail-detail-agent',
+      component: () => import('com/personalCenter/myAppointment/myAppointmentDetail-detail-agent')
+    },
+    { // 农庄列表
+      path: '/personalCenter/grangeManage-agent',
+      name: 'grangeManage-agent',
+      component: () => import('com/personalCenter/grangeManage/grangeManage-agent')
+    },
+    // 发布农房
+    {
+      path: "/publish/farmhouse-agent",
+      name: "issueFarm-agent",
+      component: () => import('com/Issue/IssueFarm/IssueFarm-agent')
+    },
+    // 发布农庄
+    {
+      path: "/publish/IssueGrange-agent",
+      name: "IssueGrange-agent",
+      component: () => import('com/Issue/IssueGrange/IssueGrange-agent')
+    },
+    // 产品管理
+    {
+      path: "/personalCenter/goods-manage",
+      name: "goods-manage",
+      component: () => import('com/personalCenter/goods-agent/goods-manage')
+    },
+    // 新增住宿
+    {
+      path: "/personalCenter/goods-issue-stay",
+      name: "goods-issue-stay",
+      component: () => import('com/personalCenter/goods-agent/goods-issue-stay')
+    },
+    // 新增美食
+    {
+      path: "/personalCenter/goods-issue-food",
+      name: "goods-issue-food",
+      component: () => import('com/personalCenter/goods-agent/goods-issue-food')
+    },
+    // 新增门票
+    {
+      path: "/personalCenter/goods-issue-ticket",
+      name: "goods-issue-ticket",
+      component: () => import('com/personalCenter/goods-agent/goods-issue-ticket')
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: () => import('com/map')
+    },
+    {
+      path: '/myNeedrental',//我的收藏
+      name: 'myNeedrental',
+      component: () => import('com/personalCenter/myNeedrental/myNeedrental')
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: () => import('com/map')
+    },
+    // wumeiling 2018.11.16
+    {
+      path: '/search',//搜索
+      name: 'search',
+      component: () => import('com/search/index')
+    },
+    {
+      path: '/cityQuery',//城市查询
+      name: 'cityQuery',
+      component: () => import('com/search/city')
+    },
+    // 发布农房、农庄、求租
+    {
+      path: "/Issue",
+      name: "Issue",
+      component: () => import('com/Issue/Issue'),
+      children: [
+      ]
+    },
+    // 发布农房1
+    {
+      path: "/publish/farmhouse",
+      name: "issueFarm",
+      component: () => import('com/Issue/IssueFarm/IssueFarm')
+    },
+    // 发布咨询
+    {
+      path: "/Issue/IssueConsult",
+      name: "IssueConsult",
+      component: () => import('com/Issue/IssueConsult/IssueConsult')
+    },
+    // {
+    //   path: '/issue/farm',//发布农房
+    //   name: 'cityQuery',
+    //   component: () => import('com/Issue/IssueFarm/issueFarm')
+    // },
+    {
+      path: '/publish/want',//发布求租
+      name: 'issueWanted',
+      component: () => import('com/Issue/IssueWanted/issueWanted')
+    },
+    {
+      path: '/publish/grange',//发布农庄
+      name: 'issueGrange',
+      component: () => import('com/Issue/IssueGrange/issueGrange')
+    },
+    {
+      path: '/publish/want',//发布求租
+      name: 'issueWanted',
+      component: () => import('com/Issue/IssueWanted/issueWanted')
     },
     {
       path: '/innRefund',//住宿退换
@@ -345,102 +578,6 @@ export default new Router({
       path: '/foodtoPay',//门票支付
       name: 'foodtoPay',
       component: () => import('com/personalCenter/myOrders/ordertoPay/foodtoPay')
-    },
-    {
-      path: '/farmhouseManage',//农房管理
-      name: 'farmhouseManage',
-      component: () => import('com/personalCenter/farmhouseManage/farmhouseManage')
-    },
-    {
-      path: '/myAppointment',//我的预约
-      name: 'myAppointment',
-      component: () => import('com/personalCenter/myAppointment/myAppointment')
-    },
-    {
-      path: '/grangeManage',//农庄管理
-      name: 'grangeManage',
-      component: () => import('com/personalCenter/grangeManage/grangeManage')
-    },
-    {
-      path: '/myTrade',//我的交易
-      name: 'myTrade',
-      component: () => import('com/personalCenter/myTrade/myTrade')
-    },
-    {
-      path: '/commentManage',//点评管理
-      name: 'commentManage',
-      component: () => import('com/personalCenter/commentManage/commentManage')
-    },
-    {
-      path: '/myCollect',//我的收藏
-      name: 'myCollect',
-      component: () => import('com/personalCenter/myCollect/myCollect')
-    },
-    {
-      path: '/map',
-      name: 'map',
-      component: () => import('com/map')
-    },
-    {
-      path: '/myNeedrental',//我的收藏
-      name: 'myNeedrental',
-      component: () => import('com/personalCenter/myNeedrental/myNeedrental')
-    },
-    {
-      path: '/map',
-      name: 'map',
-      component: () => import('com/map')
-    },
-    // wumeiling 2018.11.16
-    {
-      path: '/search',//搜索
-      name: 'search',
-      component: () => import('com/search/index')
-    },
-    {
-      path: '/cityQuery',//城市查询
-      name: 'cityQuery',
-      component: () => import('com/search/city')
-    },
-    // 发布农房、农庄、求租
-    {
-      path: "/Issue",
-      name: "Issue",
-      component: () => import('com/Issue/Issue'),
-      children: [
-      ]
-    },
-    // 发布农房1
-    {
-      path: "/publish/farmhouse",
-      name: "issueFarm",
-      component: () => import('com/Issue/IssueFarm/IssueFarm')
-    },
-    // 发布咨询
-    {
-      path: "/Issue/IssueConsult",
-      name: "IssueConsult",
-      component: () => import('com/Issue/IssueConsult/IssueConsult')
-    },
-    {
-      path: '/issue/farm',//发布农房
-      name: 'cityQuery',
-      component: () => import('com/Issue/IssueFarm/issueFarm')
-    },
-    {
-      path: '/publish/want',//发布求租
-      name: 'issueWanted',
-      component: () => import('com/Issue/IssueWanted/issueWanted')
-    },
-    {
-      path: '/publish/grange',//发布农庄
-      name: 'issueGrange',
-      component: () => import('com/Issue/IssueGrange/issueGrange')
-    },
-    {
-      path: '/publish/want',//发布求租
-      name: 'issueWanted',
-      component: () => import('com/Issue/IssueWanted/issueWanted')
     },
     {
       path: '/tickettoPay',//门票支付

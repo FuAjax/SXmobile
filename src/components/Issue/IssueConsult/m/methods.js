@@ -59,14 +59,14 @@ let m = {
       if (user) {
         this.yanzhen = false
       } else {
-          this.yanzhen = true
+        this.yanzhen = true
       }
 
-      if (res.data.mobile==null) {
+      if (res.data.mobile) {
         this.yanzhen = false
         this.phoneNumber2 = res.data.mobile
         this.phoneNumber = res.data.mobile
-      }else{
+      } else {
         this.yanzhen = true
       }
 
@@ -93,20 +93,20 @@ let m = {
     // 用户id
     var user = JSON.parse(localStorage.getItem('userInfo'))
     if (user == '' || user == null) {
-      this.yanzhen = false
+      this.yanzhen = true
     } else {
       var userID = JSON.parse(localStorage.getItem('userInfo')).userId
       if (userID) {
-        this.yanzhen = true
+        this.yanzhen = false
       }
     }
     // 验证码
     let verificationCode = this.card
-    if (consultTypeName!="请选择") {
+    if (consultTypeName != "请选择") {
       if (linkman) {
-        if (linkmobile){
-          if(verificationCode){
-            this.$http.post('/appServiceInformation/publishConsult',{
+        if (linkmobile) {
+          if (verificationCode) {
+            this.$http.post('/appServiceInformation/publishConsult', {
               consultDescribe,
               consultTitle,
               consultTypeId,
@@ -117,35 +117,58 @@ let m = {
               linksex,
               userID,
               verificationCode
-            }).then(res=>{
-              if (res.info=="发布成功"){
+            }).then(res => {
+              if (res.info == "发布成功") {
                 this.$toast("发布成功")
                 this.$router.push({
-                  name:'Information'
+                  name: 'Information'
                 })
-              }else if (res.info=="该手机号已被注册，请登录或者更改手机号") {
+              } else if (res.info == "该手机号已被注册，请登录或者更改手机号") {
                 this.$toast(res.info)
                 this.$router.push({
-                  name:'login'
+                  name: 'login'
                 })
-              }else{
+              } else {
                 this.$toast(res.info)
               }
             })
-          }else{
+          } else {
             this.$toast("请输入验证码")
+            this.$http.post('/appServiceInformation/publishConsult', {
+              consultDescribe,
+              consultTitle,
+              consultTypeId,
+              consultTypeRestful,
+              consultTypeName,
+              linkman,
+              linksex,
+              userID,
+            }).then(res => {
+              if (res.info == "发布成功") {
+                this.$toast("发布成功")
+                this.$router.push({
+                  name: 'Information'
+                })
+              } else if (res.info == "该手机号已被注册，请登录或者更改手机号") {
+                this.$toast(res.info)
+                this.$router.push({
+                  name: 'login'
+                })
+              } else {
+                this.$toast(res.info)
+              }
+            })
           }
 
-        } else{
+        } else {
           this.$toast("请输入联系人手机号")
         }
-      }else{
+      } else {
         this.$toast("请输入联系人姓名")
       }
-    }else{
+    } else {
       this.$toast("请选择咨询类别")
     }
-
 
 
   },

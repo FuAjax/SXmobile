@@ -9,12 +9,12 @@
         <div class="you">
           <div class="header">
             <div class="name" ref="name">{{comment1.userNickname}}</div>
-            <div :class="{red:num}" class="iconfont icon-zan" @click="show"></div>
+            <!--<div :class="{red:num}" class="iconfont icon-zan" @click="show"></div>-->
           </div>
           <div class="content">{{comment1.commentConnent}}</div>
           <div class="bot">
             <div class="time">{{comment1.commentTime}}</div>
-            <p>回复</p>
+            <p @click="textClick">回复</p>
           </div>
           <div class="require" v-for="(index,i) in messageList" v-if="i!==0">
               <div  class="iconfont icon-zan" @click="show2(i)" :class="{}"></div>
@@ -27,12 +27,28 @@
                 <p>{{index.commentTime}}</p>
                 <p>{{index.commentUserful}}个赞</p>
               </div>
-              <div class="huifu">回复</div>
+              <div class="huifu" >回复</div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <van-popup
+      v-model="textShow"
+      position="bottom">
+      <van-cell-group>
+        <van-field
+          v-model="text"
+          label="评论"
+          type="textarea"
+          placeholder="请输入评论"
+          rows="1"
+          autosize
+        >
+          <van-button slot="button" size="small" type="primary" @click="info">回复信息</van-button>
+        </van-field>
+      </van-cell-group>
+    </van-popup>
   </div>
 </template>
 
@@ -52,7 +68,10 @@
     data() {
       return {
         num: true,
-        classItem:''
+        classItem:'',
+        textShow: false,
+        text: "",
+
       }
     },
     created() {
@@ -60,10 +79,22 @@
     },
     methods: {
       // 最新评论第一条
-      show: function () {
+      // show: function () {
+      //   this.$http.post('/appServiceInformation/like', {
+      //     commentId: this.comment1.commentId,
+      //     userId: this.comment1.userId
+      //   }).then(res => {
+      //     console.log(res);
+      //     if (res.msg == 'success') {
+      //       this.num = !this.num;
+      //     }
+      //   })
+      // },
+      // 最新评论下部分点赞
+      show2(i){
+      // this.$set(this.classItem,i,true)
+        console.log(213);
         this.$http.post('/appServiceInformation/like', {
-          commentId: this.comment1.commentId,
-          userId: this.comment1.userId
         }).then(res => {
           console.log(res);
           if (res.msg == 'success') {
@@ -71,10 +102,42 @@
           }
         })
       },
-      // 最新评论下部分
-      show2(i){
-      this.$set(this.classItem,i,true)
-      }
+      //回复
+      textClick() {
+        console.log(12);
+        this.textShow = true
+      },
+      // 回复信息
+      // 评论
+      info() {
+        if (localStorage.getItem("userInfo")) {
+          if (this.text != "") {
+            let infoId = this.$route.params.id
+            console.log(this.comment1.commentId);
+            let userId = JSON.parse(localStorage.getItem('userInfo')).userId
+            this.$http.post('/appServiceInformation/comment', {
+              commentConnent: this.text,
+              infoId,
+              userId,
+              commentId:this.comment1.commentId
+            }).then(res => {
+              this.$toast("回复成功")
+              this.textShow = false
+              setTimeout(() => {
+                window.location.reload()
+              },800)
+            })
+          } else {
+            this.$toast("回复内容不能为空")
+          }
+        } else {
+          this.$toast("登录之后可回复")
+          setTimeout(() => {
+            this.$router.push('/login')
+          })
+        }
+
+      },
     }
   }
 </script>
@@ -189,5 +252,39 @@
     .selected{
       color:#ff6500;
     }
+  }
+
+  .van-popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    ul {
+      width: 33.3%;
+      flex: 1;
+    }
+    .iconfont {
+      font-size: 1.04rem;
+      text-align: center;
+      color: #0eb831;
+    }
+    .xinlang {
+      color: #e6162c;
+      font-size: 1.15rem;
+    }
+    .zone {
+      color: #01a8ec;
+    }
+    p {
+      text-align: center;
+      font-size: 0.26rem;
+      .hc();
+      margin-top: 0.14rem;
+    }
+  }
+
+  .van-hairline--top-bottom {
+    width: 100%;
   }
 </style>

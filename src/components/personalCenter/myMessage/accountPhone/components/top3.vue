@@ -5,7 +5,7 @@
       <div class="iconfont icon-jiantou"></div>
       <p>绑定手机</p>
       <div class="iconfont icon-jiantou"></div>
-      <p>解绑手机</p>
+      <p>完成</p>
     </div>
   </div>
 </template>

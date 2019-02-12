@@ -6,7 +6,7 @@
     <div class="header">
       <div class="top">
         <div class="left">
-          <img :src="businessLogoUrl" alt=""onerror='this.src="http://p0.qhimgs4.com/t01ae9d3a8e43253772.jpg" '/>
+          <img :src="businessLogoUrl" alt="" onerror='this.src="http://p0.qhimgs4.com/t01ae9d3a8e43253772.jpg" '/>
         </div>
         <div class="right">
           <p>{{p}}</p>

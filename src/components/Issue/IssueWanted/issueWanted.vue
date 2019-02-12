@@ -6,7 +6,7 @@
     <div class="message">
       <!--地区-->
       <div class="bot"  @click="showPop(1)" style="padding-left: 0.28rem">
-        <div class="left">
+        <div class="left" style="    width: 1.5rem;">
           <!--<div class="iconfont icon-xingxing"></div>-->
           <p>期望地区</p>
         </div>
@@ -79,7 +79,7 @@
           <p>期望价格</p>
         </div>
         <div class="middle year">
-          <van-field type='number' v-model="rentingPrice"  placeholder="请填写"/>
+          <van-field type='number' v-model="rentingPrice"  placeholder="不填写显示为面议，可保留两位小数"/>
         </div>
         <div class="right">
           <p>万元/年</p>
@@ -286,7 +286,7 @@
         roomColumns: [],
         roomIndex: 1,
         hallColumns: [],
-        hallIndex: 1,
+        hallIndex: 0,
         toiletColumns: [],
         toiletIndex: 1,
         balconyColumns: [],
@@ -397,7 +397,7 @@
         padding: 0;
       }
       .year {
-        min-width: 3rem;
+        min-width: 3.6rem;
       }
       .use {
         overflow: hidden;

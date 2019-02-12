@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="search">
-        <van-search placeholder="请输入区域/农房名称" v-model="value"/>
+
+      <van-search placeholder="请输入区域/农房名称" v-model="value" @click="tosearch"/>
 
       <div class="btn" @click="farmMap">地图找房</div>
       <div class="btn" @click="search">搜索</div>
@@ -201,9 +202,15 @@
                     <router-link :to="{name:'rentDetail',params: {id:item.farmhouseRentalsNumber}}" tag="div"
                                  class="left">
                       <img :src="item.logo" alt="">
+                    <div class="look">
+                      <div class="vr" v-if="item.isVr==1"><img :src="vrLogo" alt=""></div>
+
+                      <div class="vr video" v-if="item.isVideo==1"><van-icon name="play" size="0.5rem" style="color: white;float: left"/></div>
+                    </div>
+
                       <!--<div-->
-                        <!--v-if="item.logo"-->
-                        <!--:style="'background:url(' + item.logo + ');width: 100%;height: 100%;background-size:cover;background-position: center center'"-->
+                      <!--v-if="item.logo"-->
+                      <!--:style="'background:url(' + item.logo + ');width: 100%;height: 100%;background-size:cover;background-position: center center'"-->
                       <!--&gt;</div>-->
                       <!--<img v-else src="../../../assets/noimg.jpg" alt>-->
                     </router-link>
@@ -234,7 +241,7 @@
                       </div>
                       <!--数据-->
                       <div class="data">
-                        <span v-for="(item2,i) in ((item.characteristics))" :keys="i">{{item2}}</span>
+                        <span v-for="(item2,i) in ((item.characteristics).slice(0, 3))" :keys="i">{{item2}}</span>
                       </div>
                     </div>
                   </van-col>
@@ -254,7 +261,7 @@
   import Sweep from 'com/common/swiper';
   import Five from 'com/common/five'
   import noFind from 'com/common/notFind'
-
+  import vr from '../../../assets/images/vr.png'
 
   // import rates from '../../common/rates'
 
@@ -262,8 +269,10 @@
     name: "grangeindex",
     data() {
       return {
-        value:'',
-        keyword:'',
+        vr:false,
+        value: '',
+        vrLogo: vr,
+        keyword: '',
         map: "地图找房",
         nomessage: false,
         areatext: "区域",
@@ -368,8 +377,8 @@
       detail() {
         this.$router.push({name: 'rentDetail', params: {id: item.farmhouseRentalsNumber}})
       },
-      farmMap(){
-        this.$router.push({name:'farmMap'})
+      farmMap() {
+        this.$router.push({name: 'farmMap'})
       },
       // 参数
       condition() {
@@ -417,6 +426,7 @@
           this.rentingStyle = res.data.rentingStyle;
           this.decorationSituation = res.data.decorationSituation;
           this.farmhouseAge = res.data.farmhouseAge;
+
         })
       },
       // 数据
@@ -425,7 +435,7 @@
           const params = {
             page: this.page,
             rows: this.rows,
-            keyword:this.keyword,
+            keyword: this.keyword,
             rest: this.arearest
               + this.landrest
               + this.peoplerest
@@ -446,7 +456,6 @@
             if (res.msg == "success") {
               if (this.page == 1) {
                 this.rows = res.data.rows;
-
               } else {
                 this.rows = this.rows.concat(res.data.rows)
               }
@@ -560,14 +569,14 @@
       },
 
       // 年限 用途 朝向 房屋类型 房层 出租方式 装修 房龄
-      RentalLifeOk(data,index) {//年限
+      RentalLifeOk(data, index) {//年限
         this.activeId1 = data.id;
         this.RentalLifeClick = data.menuRestfulDictionary;
         console.log(index);
         this.page = 1;
       },
       rentingUseOk(data) {//用途
-        this.activeId2= data.id;
+        this.activeId2 = data.id;
         this.rentingUseClick = data.menuRestfulDictionary;
         this.page = 1;
       },
@@ -603,23 +612,23 @@
       },
       // 重置
       reset() {//重置
-        this.activeId1= 0,
-        this.activeId2= 0,
-        this.activeId3= 0,
-        this.activeId4= 0,
-        this.activeId5= 0,
-        this.activeId6= 0,
-        this.activeId7= 0,
-        this.activeId8= 0,
-        this.checknum = 1;
-        this.RentalLifeClick=""
-        this.rentingUseClick=""
-        this.houseOrientationClick=""
-        this.houselistClick=""
-        this.floorClick=""
-        this.rentingStyleClick=""
-        this.decorationSituationClick=""
-        this.farmhouseAgeClick=""
+        this.activeId1 = 0,
+          this.activeId2 = 0,
+          this.activeId3 = 0,
+          this.activeId4 = 0,
+          this.activeId5 = 0,
+          this.activeId6 = 0,
+          this.activeId7 = 0,
+          this.activeId8 = 0,
+          this.checknum = 1;
+        this.RentalLifeClick = ""
+        this.rentingUseClick = ""
+        this.houseOrientationClick = ""
+        this.houselistClick = ""
+        this.floorClick = ""
+        this.rentingStyleClick = ""
+        this.decorationSituationClick = ""
+        this.farmhouseAgeClick = ""
 
         this.init();
       },
@@ -638,11 +647,17 @@
         this.init();
         this.area4 = false;
       },
-        // 搜索
-      search(){
-        this.keyword=this.value
-        this.page=1
+      // 搜索
+      search() {
+        this.keyword = this.value
+        this.page = 1
         this.init();
+      },
+      tosearch() {
+        this.$router.push({
+          path: '/search',
+          query: {name: '农房出租', to: 'rentList'}
+        })
       }
     },
     computed: {},
@@ -923,6 +938,19 @@
         .left {
           width: 2.15rem;
           height: 1.58rem;
+          position: relative;
+          .vr{
+            position: absolute;
+            width: 0.5rem;
+            height: 0.5rem;
+            bottom: 0.1rem;
+            /*left: 0.1rem;*/
+            float: left;
+            img{
+              width: 100%;
+              height: 100%;
+            }
+          }
         }
         .right {
           div {
@@ -1108,6 +1136,7 @@
       width: 100%;
       background-color: white;
       border-top: 0.01rem solid #e6e6e6;
+      z-index: 999;
       .regin {
         .left {
           width: 25%;
@@ -1212,13 +1241,16 @@
   .season /deep/ .van-tree-select__content {
     margin-left: 0;
   }
-  .regin2 /deep/ .van-tree-select__content{
+
+  .regin2 /deep/ .van-tree-select__content {
     margin-left: 0;
   }
-  .regin2 /deep/ .van-tree-select__nav{
+
+  .regin2 /deep/ .van-tree-select__nav {
     margin-left: 0;
     background-color: transparent;
   }
+
   .bottom {
     width: 100%;
     span {
@@ -1232,11 +1264,12 @@
       float: right;
       vertical-align: middle;
       text-align: center;
-      &:nth-child(1){
+      &:nth-child(1) {
         float: left;
       }
     }
   }
+
   .search {
     margin-top: 1rem;
     background-color: #f6f5fb;
@@ -1275,6 +1308,9 @@
       font-size: 0.24rem;
       border-radius: 1.1rem;
       margin-right: 0.2rem;
+    }
+   .container/deep/ .van-icon-play{
+      color: white!important;
     }
   }
 </style>

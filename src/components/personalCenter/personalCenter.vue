@@ -5,7 +5,7 @@
           @click-left="onClickLeft"
           @click-right="onClickRight"
           left-arrow>
-          <!-- <van-icon name="chat" slot="right" /> -->
+          <van-icon name="chat" slot="right" />
         </van-nav-bar>
       </div>
       <div v-if='isLogin'>
@@ -89,6 +89,12 @@
         <!--单元格-->
         <div class="bottom">
           <van-cell-group>
+            <van-cell v-if="isAccount" is-link @click="account()">
+              <template slot="title">
+                <i class="iconfont icon-mip"></i>
+                <span class="van-cell-text">我是经纪人</span>
+              </template>
+            </van-cell>
             <van-cell is-link @click="tabnav(1)">
               <template slot="title">
                 <i class="iconfont icon-icon--copy"></i>
@@ -113,12 +119,12 @@
                 <span class="van-cell-text">我的求租</span>
               </template>
             </van-cell>
-            <!-- <van-cell is-link>
+            <van-cell is-link @click="tabnav(5)">
               <template slot="title">
                 <i class="iconfont icon-zhanghushezhi"></i>
                 <span class="van-cell-text">账户设置</span>
               </template>
-            </van-cell> -->
+            </van-cell>
           </van-cell-group>
         </div>
       </div>
@@ -228,12 +234,12 @@
                 <span class="van-cell-text">我的求租</span>
               </template>
             </van-cell>
-            <!-- <van-cell is-link>
+            <van-cell is-link @click="tabnav(5)">
               <template slot="title">
                 <i class="iconfont icon-zhanghushezhi"></i>
                 <span class="van-cell-text">账户设置</span>
               </template>
-            </van-cell> -->
+            </van-cell>
           </van-cell-group>
         </div>
       </div>
@@ -249,10 +255,14 @@
       data() {
           return {
             userInfo: {},
-            count: {}
+            count: {},
+            isAccount: false
           }
       },
       methods: {
+        account(){            // 经纪人
+          this.$router.push('/user-agent')
+        },
         init(){
           this.$http.post('appServiceUser/baseInfo').then(res=>{
             if (res.msg == "success") {
@@ -273,7 +283,7 @@
           this.$router.back(-1)
         },
         onClickRight(){
-
+          this.$router.push('/msgList')
         },
         goin(path, tab){
           if(tab){
@@ -315,6 +325,7 @@
               this.$router.push({name: 'myNeedrental'})
             }
             if(o == 5){		// 账户设置
+              this.$router.push({name: 'setting'})
             }
           } else {
             this.$toast('请先登录');
@@ -335,6 +346,9 @@
           if(localStorage.getItem('userData')){
             this.count = JSON.parse(localStorage.getItem('userData'))
           }
+          if(this.userInfo.role == 2){  // 经纪人
+            this.isAccount = true
+          }
           this.init()
           this.isLogin = true
         } else {
@@ -348,7 +362,7 @@
 </script>
 <style scoped lang="less" type="text/less">
   .personalCenter{
-  	// padding-bottom: 2rem;
+  	padding-bottom: 2rem;
     .top{
     	position: fixed;
     	top: 0;
@@ -470,6 +484,9 @@
         padding-right: .14rem;
       }
     }
+  }
+  .personalCenter .two .agent .center div{
+    width: 33.333%
   }
 </style>
 <style type="text/css">
